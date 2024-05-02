@@ -1,0 +1,43 @@
+{
+  "name": "modern-architecture-generator",
+  "version": "1.0.0",
+  "description": "Plugin to create and enhance projects with a defined architecture",
+  "engines": {
+    "node": ">= 18.19.0",
+    "npm": ">= 10.7.0"
+  },
+  "private": "false",
+  "author": {
+    "name": "David Garzón Vélez",
+    "email": "dgv241198@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DavidGarzonV/modern-architecture-generator"
+  },
+  "keywords": [
+    "architecture",
+    "generator",
+    "clean-architecture",
+    "hexagonal-architecture"
+  ],
+  "license": "GPL-3.0-only",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc -p . && tsc-alias",
+    "build": "npm run tsc",
+    "pre-start": "npm run build",
+    "start": "node ./dist/server.js",
+    "dev": "nodemon ./src/server.ts"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.8",
+    "typescript": "^5.4.5"
+  },
+  "_moduleAliases": {
+    "@infrastructure": "src/infrastructure",
+    "@application": "src/application",
+    "@domain": "src/domain"
+  }
+}
