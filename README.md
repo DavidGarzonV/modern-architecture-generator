@@ -97,7 +97,6 @@ src
     ├── controllers
     ├── presenters
     └── adapters
-
 ```
 
 ### Avaliable commands:
@@ -130,6 +129,7 @@ Consequatur exercitationem quia atque. Ut labore consectetur perferendis nisi po
 
 ### Folder Structure
 
+```md {"id":"01HX7A19TN5S1AE9027GH0F84E"}
 src
 ├── application
 │   └── use-cases
@@ -142,6 +142,7 @@ src
 └── infrastructure
     ├── driven-adapters
     └── driving-adapters
+```
 
 ### Avaliable commands:
 
