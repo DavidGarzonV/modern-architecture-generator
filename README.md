@@ -1,9 +1,3 @@
----
-runme:
-  id: 01HX01SX1FQVSY7QV9WEAD066X
-  version: v3
----
-
 <h1 align="center">Modern Architecture Generator - Mag</h1>
 <hr>
 
