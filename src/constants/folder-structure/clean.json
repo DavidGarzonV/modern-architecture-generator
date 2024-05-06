@@ -1,0 +1,10 @@
+{
+  "entities": {},
+  "use-cases": {},
+  "interface-adapters": {},
+  "infrastructure": {
+    "controllers": {},
+    "presenters": {},
+    "adapters": {}
+  }
+}

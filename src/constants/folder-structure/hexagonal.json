@@ -1,0 +1,17 @@
+{
+	"application": {
+		"use-cases": {}
+	},
+	"domain": {
+		"entities": {},
+		"services": {},
+		"ports": {
+			"driven-ports": {},
+			"driving-ports": {}
+		}
+	},
+	"infrastructure": {
+		"driven-adapters": {},
+		"driving-adapters": {}
+	}
+}
