@@ -1,0 +1,5 @@
+{
+	"architecture": "hexagonal",
+	"usePascalCase": true,
+	"useCamelCase": true
+}

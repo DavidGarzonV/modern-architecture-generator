@@ -1,5 +1,4 @@
 <h1 align="center">Modern Architecture Generator - Mag</h1>
-<hr>
 
 Plugin to create and enhance projects using software architectures.
 In this plugin we can found the next architectures:
@@ -17,16 +16,15 @@ In this plugin we can found the next architectures:
 
 Install MAG CLI globally using `npm` package manager:
 
-```sh {"id":"01HX06JD1R8Z6TZ6JP2CDHWBGQ"}
+```sh
 npm install -g modern-architecture-generator
-
 ```
 
 ### Testing in local
 
 Execute commands:
 
-```sh {"id":"01HX72WDBEYC84TH38W6FVCHNR"}
+```sh
 npm run start [command] [options]
 ```
 
@@ -36,20 +34,20 @@ npm run start [command] [options]
 
 To see all the commands avaliable:
 
-```sh {"id":"01HX072204ZZAF84GMVTT6K7J2"}
+```sh
 mag --help
 mag [command] --help
-
 ```
 
 ### Using the tool
 
+**Note**: The projects uses the `src` folder to handle all the code.
+
 #### Create new project:
 
-```sh {"id":"01HX06KVH4VH05GXGAKCCBEF74"}
+```sh
 mag create [PROJECT NAME] [OPTIONS]
 mag create mag-test --path "C:\Users\user\Documents\GitHub\modern-architecture-generator\test"
-
 ```
 
 **Options:**
@@ -60,16 +58,14 @@ mag create mag-test --path "C:\Users\user\Documents\GitHub\modern-architecture-g
 
 #### Create a new use case:
 
-```sh {"id":"01HX06VZD72D9EX2Z363SWRYNN"}
-mag usecase [USECASE NAME]
-
+```sh
+mag usecase
 ```
 
 #### Create a new entity:
 
-```sh {"id":"01HX06XDSG398G9H5J909K04JY"}
-mag entity [ENTITY NAME]
-
+```sh
+mag entity
 ```
 
 ---
@@ -82,7 +78,7 @@ Consequatur exercitationem quia atque. Ut labore consectetur perferendis nisi po
 
 ### Folder Structure
 
-```md {"id":"01HX0775CS1DG619R6ZJGGABSE"}
+```md
 src
 ├── entities
 ├── use-cases
@@ -97,14 +93,14 @@ src
 
 #### Create new interface adapter:
 
-```md {"id":"01HX078H01DJBJ4G4H8VB28EXM"}
-mag iadapter [ADAPTER NAME]
+```md
+mag iadapter
 ```
 
 #### Create new adapter:
 
-```md {"id":"01HX079D0X143G28G1V7DB05N5"}
-mag adapter [ADAPTER NAME]
+```md
+mag adapter
 ```
 
 **Options:**
@@ -123,7 +119,7 @@ Consequatur exercitationem quia atque. Ut labore consectetur perferendis nisi po
 
 ### Folder Structure
 
-```md {"id":"01HX7A19TN5S1AE9027GH0F84E"}
+```md
 src
 ├── application
 │   └── use-cases
@@ -142,20 +138,20 @@ src
 
 #### Create new driven port:
 
-```md {"id":"01HX07PYFDZ0ZCWD4AS8SH2PSH"}
-mag drivenp [DRIVEN PORT NAME]
+```md
+mag drivenp
 ```
 
 #### Create new driving port:
 
-```md {"id":"01HX07Q3YDMAMZB1WD4PEWFDY7"}
-mag drivingp [DRIVING PORT NAME]
+```md
+mag drivingp
 ```
 
 #### Create new driven adapter:
 
-```md {"id":"01HX07QJT1534T4W2DZM4WV403"}
-mag dvap [DRIVEN ADAPTER NAME]
+```md
+mag dvap
 ```
 
 **Options:**
@@ -166,8 +162,8 @@ mag dvap [DRIVEN ADAPTER NAME]
 
 #### Create new driving adapter:
 
-```md {"id":"01HX07QXRFEHTS00110A5H74JJ"}
-mag dgap [DRIVING ADAPTER NAME]
+```md
+mag dgap
 ```
 
 **Options:**
@@ -175,6 +171,19 @@ mag dgap [DRIVING ADAPTER NAME]
 |ARGUMENT|DESCRIPTION|VALUE TYPE|
 |---|---|---|
 |`--port`|Name of the driving port to implements|`string`|
+
+---
+
+## Custom Configuration
+
+You can modify or create a file called `mag.config.json` to set custom configurations for the project with mag.
+
+|OPTION| DESCRIPTION |VALUE TYPE| AVALIABLE OPTIONS | DEFAULT VALUE |
+|---|---|---|---|---|
+|`architecture`|Type of configured architecture|`string`| `clean`, `hexagonal` | "" |
+|`useCasesFolder`|Set a custom use cases folder|`string`| "" | According to architecture |
+|`usePascalCase`|Define if use pascal case for class names|`boolean`| `true`, `false` | true |
+|`useCamelCase`|Use camel case for name class attributes and variables otherwise snake case|`boolean`| `true`, `false` | true |
 
 ---
 

@@ -1,5 +1,6 @@
 import figlet from 'figlet';
 import { program } from 'commander';
+import usecase from 'commands/usecase';
 import create from 'commands/create';
 
 program
@@ -8,9 +9,10 @@ program
 	.version('1.0.0');
 
 program.addCommand(create);
+program.addCommand(usecase);
 
 console.log(
-	figlet.textSync('MAG TOOL', {
+	figlet.textSync('MAG CLI TOOL', {
 		horizontalLayout: 'default',
 		verticalLayout: 'default',
 		whitespaceBreak: true,

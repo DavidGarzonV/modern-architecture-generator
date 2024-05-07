@@ -1,0 +1,43 @@
+[
+	{
+    "name": "application"
+  },
+	{
+		"name": "domain"
+	},
+	{
+		"name": "infrastructure"
+	},
+	{
+		"name": "use-cases",
+		"parent": "application"
+	},
+	{
+		"name": "entities",
+		"parent": "domain"
+	},
+	{
+		"name": "services",
+		"parent": "domain"
+	},
+	{
+		"name": "ports",
+		"parent": "domain"
+	},
+	{
+		"name": "driven-ports",
+		"parent": "ports"
+	},
+	{
+		"name": "driving-ports",
+		"parent": "ports"
+	},
+	{
+		"name": "driven-adapters",
+		"parent": "infrastructure"
+	},
+	{
+		"name": "driving-adapters",
+		"parent": "infrastructure"
+	}
+]

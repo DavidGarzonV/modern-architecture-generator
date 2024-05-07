@@ -1,0 +1,27 @@
+[
+  {
+    "name": "entitites"
+  },
+  {
+    "name": "use-cases"
+  },
+  {
+    "name": "interface-adapters"
+  },
+  {
+    "name": "infrastructure"
+  },
+  {
+    "name": "controllers",
+    "parent": "infrastructure"
+  },
+  {
+    "name": "presenters",
+    "parent": "infrastructure"
+  },
+  {
+    "name": "adapters",
+    "parent": "infrastructure"
+  }
+
+]

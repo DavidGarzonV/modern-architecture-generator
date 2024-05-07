@@ -1,0 +1,17 @@
+import UseCaseName from './UseCaseName.usecase.ts'
+
+describe('UseCaseName', () => {
+	let useCase: UseCaseName
+
+	beforeEach(() => {
+		// Add mocks here
+		useCase = new UseCaseName()
+	});
+
+	test('', () => {
+		// Add your logic here
+		useCase.run()
+		// Add your assertions here
+		expect(true).toBeTruthy()
+	})
+})

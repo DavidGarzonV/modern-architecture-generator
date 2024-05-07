@@ -22,8 +22,8 @@ const questions: prompts.PromptObject[] = [
 		name: 'typescript',
 		message: 'Use Typescript?',
 		initial: true,
-		active: 'yes',
-		inactive: 'no',
+		active: 'Yes',
+		inactive: 'No',
 	},
 ];
 

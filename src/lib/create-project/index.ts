@@ -1,5 +1,5 @@
+import { pathExists, readFile, validatePath, writeFile } from './../../utils/file';
 import { exec } from 'child_process';
-import fs from 'fs';
 import prompts from 'prompts';
 import { CreateProjectOptions } from 'types/create';
 import {
@@ -8,18 +8,13 @@ import {
 	README_PATH,
 	README_PUBLIC_PATH,
 } from 'constants/constants';
+import { FolderItem, MagConfiguration } from 'constants/types';
+import { ProjectStructure } from 'lib/shared/project-structure';
+import { copyFile, createFolder, deleteFolder, readDirectory } from 'utils/file';
 
-export default class CreateProject {
-	private validatePath(path: string): void {
-		try {
-			fs.accessSync(path, fs.constants.F_OK);
-		} catch (error) {
-			throw new Error('Invalid path');
-		}
-	}
-
+export default class CreateProject extends ProjectStructure {
 	private async createDirectory(path: string): Promise<void> {
-		if (fs.existsSync(path)) {
+		if (pathExists(path)) {
 			console.info('The directory already exists');
 			const response = await prompts([
 				{
@@ -33,11 +28,11 @@ export default class CreateProject {
 				process.exit(0);
 			}
 
-			fs.rmSync(path, { recursive: true });
+			deleteFolder(path);
 		}
 
 		try {
-			fs.mkdirSync(path);
+			createFolder(path);
 		} catch (error) {
 			throw new Error('Could not create directory');
 		}
@@ -46,18 +41,18 @@ export default class CreateProject {
 	private createDocumentation(type: EnabledArchitectures, newFolderPath: string): void {
 		try {
 			const projectPath = process.cwd();
-			fs.copyFileSync(
+			copyFile(
 				`${projectPath}/${README_PATH}/${type}.md`,
 				`${newFolderPath}/README.md`
 			);
 
-			fs.mkdirSync(`${newFolderPath}/public`);
+			createFolder(`${newFolderPath}/public`);
 
 			const resourcesPath = `${projectPath}/${README_PUBLIC_PATH}/${type}`;
-			const files = fs.readdirSync(resourcesPath);
+			const files = readDirectory(resourcesPath);
 
 			files.forEach((file) => {
-				fs.copyFileSync(
+				copyFile(
 					`${resourcesPath}/${file}`,
 					`${newFolderPath}/public/${file}`
 				);
@@ -67,25 +62,23 @@ export default class CreateProject {
 		}
 	}
 
-	private createFoldersFromObject(value: object, newFolderPath: string): void {
-		Object.entries(value).forEach(([key, value]) => {
-			fs.mkdirSync(`${newFolderPath}/${key}`);
-
-			if (Object.keys(value).length > 0) {
-				this.createFoldersFromObject(value, `${newFolderPath}/${key}`);
-			}
-		});
+	private createParentFolder(item: FolderItem, srcPath: string): string {
+		if (item.parent) {
+			const findParent = this.projectStructure.find((folder) => folder.name === item.parent);
+			const parentPath = this.createParentFolder(findParent!, srcPath);
+			return createFolder(`${parentPath}/${item.name}`);
+		}else{
+			return createFolder(`${srcPath}/${item.name}`);
+		}
 	}
 
-	private createFolderStructure(type: EnabledArchitectures, newFolderPath: string): void {
-		const projectPath = process.cwd();
-		const jsonFile = fs.readFileSync(`${projectPath}/src/constants/folder-structure/${type}.json`, 'utf-8');
-
-		const folderStructure = JSON.parse(jsonFile);
+	private createFolderStructure(newFolderPath: string): void {
 		const srcPath = `${newFolderPath}/src`;
-		fs.mkdirSync(srcPath);
+		createFolder(srcPath);
 
-		this.createFoldersFromObject(folderStructure, srcPath);
+		for (const item of this.projectStructure) {
+			this.createParentFolder(item, srcPath);
+		}
 	}
 
 	private async createPackageJson(options: CreateProjectOptions, projectPath: string): Promise<void> {
@@ -101,7 +94,7 @@ export default class CreateProject {
 				}
 	
 				const packageJsonPath = `${projectPath}/package.json`;
-				const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+				const packageJson = JSON.parse(readFile(packageJsonPath, 'utf-8'));
 				packageJson.name = projectName;
 				packageJson.main = 'index.js';
 				packageJson.author = 'MAG CLI Tool';
@@ -115,12 +108,12 @@ export default class CreateProject {
 				}
 
 				packageJson.scripts.start = `node ${executionPath}`;
-				fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+				writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
 				console.info('package.json created.');
 
 				const indexContent = 'console.log("Hello World!");';
-				fs.writeFileSync(`${projectPath}/src/index.${useTypescript ? 'ts' : 'js'}`, indexContent);
+				writeFile(`${projectPath}/src/index.${useTypescript ? 'ts' : 'js'}`, indexContent);
 
 				resolve();
 			});
@@ -151,11 +144,35 @@ export default class CreateProject {
 		});
 	}
 
+	private createDefaultConfigFile(type: EnabledArchitectures, projectPath: string): void {
+		try {
+			const config: MagConfiguration = {
+				architecture: type,
+			};
+			writeFile(`${projectPath}/mag.config.json`, JSON.stringify(config, null, 2));
+		} catch (error) {
+			throw new Error('Could not create config file');
+		}
+	}
+
+	private async installMagDependencies(projectPath: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			exec('npm install modern-architecture-generator --save-dev', { cwd: projectPath }, (error) => {
+				if (error) {
+					reject('Could not install mag dependencies');
+					return;
+				}
+
+				resolve();
+			});
+		});
+	}
+
 	async run(options: CreateProjectOptions): Promise<string> {
 		const executionPath = process.cwd();
 		const projectPath = options.path ?? executionPath;
 
-		this.validatePath(projectPath);
+		validatePath(projectPath);
 
 		console.info('Creating folder...');
 		const newFolderPath = `${projectPath}/${options.name}`;
@@ -164,13 +181,18 @@ export default class CreateProject {
 
 		console.info('Creating project structure...');
 		this.createDocumentation(options.type, newFolderPath);
-		this.createFolderStructure(options.type, newFolderPath);
+		this.createFolderStructure(newFolderPath);
+		this.createDefaultConfigFile(options.type, newFolderPath);
 		console.info('Project structure created.');
 
 		await this.createPackageJson(options, newFolderPath);
 		if (options.typescript) {
 			await this.configureTypescript(newFolderPath);
 		}
+
+		console.info('Installing mag dependencies...');
+		this.installMagDependencies(newFolderPath);
+		console.info('Dependencies installed.');
 
 		return newFolderPath;
 	}
