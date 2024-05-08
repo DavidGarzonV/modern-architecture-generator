@@ -23,6 +23,34 @@ const getContexts = async (): Promise<prompts.Choice[]> => {
 	return contexts;
 };
 
+const  getContextName = async (useContext: boolean): Promise<string | undefined> => {
+	let context = undefined;
+	if (useContext) {
+		const currentContexts = await getContexts();
+		let contextQuestion: prompts.PromptObject | undefined;
+
+		if (currentContexts.length > 0) {
+			contextQuestion = {
+				type: 'select',
+				name: 'contextName',
+				message: 'Select the context:',
+				choices: currentContexts,
+			};
+		} else {
+			contextQuestion = {
+				type: 'text',
+				name: 'contextName',
+				message: 'What is the context name?',
+			};
+		}
+
+		const { contextName } = await prompts([contextQuestion]);
+		context = contextName;
+	}
+
+	return context;
+};
+
 const questions: prompts.PromptObject[] = [
 	{
 		type: 'text',
@@ -46,29 +74,7 @@ export default program
 	.action(async (options) => {
 		const { name, useContext } = await prompts(questions);
 
-		let context = undefined;
-		if (useContext) {
-			const currentContexts = await getContexts();
-			let contextQuestion: prompts.PromptObject | undefined;
-
-			if (currentContexts.length > 0) {
-				contextQuestion = {
-					type: 'select',
-					name: 'contextName',
-					message: 'Select the context:',
-					choices: currentContexts,
-				};
-			} else {
-				contextQuestion = {
-					type: 'text',
-					name: 'contextName',
-					message: 'What is the context name?',
-				};
-			}
-
-			const { contextName } = await prompts([contextQuestion]);
-			context = contextName;
-		}
+		const context = await getContextName(useContext);
 
 		try {
 			const createUseCase = new CreateUseCase();
