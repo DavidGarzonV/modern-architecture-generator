@@ -45,6 +45,8 @@ mag [command] --help
 
 #### Create new project:
 
+Creates a new project with a defined architecture
+
 ```sh
 mag create [PROJECT NAME] [OPTIONS]
 mag create mag-test --path "C:\Users\user\Documents\GitHub\modern-architecture-generator\test"
@@ -58,11 +60,15 @@ mag create mag-test --path "C:\Users\user\Documents\GitHub\modern-architecture-g
 
 #### Create a new use case:
 
+Creates a personalized use case in your architecture folder.
+
 ```sh
 mag usecase
 ```
 
 #### Create a new entity:
+
+Creates a personalized entity in your architecture folder.
 
 ```sh
 mag entity
