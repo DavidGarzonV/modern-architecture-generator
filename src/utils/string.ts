@@ -1,10 +1,6 @@
 import { getProjectConfiguration } from 'utils/config';
 
 export const convertToPascalCase = (str: string): string => {
-	if (/^[a-z]+([A-Z]?[a-z]*)*$/.test(str)) {
-		return str.charAt(0).toUpperCase() + str.slice(1);
-	}
-
 	if (str.includes('_')) {
 		return str
 			.split('_')
@@ -18,7 +14,8 @@ export const convertToPascalCase = (str: string): string => {
 			.map(word => word.charAt(0).toUpperCase() + word.slice(1))
 			.join('');
 	}
-	return str;
+
+	return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 export const convertToSnakeCase = (str: string): string => {

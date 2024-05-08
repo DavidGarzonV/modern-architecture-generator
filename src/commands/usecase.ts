@@ -2,6 +2,7 @@ import { program } from 'commander';
 import CreateUseCase from 'lib/usecase';
 import prompts from 'prompts';
 
+// TODO - Validate if name already exists
 const questions: prompts.PromptObject[] = [
 	{
 		type: 'text',

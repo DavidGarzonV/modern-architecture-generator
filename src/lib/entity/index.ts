@@ -1,12 +1,13 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { CreateEntityOptions } from 'types/entity';
-import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
+import prompts from 'prompts';
+import { CreateEntityOptions, Property } from 'types/entity';
+import { createFolder, pathExists, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 
 export default class CreateEntity extends ProjectStructure {
 	private entitiesFolder: string = '';
-	
-	constructor(){
+
+	constructor() {
 		super();
 	}
 
@@ -21,14 +22,55 @@ export default class CreateEntity extends ProjectStructure {
 		createFolder(this.entitiesFolder);
 	}
 
-	private async createFile(name: string, useClass: boolean, path: string): Promise<void> {
-		const projectPath = process.cwd();
-		const templateName = !useClass ? 'interface.ts' : 'class.ts';
-		const useCaseTemplate = readFile(`${projectPath}/src/templates/entities/${templateName}`);
-		const content = useCaseTemplate.replace(/EntityName/g, name);
+	private getFileContent(name: string, defaultProperties?: Property[]){
+		let content = `export interface ${name} {`;
+		content += '\n\t// Add properties here';
 
+		if (defaultProperties && defaultProperties.length > 0) {
+			for (const property of defaultProperties) {
+				content += `\n\t${property.name}: ${property.type}`;
+			}
+		} else {
+			content += '\n\t// property: string | number | boolean | Date';
+		}
+
+		content += '\n}';
+		return content;
+	}
+
+	private async createFile(
+		name: string,
+		path: string,
+		defaultProperties?: Property[]
+	): Promise<void> {
 		try {
-			writeFile(`${path}/${name}.entity.ts`, content);
+			let entityName = name;
+			let content = '';
+
+			if (pathExists(`${path}/${entityName}/${entityName}.entity.ts`)) {
+				const { overwrite, newName } = await prompts([
+					{
+						type: 'confirm',
+						name: 'overwrite',
+						message: `The entity ${name} already exists. Do you want to overwrite it?`,
+						initial: false,
+					},
+					{
+						type: (prev) => (!prev ? 'text' : null),
+						name: 'newName',
+						message: 'Enter a new name for the entity:',
+					},
+				]);
+
+				if (!overwrite) {
+					entityName = formatName(newName);
+				}
+			}
+
+			content = this.getFileContent(entityName, defaultProperties);
+
+			createFolder(`${path}/${entityName}`);
+			writeFile(`${path}/${entityName}/${entityName}.entity.ts`, content);
 		} catch (error) {
 			throw new Error('Could not create entity file');
 		}
@@ -42,7 +84,10 @@ export default class CreateEntity extends ProjectStructure {
 
 		if (options.useContext && options.contextName) {
 			const pascalCaseContextName = formatName(options.contextName);
-			const contextPath = this.createContextFolder(this.entitiesFolder, pascalCaseContextName);
+			const contextPath = this.createContextFolder(
+				this.entitiesFolder,
+				pascalCaseContextName
+			);
 
 			if (pathExists(this.entitiesFolder)) {
 				createFolder(pascalCaseContextName);
@@ -51,10 +96,10 @@ export default class CreateEntity extends ProjectStructure {
 			this.entitiesFolder = contextPath;
 		}
 
-		const entitiesPath = `${this.entitiesFolder}/${pascalCaseName}`;
+		const entitiesPath = `${this.entitiesFolder}`;
 		createFolder(entitiesPath);
 
-		this.createFile(pascalCaseName, !!options.useClass, entitiesPath);
+		await this.createFile(pascalCaseName, entitiesPath, options.defaultProperties);
 		console.info('Entity created!');
 	}
 }
