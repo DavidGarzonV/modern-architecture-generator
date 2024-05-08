@@ -7,5 +7,4 @@ export type CreateProjectArguments = {
 export type CreateProjectOptions = CreateProjectArguments & {
 	name: string;
 	type: EnabledArchitectures;
-	typescript: boolean;
 };

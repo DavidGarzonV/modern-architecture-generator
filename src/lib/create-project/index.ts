@@ -13,6 +13,10 @@ import { ProjectStructure } from 'lib/shared/project-structure';
 import { copyFile, createFolder, deleteFolder, readDirectory } from 'utils/file';
 
 export default class CreateProject extends ProjectStructure {
+	constructor(){
+		super();
+	}
+
 	private async createDirectory(path: string): Promise<void> {
 		if (pathExists(path)) {
 			console.info('The directory already exists');
@@ -82,7 +86,7 @@ export default class CreateProject extends ProjectStructure {
 	}
 
 	private async createPackageJson(options: CreateProjectOptions, projectPath: string): Promise<void> {
-		const { name: projectName, typescript: useTypescript } = options;
+		const { name: projectName } = options;
 
 		console.info('Creating npm project...');
 
@@ -101,11 +105,9 @@ export default class CreateProject extends ProjectStructure {
 				packageJson.description = 'Project created with the MAG CLI tool';
 				packageJson.keywords = ARCHITECTURE_KEYWORDS[options.type];
 
-				const executionPath = useTypescript ? 'dist/index.js' : 'src/index.js';
-				if (useTypescript) {
-					packageJson.keywords.push('typescript');
-					packageJson.scripts.build = 'tsc';
-				}
+				const executionPath = 'dist/index.js';
+				packageJson.keywords.push('typescript');
+				packageJson.scripts.build = 'tsc';
 
 				packageJson.scripts.start = `node ${executionPath}`;
 				writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
@@ -113,7 +115,7 @@ export default class CreateProject extends ProjectStructure {
 				console.info('package.json created.');
 
 				const indexContent = 'console.log("Hello World!");';
-				writeFile(`${projectPath}/src/index.${useTypescript ? 'ts' : 'js'}`, indexContent);
+				writeFile(`${projectPath}/src/index.ts`, indexContent);
 
 				resolve();
 			});
@@ -186,9 +188,7 @@ export default class CreateProject extends ProjectStructure {
 		console.info('Project structure created.');
 
 		await this.createPackageJson(options, newFolderPath);
-		if (options.typescript) {
-			await this.configureTypescript(newFolderPath);
-		}
+		await this.configureTypescript(newFolderPath);
 
 		console.info('Installing mag dependencies...');
 		this.installMagDependencies(newFolderPath);

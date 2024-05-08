@@ -16,15 +16,7 @@ const questions: prompts.PromptObject[] = [
 			{ title: 'Hexagonal Architecture', value: EnabledArchitectures.Hexagonal }
 		],
 		initial: 0,
-	},
-	{
-		type: 'toggle',
-		name: 'typescript',
-		message: 'Use Typescript?',
-		initial: true,
-		active: 'Yes',
-		inactive: 'No',
-	},
+	}
 ];
 
 export default program
@@ -40,8 +32,7 @@ export default program
 			const projectPath = await createProject.run({
 				name,
 				path: options.path,
-				type: response.type,
-				typescript: response.typescript,
+				type: response.type
 			});
 	
 			console.info(`Project created at ${projectPath}.`);

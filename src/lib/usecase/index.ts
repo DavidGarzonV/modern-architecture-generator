@@ -1,36 +1,14 @@
 import { CreateUseCaseOptions } from 'types/usecase';
 import { formatName, formatNameAttributes } from 'utils/string';
 import { getProjectConfiguration } from 'utils/config';
-import { FolderItem } from 'constants/types';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 
 export default class CreateUseCase extends ProjectStructure{
 	private useCasesFolder: string = '';
-
-	private organizeParentFolder(item: FolderItem, basePath: string = ''): string {
-		if (item.parent) {
-			const findParent = this.projectStructure.find((folder) => folder.name === item.parent);
-			const parentPath = this.organizeParentFolder(findParent!, basePath);
-
-			createFolder(parentPath);
-
-			return `${parentPath}/${item.name}`;
-		}else{
-			return `${basePath}/${item.name}`;
-		}
-	}
-
-	private findUseCasesFolder(): string{
-		const useCasesFolder = this.projectStructure.find((item) => item.name === 'use-cases');
-		if (!useCasesFolder) {
-			throw new Error('Could not find use cases folder');
-		}
-
-		const executionPath = process.cwd();
-		const srcPath = `${executionPath}/src`;
-
-		return this.organizeParentFolder(useCasesFolder, srcPath);
+	
+	constructor(){
+		super();
 	}
 
 	private setUseCasesFolder(): void {
@@ -38,7 +16,7 @@ export default class CreateUseCase extends ProjectStructure{
 		if (useCasesFolder) {
 			this.useCasesFolder = useCasesFolder;
 		}else{
-			const defaultUseCasesFolder = this.findUseCasesFolder();
+			const defaultUseCasesFolder = this.findFolderPathByName('use-cases');
 			this.useCasesFolder = defaultUseCasesFolder;
 		}
 
@@ -47,20 +25,6 @@ export default class CreateUseCase extends ProjectStructure{
 		}
 
 		createFolder(this.useCasesFolder);
-	}
-
-	private createContext(contextName: string): string { 
-		try {
-			if (pathExists(this.useCasesFolder)) {
-				const contextFolder = `${this.useCasesFolder}/${contextName}`;
-				createFolder(contextFolder);
-				return contextFolder;
-			}
-		} catch (error) {
-			throw new Error('Could not create context');
-		}
-
-		return this.useCasesFolder;
 	}
 
 	private createClass(name: string, path: string): void {
@@ -91,16 +55,14 @@ export default class CreateUseCase extends ProjectStructure{
 
 	// TODO - Check if add request and response files
 	async run(options: CreateUseCaseOptions): Promise<void>{
-		const architecture = getProjectConfiguration().architecture;
-
-		this.setProjectStructure(architecture);
+		console.info('Creating use case...');
 		this.setUseCasesFolder();
 
 		const pascalCaseName = formatName(options.name);
 
-		if (options.useContext) {
+		if (options.useContext && options.contextName) {
 			const pascalCaseContextName = formatName(options.contextName);
-			const contextPath = this.createContext(pascalCaseContextName);
+			const contextPath = this.createContextFolder(this.useCasesFolder, pascalCaseContextName);
 
 			if (pathExists(this.useCasesFolder)) {
 				createFolder(pascalCaseContextName);
@@ -117,5 +79,6 @@ export default class CreateUseCase extends ProjectStructure{
 		if (options.createTests) {
 			this.createTestsFile(pascalCaseName, useCasePath);
 		}
+		console.info('Use case created!');
 	}
 }
