@@ -3,6 +3,7 @@ import { formatName, formatNameAttributes } from 'utils/string';
 import { getProjectConfiguration } from 'utils/config';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
+import prompts from 'prompts';
 
 export default class CreateUseCase extends ProjectStructure{
 	private useCasesFolder: string = '';
@@ -27,13 +28,35 @@ export default class CreateUseCase extends ProjectStructure{
 		createFolder(this.useCasesFolder);
 	}
 
-	private createClass(name: string, path: string): void {
+	private async createClass(name: string, path: string): Promise<void> {
 		const projectPath = process.cwd();
-		const useCaseTemplate = readFile(`${projectPath}/src/templates/use-cases/index.ts`);
-		const content = useCaseTemplate.replace(/UseCaseName/g, name);
+		const useCaseTemplate = readFile(`${projectPath}/src/templates/use-cases/index.txt`);
 
 		try {
-			writeFile(`${path}/${name}.usecase.ts`, content);
+			let useCaseName = name;
+			if (pathExists(`${path}/${name}/${name}.usecase.ts`)) {
+				const { overwrite, newName } = await prompts([
+					{
+						type: 'confirm',
+						name: 'overwrite',
+						message: `The use case ${name} already exists. Do you want to overwrite it?`,
+						initial: false,
+					},
+					{
+						type: (prev) => (!prev ? 'text' : null),
+						name: 'newName',
+						message: 'What is the new name?',
+					},
+				]);
+
+				if (!overwrite) {
+					useCaseName = formatName(newName);
+				}
+			}
+
+			const content = useCaseTemplate.replace(/UseCaseName/g, useCaseName);
+			createFolder(`${path}/${useCaseName}`);
+			writeFile(`${path}/${useCaseName}/${useCaseName}.usecase.ts`, content);
 		} catch (error) {
 			throw new Error('Could not create class');
 		}
@@ -71,10 +94,10 @@ export default class CreateUseCase extends ProjectStructure{
 			this.useCasesFolder = contextPath;
 		}
 
-		const useCasePath = `${this.useCasesFolder}/${pascalCaseName}`;
+		const useCasePath = `${this.useCasesFolder}`;
 		createFolder(useCasePath);
 
-		this.createClass(pascalCaseName, useCasePath);
+		await this.createClass(pascalCaseName, useCasePath);
 
 		if (options.createTests) {
 			this.createTestsFile(pascalCaseName, useCasePath);
