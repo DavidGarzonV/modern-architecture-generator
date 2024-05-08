@@ -14,7 +14,7 @@ program.hook('preAction', () => {
 	return new Promise((resolve, reject) => {
 		exec('tsc --noEmit', (error) => {
 			if (error) {
-				reject('The project has incorrect typescript code. Please fix it before running the CLI tool.');
+				reject('The project has incorrect typescript configuration. Please fix it before running the CLI tool.');
 			}
 
 			resolve();
