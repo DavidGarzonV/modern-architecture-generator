@@ -1,18 +1,19 @@
 import fs from 'fs';
 import { FolderItem, FolderStructure } from 'constants/types';
-import { getProjectConfiguration } from 'utils/config';
 import { createFolder, pathExists } from 'utils/file';
+import { ArchitectureManager } from 'lib/shared/architecture-manager';
 
 export class ProjectStructure {
 	private _projectStructure: FolderStructure = [];
+	private _architectureManager: ArchitectureManager;
 
 	get projectStructure() {
 		return this._projectStructure;
 	}
 
 	constructor(){
-		const config = getProjectConfiguration();
-		const architecture = config.architecture;
+		this._architectureManager = new ArchitectureManager();
+		const architecture = this._architectureManager.architecture;
 
 		const projectPath = process.cwd();
 		const jsonFile = fs.readFileSync(`${projectPath}/src/templates/folder-structure/${architecture}.json`, 'utf-8');

@@ -19,7 +19,10 @@ export const copyFile = (source: string, destination: string): void => {
 };
 
 export const readDirectory = (path: string): string[] => {
-	return fs.readdirSync(path);
+	if (fs.existsSync(path)) {
+		return fs.readdirSync(path);
+	}
+	return [];
 };
 
 export const pathExists = (path: string): boolean => {

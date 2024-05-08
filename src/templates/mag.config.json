@@ -1,5 +1,5 @@
 {
-	"architecture": "hexagonal",
+	"architecture": "clean",
 	"usePascalCase": true,
 	"useCamelCase": true
 }

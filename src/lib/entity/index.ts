@@ -12,14 +12,8 @@ export default class CreateEntity extends ProjectStructure {
 	}
 
 	private setEntitiesFolder(): void {
-		const defaultUseCasesFolder = this.findFolderPathByName('entities');
-		this.entitiesFolder = defaultUseCasesFolder;
-
-		if (!this.entitiesFolder) {
-			throw new Error('Could not find entities folder');
-		}
-
-		createFolder(this.entitiesFolder);
+		const defaultEntitiesFolder = this.findFolderPathByName('entities');
+		this.entitiesFolder = defaultEntitiesFolder;
 	}
 
 	private getFileContent(name: string, defaultProperties?: Property[]){

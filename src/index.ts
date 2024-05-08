@@ -4,6 +4,7 @@ import { program } from 'commander';
 import usecase from 'commands/usecase';
 import create from 'commands/create';
 import entity from 'commands/entity';
+import iadapter from 'commands/clean/iadapter';
 
 program
 	.name('mag')
@@ -11,10 +12,10 @@ program
 	.version('1.0.0');
 
 program.hook('preAction', () => {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		exec('tsc --noEmit', (error) => {
 			if (error) {
-				reject('The project has incorrect typescript configuration. Please fix it before running the CLI tool.');
+				throw new Error('The project has incorrect typescript configuration. Please fix it before running the CLI tool.');
 			}
 
 			resolve();
@@ -25,6 +26,8 @@ program.hook('preAction', () => {
 program.addCommand(create);
 program.addCommand(usecase);
 program.addCommand(entity);
+// Clean
+program.addCommand(iadapter);
 
 console.log(
 	figlet.textSync('MAG CLI TOOL', {

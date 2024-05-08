@@ -1,56 +1,8 @@
 import { program } from 'commander';
-import CreateEntity from 'lib/entity';
-import { ProjectStructure } from 'lib/shared/project-structure';
 import prompts from 'prompts';
+import CreateEntity from 'lib/entity';
+import { ContextsManager } from 'lib/shared/contexts-manager';
 import { Property } from 'types/entity';
-import { pathExists, readDirectory } from 'utils/file';
-
-const getContexts = async (): Promise<prompts.Choice[]> => {
-	const projectStructure = new ProjectStructure();
-	const useCasesFolder = projectStructure.findFolderPathByName('entities');
-	const contexts: prompts.Choice[] = [];
-
-	if (pathExists(useCasesFolder)) {
-		const folders = readDirectory(useCasesFolder);
-		folders.forEach((folder) => {
-			const contents = readDirectory(`${useCasesFolder}/${folder}`);
-			const hasFiles = contents.some((content) => content.includes('.'));
-			if (!hasFiles) {
-				contexts.push({ title: folder, value: folder });
-			}
-		});
-	}
-
-	return contexts;
-};
-
-const getContextName = async (useContext: boolean): Promise<string | undefined> => {
-	let context = undefined;
-	if (useContext) {
-		const currentContexts = await getContexts();
-		let contextQuestion: prompts.PromptObject | undefined;
-
-		if (currentContexts.length > 0) {
-			contextQuestion = {
-				type: 'select',
-				name: 'contextName',
-				message: 'Select the context:',
-				choices: currentContexts,
-			};
-		} else {
-			contextQuestion = {
-				type: 'text',
-				name: 'contextName',
-				message: 'What is the context name?',
-			};
-		}
-
-		const { contextName } = await prompts([contextQuestion]);
-		context = contextName;
-	}
-
-	return context;
-};
 
 const getEntityProperties = async (addDefaultProperties: boolean): Promise<Property[]> => {
 	const propertiesQuestions: prompts.PromptObject[] = [
@@ -97,14 +49,6 @@ const questions: prompts.PromptObject[] = [
 		type: 'text',
 		name: 'name',
 		message: 'What is the name of the entity?',
-	},
-	{
-		type: 'toggle',
-		name: 'useContext',
-		message: 'The entity belongs to a context?',
-		initial: false,
-		active: 'yes',
-		inactive: 'no',
 	}
 ];
 
@@ -114,7 +58,8 @@ export default program
 	.action(async () => {
 		const { name, useContext } = await prompts(questions);
 
-		const context = await getContextName(useContext);
+		const contextsManager = new ContextsManager();
+		const context = await contextsManager.getContextName('entities');
 
 		const { addDefaultProperties } = await prompts([{
 			type: 'confirm',

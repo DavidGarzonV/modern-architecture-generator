@@ -103,6 +103,12 @@ src
 mag iadapter
 ```
 
+**Options:**
+
+|ARGUMENT|SHORT ARGUMENT|DESCRIPTION|VALUE TYPE|EXAMPLE|
+|---|---|---|---|---|
+|`--entity`|`-e`|Entity related to the adapter|`string`| File: `Animals/Dog.entity.ts`, Entity: `Animals/Dog` |
+
 #### Create new adapter:
 
 ```md

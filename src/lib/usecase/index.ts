@@ -20,12 +20,6 @@ export default class CreateUseCase extends ProjectStructure{
 			const defaultUseCasesFolder = this.findFolderPathByName('use-cases');
 			this.useCasesFolder = defaultUseCasesFolder;
 		}
-
-		if (!this.useCasesFolder) {
-			throw new Error('Could not find use cases folder');
-		}
-
-		createFolder(this.useCasesFolder);
 	}
 
 	private async createClass(name: string, path: string): Promise<void> {
