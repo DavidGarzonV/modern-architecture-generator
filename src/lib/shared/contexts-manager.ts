@@ -9,6 +9,13 @@ export class ContextsManager {
 		this._projectStructure = new ProjectStructure();
 	}
 
+	/**
+	 * @description Get the contexts from a specific folder
+	 * @private
+	 * @param {string} pathToSearch
+	 * @return {*}  {Promise<prompts.Choice[]>}
+	 * @memberof ContextsManager
+	 */
 	private async getContexts(pathToSearch: string): Promise<prompts.Choice[]> {
 		const folder = this._projectStructure.findFolderPathByName(pathToSearch);
 		const contexts: prompts.Choice[] = [];
@@ -27,6 +34,12 @@ export class ContextsManager {
 		return contexts;
 	}
 
+	/**
+	 * @description Ask for the context name and search options
+	 * @param {string} pathToSearch
+	 * @return {*}  {(Promise<string | undefined>)}
+	 * @memberof ContextsManager
+	 */
 	async getContextName(pathToSearch: string): Promise<string | undefined> {
 		let context = undefined;
 

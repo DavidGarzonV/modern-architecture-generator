@@ -28,6 +28,9 @@ Execute commands:
 npm run start [command] [options]
 ```
 
+Find the outputs:
+All the files created with mag tool are created in the folder `./test-environment` when the environment variable `NODE_ENV` has the `"local"` value
+
 ### Command-language syntax
 
 `mag [optional-command] [options]`
@@ -114,13 +117,6 @@ mag iadapter
 ```md
 mag adapter
 ```
-
-**Options:**
-
-|ARGUMENT|DESCRIPTION|VALUE TYPE|
-|---|---|---|
-|`--adapter`|Name of the interface adapter to implements|`string`|
-
 ---
 
 ## Hexagonal Architecture

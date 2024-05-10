@@ -1,0 +1,5 @@
+import { IAdapter } from 'IAdapterRoute'
+
+export default class Adapter implements IAdapter {
+	// Implement methods from IAdapter
+}

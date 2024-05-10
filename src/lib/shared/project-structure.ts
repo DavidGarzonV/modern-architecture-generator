@@ -22,6 +22,13 @@ export class ProjectStructure {
 		this._projectStructure = structure;
 	}
 
+	/**
+	 * @description Organize the parent folder of a folder item and returns the path
+	 * @param {FolderItem} item
+	 * @param {string} [basePath='']
+	 * @return {*}  {string}
+	 * @memberof ProjectStructure
+	 */
 	organizeParentFolder(item: FolderItem, basePath: string = ''): string {
 		if (item.parent) {
 			const findParent = this.projectStructure.find((folder) => folder.name === item.parent);
@@ -35,18 +42,34 @@ export class ProjectStructure {
 		}
 	}
 
+	/**
+	 * @description Find the folder path in a local project by name
+	 * @param {string} name
+	 * @return {*}  {string}
+	 * @memberof ProjectStructure
+	 */
 	findFolderPathByName(name: string): string {
 		const itemFolder = this.projectStructure.find((item) => item.name === name);
 		if (!itemFolder) {
 			throw new Error(`Could not find ${name} folder`);
 		}
 
-		const executionPath = process.cwd();
-		const srcPath = `${executionPath}/src`;
+		let srcPath = 'src';
+		if (process.env.NODE_ENV === 'local') {
+			const executionPath = process.cwd();
+			srcPath = `${executionPath}/test-environment`;
+		}
 
 		return this.organizeParentFolder(itemFolder, srcPath);
 	}
 
+	/**
+	 * @description Create a context folder in a base folder like use-cases, entities, etc
+	 * @param {string} baseFolder
+	 * @param {string} contextName
+	 * @return {*}  {string}
+	 * @memberof ProjectStructure
+	 */
 	createContextFolder(baseFolder: string, contextName: string): string {
 		try {
 			if (pathExists(baseFolder)) {

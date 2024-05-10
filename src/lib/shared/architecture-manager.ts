@@ -13,6 +13,12 @@ export class ArchitectureManager {
 		this._architecture = config.architecture;
 	}
 
+	/**
+	 * @description Validate if the project architecture is the same as the command
+	 * @param {EnabledArchitectures} architecture
+	 * @return {*}  {boolean}
+	 * @memberof ArchitectureManager
+	 */
 	validateProjectArchitecture(architecture: EnabledArchitectures): boolean{
 		return architecture === this._architecture;
 	}
