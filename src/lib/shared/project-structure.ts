@@ -2,6 +2,8 @@ import fs from 'fs';
 import { FolderItem, FolderStructure } from 'constants/types';
 import { createFolder, pathExists } from 'utils/file';
 import { ArchitectureManager } from 'lib/shared/architecture-manager';
+import { formatName } from 'utils/string';
+import prompts from 'prompts';
 
 export class ProjectStructure {
 	private _projectStructure: FolderStructure = [];
@@ -82,5 +84,50 @@ export class ProjectStructure {
 		}
 
 		return baseFolder;
+	}
+
+	/**
+	 * @description Ask for the creation of a file validating if it already exists
+	 * @param {string} baseFileName
+	 * @param {string} baseFolder
+	 * @param {('adapter' | 'repository')} fileType
+	 * @return {*}  {Promise<string>}
+	 * @memberof ProjectStructure
+	 */
+	async askForCreateProjectFile(
+		baseFileName: string,
+		baseFolder: string,
+		fileType: 'adapter' | 'repository'
+	): Promise<string> {
+		const name = formatName(baseFileName);
+
+		let adapterName = name;
+
+		if (pathExists(`${baseFolder}/${name}.${fileType}.ts`)) {
+			const itemTypes: Record<string, string> = {
+				adapter: 'adapter',
+				repository: 'interface adapter',
+			};
+
+			const { overwrite, newName } = await prompts([
+				{
+					type: 'confirm',
+					name: 'overwrite',
+					message: `The ${itemTypes[fileType]} ${name} already exists. Do you want to overwrite it?`,
+					initial: false,
+				},
+				{
+					type: (prev) => (!prev ? 'text' : null),
+					name: 'newName',
+					message: `Enter a new name for the ${itemTypes[fileType]}:`,
+				},
+			]);
+
+			if (!overwrite) {
+				adapterName = formatName(newName);
+			}
+		}
+
+		return adapterName;
 	}
 }

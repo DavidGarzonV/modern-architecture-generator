@@ -1,4 +1,3 @@
-import prompts from 'prompts';
 import path from 'path';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { CreateAdapterOptions } from 'types/clean/adapter';
@@ -41,34 +40,8 @@ export default class CreateAdapter extends ProjectStructure {
 	}
 
 	private async createAdapter(options: CreateAdapterOptions): Promise<void> {
-		const name = formatName(options.name);
-
-		let adapterName = name;
-
-		if (pathExists(`${this._adaptersFolder}/${name}.repository.ts`)) {
-			const { overwrite, newName } = await prompts([
-				{
-					type: 'confirm',
-					name: 'overwrite',
-					message: `The adapter ${name} already exists. Do you want to overwrite it?`,
-					initial: false,
-				},
-				{
-					type: (prev) => (!prev ? 'text' : null),
-					name: 'newName',
-					message: 'Enter a new name for the adapter:',
-				},
-			]);
-
-			if (!overwrite) {
-				adapterName = formatName(newName);
-			}
-		}
-
-		const content = await this.getContent(
-			adapterName,
-			options.iadapter
-		);
+		const adapterName = await this.askForCreateProjectFile(options.name, this._adaptersFolder, 'adapter');
+		const content = await this.getContent(adapterName, options.iadapter);
 		createFolder(this._adaptersFolder);
 		writeFile(`${this._adaptersFolder}/${adapterName}.adapter.ts`, content);
 	}
