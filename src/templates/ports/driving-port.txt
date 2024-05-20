@@ -1,4 +1,4 @@
-export interface PortNameUseCase {
-	// Add here use case methods to implements
+export interface PortName {
+	// Add here the methods to implements
 	run(): void;
 }

@@ -90,7 +90,7 @@ export class ProjectStructure {
 	 * @description Ask for the creation of a file validating if it already exists
 	 * @param {string} baseFileName
 	 * @param {string} baseFolder
-	 * @param {('adapter' | 'repository')} fileType
+	 * @param {string} fileType
 	 * @return {*}  {Promise<string>}
 	 * @memberof ProjectStructure
 	 */
@@ -104,9 +104,10 @@ export class ProjectStructure {
 		let adapterName = name;
 
 		if (pathExists(`${baseFolder}/${name}.${fileType}.ts`)) {
-			const itemTypes: Record<string, string> = {
+			const itemTypes: Record<typeof fileType, string> = {
 				adapter: 'adapter',
 				repository: 'interface adapter',
+				port: 'port'
 			};
 
 			const { overwrite, newName } = await prompts([
