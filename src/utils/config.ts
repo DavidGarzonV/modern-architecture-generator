@@ -14,15 +14,20 @@ const validateConfigurationOptions = (config: object): void => {
 };
 
 export const getProjectConfiguration = (): MagConfiguration => {
+	const configFileName = 'mag.config.json';
 	const projectPath = process.cwd();
-	const originalConfiguration = `${projectPath}/src/templates/mag.config.json`;
-	const customConfiguration = 'mag.config.json';
+	const originalConfiguration = `${projectPath}/src/templates/${configFileName}`;
+	let customConfigurationPath = configFileName;
+
+	if (process.env.NODE_ENV === 'local') {
+		customConfigurationPath = `${projectPath}/test-environment/${configFileName}`;
+	}
 
 	const originalConfig = JSON.parse(fs.readFileSync(originalConfiguration, 'utf8'));
 	let finalConfig: MagConfiguration = originalConfig;
 
-	if (fs.existsSync(customConfiguration)) {
-		const customConfig = JSON.parse(fs.readFileSync(customConfiguration, 'utf8'));
+	if (fs.existsSync(customConfigurationPath)) {
+		const customConfig = JSON.parse(fs.readFileSync(customConfigurationPath, 'utf8'));
 		validateConfigurationOptions(customConfig);
 		finalConfig = { ...originalConfig, ...customConfig };
 	}
