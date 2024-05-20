@@ -144,34 +144,29 @@ src
 
 ### Avaliable commands:
 
-#### Create new driven port:
-
-```md
-mag drivenp
-```
-
 #### Create new driving port:
 
 ```md
 mag drivingp
 ```
 
-#### Create new driven adapter:
+#### Create new driven port:
 
 ```md
-mag dvap
+mag drivenp
 ```
 
 **Options:**
 
-|ARGUMENT|DESCRIPTION|VALUE TYPE|
-|---|---|---|
-|`--port`|Name of the driven port to implements|`string`|
+|ARGUMENT|SHORT ARGUMENT|DESCRIPTION|VALUE TYPE|EXAMPLE|
+|---|---|---|---|---|
+|`--entity`|`-e`|Entity related to the driven port|`string`| File: `Animals/Dog.entity.ts`, Entity: `Animals/Dog` |
+
 
 #### Create new driving adapter:
 
 ```md
-mag dgap
+mag drivingap
 ```
 
 **Options:**
@@ -179,6 +174,18 @@ mag dgap
 |ARGUMENT|DESCRIPTION|VALUE TYPE|
 |---|---|---|
 |`--port`|Name of the driving port to implements|`string`|
+
+#### Create new driven adapter:
+
+```md
+mag drivenap
+```
+
+**Options:**
+
+|ARGUMENT|DESCRIPTION|VALUE TYPE|
+|---|---|---|
+|`--port`|Name of the driven port to implements|`string`|
 
 ---
 

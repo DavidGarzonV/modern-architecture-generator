@@ -8,6 +8,8 @@ import create from 'commands/create';
 import entity from 'commands/entity';
 import iadapter from 'commands/clean/iadapter';
 import adapter from 'commands/clean/adapter';
+import drivingp from 'commands/hexagonal/drivingp';
+import drivenp from 'commands/hexagonal/drivenp';
 
 dotenv.config();
 
@@ -34,6 +36,9 @@ program.addCommand(entity);
 // Clean
 program.addCommand(iadapter);
 program.addCommand(adapter);
+// Hexagonal
+program.addCommand(drivingp);
+program.addCommand(drivenp);
 
 console.log(
 	figlet.textSync('MAG CLI TOOL', {

@@ -1,0 +1,8 @@
+export interface PortNamePort {
+	create(): void
+	update(id: string): boolean
+	delete(id: string): boolean
+	softDelete(id: string): boolean
+	findOne(id: string): IEntity | null
+	findAll(): IEntity[]
+}

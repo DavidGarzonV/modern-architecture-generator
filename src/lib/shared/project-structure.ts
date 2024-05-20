@@ -97,7 +97,7 @@ export class ProjectStructure {
 	async askForCreateProjectFile(
 		baseFileName: string,
 		baseFolder: string,
-		fileType: 'adapter' | 'repository'
+		fileType: 'adapter' | 'repository' | 'port'
 	): Promise<string> {
 		const name = formatName(baseFileName);
 
