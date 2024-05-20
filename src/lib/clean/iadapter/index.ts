@@ -1,7 +1,12 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { CreateIAdapterOptions } from 'types/clean/iadapter';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
+
+type CreateIAdapterOptions = {
+	name: string
+	entity?: string
+	contextName?: string
+}
 
 export default class CreateIAdapter{
 	private _interfaceAdaptersFolder: string = '';

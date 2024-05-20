@@ -1,7 +1,6 @@
 import { pathExists, readFile, validatePath, writeFile } from './../../utils/file';
 import { exec } from 'child_process';
 import prompts from 'prompts';
-import { CreateProjectOptions } from 'types/create';
 import {
 	ARCHITECTURE_KEYWORDS,
 	EnabledArchitectures,
@@ -11,6 +10,15 @@ import {
 import { FolderItem, MagConfiguration } from 'constants/types';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { copyFile, createFolder, deleteFolder, readDirectory } from 'utils/file';
+
+type CreateProjectArguments = {
+	path?: string;
+};
+
+type CreateProjectOptions = CreateProjectArguments & {
+	name: string;
+	type: EnabledArchitectures;
+};
 
 export default class CreateProject {
 	private _ps: ProjectStructure;

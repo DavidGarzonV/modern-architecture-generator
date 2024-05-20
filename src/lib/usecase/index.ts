@@ -1,8 +1,14 @@
-import { CreateUseCaseOptions } from 'types/usecase';
 import { formatName, formatNameAttributes } from 'utils/string';
 import { getConfigVar } from 'utils/config';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
+
+type CreateUseCaseOptions = {
+	name: string;
+	useContext: boolean;
+	createTests: boolean;
+	contextName?: string;
+}
 
 export default class CreateUseCase{
 	private _useCasesFolder: string = '';

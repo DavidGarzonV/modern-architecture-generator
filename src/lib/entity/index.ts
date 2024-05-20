@@ -1,7 +1,19 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { CreateEntityOptions, Property } from 'types/entity';
 import { createFolder, pathExists, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
+
+type Property = {
+	name: string
+	type: string
+}
+
+type CreateEntityOptions = {
+	name: string
+	useContext: boolean
+	contextName?: string
+	useClass?: boolean
+	defaultProperties?: Property[]
+}
 
 export default class CreateEntity{
 	private _entitiesFolder: string = '';

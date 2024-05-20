@@ -1,9 +1,15 @@
 import path from 'path';
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { CreateAdapterOptions } from 'types/clean/adapter';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 import { readTypescriptFile } from 'utils/typescript';
+
+type CreateAdapterOptions = {
+	name: string
+	iadapter: string
+	entity?: string
+	contextName?: string
+}
 
 export default class CreateAdapter {
 	private _adaptersFolder: string = '';

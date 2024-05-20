@@ -1,7 +1,12 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { CreateDrivenPortOptions } from 'types/hexagonal/drivenp';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
+
+type CreateDrivenPortOptions = {
+	name: string
+	entity?: string
+	contextName?: string
+}
 
 export class CreateDrivenPort{
 	private _drivenPortsFolder: string = '';

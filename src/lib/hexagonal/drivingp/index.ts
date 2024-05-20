@@ -1,7 +1,11 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { CreateDrivingPortOptions } from 'types/hexagonal/drivingp';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
+
+type CreateDrivingPortOptions = {
+	name: string
+	contextName?: string
+}
 
 export class CreateDrivingPort{
 	private _drivingPortsFolder: string = '';
