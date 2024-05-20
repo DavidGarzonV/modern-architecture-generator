@@ -163,32 +163,6 @@ mag drivenp
 |`--entity`|`-e`|Entity related to the driven port|`string`| File: `Animals/Dog.entity.ts`, Entity: `Animals/Dog` |
 
 
-#### Create new driving adapter:
-
-```md
-mag drivingap
-```
-
-**Options:**
-
-|ARGUMENT|DESCRIPTION|VALUE TYPE|
-|---|---|---|
-|`--port`|Name of the driving port to implements|`string`|
-
-#### Create new driven adapter:
-
-```md
-mag drivenap
-```
-
-**Options:**
-
-|ARGUMENT|DESCRIPTION|VALUE TYPE|
-|---|---|---|
-|`--port`|Name of the driven port to implements|`string`|
-
----
-
 ## Custom Configuration
 
 You can modify or create a file called `mag.config.json` to set custom configurations for the project with mag.

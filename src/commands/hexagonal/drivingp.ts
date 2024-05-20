@@ -37,7 +37,7 @@ export default program
 			await adapter.run({ name, contextName: context });
 		} catch (error) {
 			throw new Error(
-				`Error creating driven port, ${(error as Error).message}`
+				`Error creating driving port, ${(error as Error).message}`
 			);
 		}
 	});
