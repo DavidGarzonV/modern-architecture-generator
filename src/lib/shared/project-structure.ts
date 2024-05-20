@@ -97,17 +97,23 @@ export class ProjectStructure {
 	async askForCreateProjectFile(
 		baseFileName: string,
 		baseFolder: string,
-		fileType: 'adapter' | 'repository' | 'port'
+		fileType: 'adapter' | 'repository' | 'port' | 'usecase' | 'entity'
 	): Promise<string> {
 		const name = formatName(baseFileName);
 
 		let adapterName = name;
+		let pathToValidate  = baseFolder;
+		if (fileType === 'usecase' || fileType === 'entity') {
+			pathToValidate = `${baseFolder}/${name}`;
+		}
 
-		if (pathExists(`${baseFolder}/${name}.${fileType}.ts`)) {
+		if (pathExists(`${pathToValidate}/${name}.${fileType}.ts`)) {
 			const itemTypes: Record<typeof fileType, string> = {
 				adapter: 'adapter',
 				repository: 'interface adapter',
-				port: 'port'
+				port: 'port',
+				usecase: 'use case',
+				entity: 'entity',
 			};
 
 			const { overwrite, newName } = await prompts([

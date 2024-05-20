@@ -1,11 +1,10 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
-import prompts from 'prompts';
 import { CreateEntityOptions, Property } from 'types/entity';
 import { createFolder, pathExists, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 
 export default class CreateEntity{
-	private entitiesFolder: string = '';
+	private _entitiesFolder: string = '';
 	private _ps: ProjectStructure;
 
 	constructor(){
@@ -14,7 +13,7 @@ export default class CreateEntity{
 
 	private setEntitiesFolder(): void {
 		const defaultEntitiesFolder = this._ps.findFolderPathByName('entities');
-		this.entitiesFolder = defaultEntitiesFolder;
+		this._entitiesFolder = defaultEntitiesFolder;
 	}
 
 	private getFileContent(name: string, defaultProperties?: Property[]){
@@ -33,42 +32,11 @@ export default class CreateEntity{
 		return content;
 	}
 
-	private async createFile(
-		name: string,
-		path: string,
-		defaultProperties?: Property[]
-	): Promise<void> {
-		try {
-			let entityName = name;
-			let content = '';
-
-			if (pathExists(`${path}/${entityName}/${entityName}.entity.ts`)) {
-				const { overwrite, newName } = await prompts([
-					{
-						type: 'confirm',
-						name: 'overwrite',
-						message: `The entity ${name} already exists. Do you want to overwrite it?`,
-						initial: false,
-					},
-					{
-						type: (prev) => (!prev ? 'text' : null),
-						name: 'newName',
-						message: 'Enter a new name for the entity:',
-					},
-				]);
-
-				if (!overwrite) {
-					entityName = formatName(newName);
-				}
-			}
-
-			content = this.getFileContent(entityName, defaultProperties);
-
-			createFolder(`${path}/${entityName}`);
-			writeFile(`${path}/${entityName}/${entityName}.entity.ts`, content);
-		} catch (error) {
-			throw new Error('Could not create entity file');
-		}
+	private async createFile(name: string,defaultProperties?: Property[]): Promise<void> {
+		const entityName = await this._ps.askForCreateProjectFile(name, this._entitiesFolder, 'entity');
+		const content = this.getFileContent(entityName, defaultProperties);
+		createFolder(`${this._entitiesFolder}/${entityName}`);
+		writeFile(`${this._entitiesFolder}/${entityName}/${entityName}.entity.ts`, content);
 	}
 
 	async run(options: CreateEntityOptions) {
@@ -80,21 +48,18 @@ export default class CreateEntity{
 		if (options.useContext && options.contextName) {
 			const pascalCaseContextName = formatName(options.contextName);
 			const contextPath = this._ps.createContextFolder(
-				this.entitiesFolder,
+				this._entitiesFolder,
 				pascalCaseContextName
 			);
 
-			if (pathExists(this.entitiesFolder)) {
+			if (pathExists(this._entitiesFolder)) {
 				createFolder(pascalCaseContextName);
 			}
 
-			this.entitiesFolder = contextPath;
+			this._entitiesFolder = contextPath;
 		}
 
-		const entitiesPath = `${this.entitiesFolder}`;
-		createFolder(entitiesPath);
-
-		await this.createFile(pascalCaseName, entitiesPath, options.defaultProperties);
+		await this.createFile(pascalCaseName, options.defaultProperties);
 		console.info('Entity created!');
 	}
 }

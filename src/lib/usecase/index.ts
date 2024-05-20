@@ -3,10 +3,9 @@ import { formatName, formatNameAttributes } from 'utils/string';
 import { getProjectConfiguration } from 'utils/config';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
-import prompts from 'prompts';
 
 export default class CreateUseCase{
-	private useCasesFolder: string = '';
+	private _useCasesFolder: string = '';
 	private _ps: ProjectStructure;
 
 	constructor(){
@@ -16,48 +15,26 @@ export default class CreateUseCase{
 	private setUseCasesFolder(): void {
 		const { useCasesFolder } = getProjectConfiguration();
 		if (useCasesFolder) {
-			this.useCasesFolder = useCasesFolder;
+			this._useCasesFolder = useCasesFolder;
 		}else{
 			const defaultUseCasesFolder = this._ps.findFolderPathByName('use-cases');
-			this.useCasesFolder = defaultUseCasesFolder;
+			this._useCasesFolder = defaultUseCasesFolder;
 		}
 	}
 
-	private async createClass(name: string, path: string): Promise<void> {
+	private async createClass(name: string): Promise<void> {
 		const projectPath = process.cwd();
 		const useCaseTemplate = readFile(`${projectPath}/src/templates/use-cases/index.txt`);
 
-		try {
-			let useCaseName = name;
-			if (pathExists(`${path}/${name}/${name}.usecase.ts`)) {
-				const { overwrite, newName } = await prompts([
-					{
-						type: 'confirm',
-						name: 'overwrite',
-						message: `The use case ${name} already exists. Do you want to overwrite it?`,
-						initial: false,
-					},
-					{
-						type: (prev) => (!prev ? 'text' : null),
-						name: 'newName',
-						message: 'What is the new name?',
-					},
-				]);
+		const useCaseName = await this._ps.askForCreateProjectFile(name, this._useCasesFolder, 'usecase');
+		createFolder(this._useCasesFolder);
 
-				if (!overwrite) {
-					useCaseName = formatName(newName);
-				}
-			}
-
-			const content = useCaseTemplate.replace(/UseCaseName/g, useCaseName);
-			createFolder(`${path}/${useCaseName}`);
-			writeFile(`${path}/${useCaseName}/${useCaseName}.usecase.ts`, content);
-		} catch (error) {
-			throw new Error('Could not create class');
-		}
+		const content = useCaseTemplate.replace(/UseCaseName/g, useCaseName);
+		createFolder(`${this._useCasesFolder}/${useCaseName}`);
+		writeFile(`${this._useCasesFolder}/${useCaseName}/${useCaseName}.usecase.ts`, content);
 	}
 
-	private createTestsFile(name: string, path: string): void {
+	private createTestsFile(name: string): void {
 		const projectPath = process.cwd();
 		const useCaseTemplate = readFile(`${projectPath}/src/templates/use-cases/test.txt`);
 
@@ -65,7 +42,7 @@ export default class CreateUseCase{
 		content = content.replace(/useCase/g, formatNameAttributes(name));
 
 		try {
-			writeFile(`${path}/${name}.spec.ts`, content);
+			writeFile(`${this._useCasesFolder}/${name}.spec.ts`, content);
 		} catch (error) {
 			throw new Error('Could not create tests file');
 		}
@@ -79,23 +56,21 @@ export default class CreateUseCase{
 
 		if (options.useContext && options.contextName) {
 			const pascalCaseContextName = formatName(options.contextName);
-			const contextPath = this._ps.createContextFolder(this.useCasesFolder, pascalCaseContextName);
+			const contextPath = this._ps.createContextFolder(this._useCasesFolder, pascalCaseContextName);
 
-			if (pathExists(this.useCasesFolder)) {
+			if (pathExists(this._useCasesFolder)) {
 				createFolder(pascalCaseContextName);
 			}
 
-			this.useCasesFolder = contextPath;
+			this._useCasesFolder = contextPath;
 		}
 
-		const useCasePath = `${this.useCasesFolder}`;
-		createFolder(useCasePath);
-
-		await this.createClass(pascalCaseName, useCasePath);
+		await this.createClass(pascalCaseName);
 
 		if (options.createTests) {
-			this.createTestsFile(pascalCaseName, useCasePath);
+			this.createTestsFile(pascalCaseName);
 		}
+
 		console.info('Use case created!');
 	}
 }
