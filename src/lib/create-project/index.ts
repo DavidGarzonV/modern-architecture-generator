@@ -11,12 +11,9 @@ import { FolderItem, MagConfiguration } from 'constants/types';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { copyFile, createFolder, deleteFolder, readDirectory } from 'utils/file';
 
-type CreateProjectArguments = {
-	path?: string;
-};
-
-type CreateProjectOptions = CreateProjectArguments & {
+type CreateProjectOptions = {
 	name: string;
+	path?: string;
 	type: EnabledArchitectures;
 };
 

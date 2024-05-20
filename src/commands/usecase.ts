@@ -2,6 +2,8 @@ import { program } from 'commander';
 import prompts from 'prompts';
 import { ContextsManager } from 'lib/shared/contexts-manager';
 import CreateUseCase from 'lib/usecase';
+import validateDTO from 'validators/validate';
+import { UseCaseDTO } from 'validators/usecase.dto';
 
 const questions: prompts.PromptObject[] = [
 	{
@@ -17,6 +19,8 @@ export default program
 	.option('-t, --tests', 'Create tests file')
 	.action(async (options) => {
 		const { name, useContext } = await prompts(questions);
+
+		await validateDTO({ name, ...options }, UseCaseDTO);
 
 		const contextsManager = new ContextsManager();
 		const context = await contextsManager.getContextName('use-cases');

@@ -4,7 +4,13 @@ import { exec } from 'child_process';
 
 import { EnabledArchitectures } from 'constants/constants';
 import CreateProject from 'lib/create-project';
-import { CreateProjectArguments } from 'types/create';
+import validateDTO from 'validators/validate';
+import { ValidatePathDTO } from 'validators/shared/path.dto';
+import { ValidateNameDTO } from 'validators/shared/name.dto';
+
+type CreateProjectArguments = {
+	path?: string;
+};
 
 const questions: prompts.PromptObject[] = [
 	{
@@ -25,8 +31,12 @@ export default program
 	.argument('<string>', 'Name of the project')
 	.option('-p, --path <string>', 'Path to create the project')
 	.action(async (name: string, options: CreateProjectArguments) => {
+		await validateDTO(options, ValidatePathDTO);
+
 		const response = await prompts(questions);
 		const createProject = new CreateProject();
+
+		await validateDTO({ name }, ValidateNameDTO);
 
 		try {
 			const projectPath = await createProject.run({

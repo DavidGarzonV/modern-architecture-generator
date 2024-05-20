@@ -2,7 +2,7 @@ import { ProjectStructure } from 'lib/shared/project-structure';
 import { createFolder, pathExists, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 
-type Property = {
+export type Property = {
 	name: string
 	type: string
 }

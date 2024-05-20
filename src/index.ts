@@ -49,3 +49,11 @@ console.log(
 );
 
 program.parse();
+
+function handleError(error: Error | unknown){
+	console.error('\n\nApplication error: ', (error as Error).message);
+	process.exit(1);
+}
+
+process.on('unhandledRejection', handleError);
+process.on('uncaughtException', handleError);

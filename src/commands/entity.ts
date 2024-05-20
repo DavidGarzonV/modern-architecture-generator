@@ -1,8 +1,9 @@
 import { program } from 'commander';
 import prompts from 'prompts';
-import CreateEntity from 'lib/entity';
+import CreateEntity, { Property } from 'lib/entity';
 import { ContextsManager } from 'lib/shared/contexts-manager';
-import { Property } from 'types/entity';
+import { ValidateNameDTO } from 'validators/shared/name.dto';
+import validateDTO from 'validators/validate';
 
 const getEntityProperties = async (addDefaultProperties: boolean): Promise<Property[]> => {
 	const propertiesQuestions: prompts.PromptObject[] = [
@@ -57,6 +58,8 @@ export default program
 	.description('Creates a new entity')
 	.action(async () => {
 		const { name, useContext } = await prompts(questions);
+
+		await validateDTO({ name }, ValidateNameDTO);
 
 		const contextsManager = new ContextsManager();
 		const context = await contextsManager.getContextName('entities');
