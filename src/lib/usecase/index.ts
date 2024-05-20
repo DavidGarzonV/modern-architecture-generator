@@ -5,11 +5,12 @@ import { ProjectStructure } from 'lib/shared/project-structure';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 import prompts from 'prompts';
 
-export default class CreateUseCase extends ProjectStructure{
+export default class CreateUseCase{
 	private useCasesFolder: string = '';
-	
+	private _ps: ProjectStructure;
+
 	constructor(){
-		super();
+		this._ps = new ProjectStructure();
 	}
 
 	private setUseCasesFolder(): void {
@@ -17,7 +18,7 @@ export default class CreateUseCase extends ProjectStructure{
 		if (useCasesFolder) {
 			this.useCasesFolder = useCasesFolder;
 		}else{
-			const defaultUseCasesFolder = this.findFolderPathByName('use-cases');
+			const defaultUseCasesFolder = this._ps.findFolderPathByName('use-cases');
 			this.useCasesFolder = defaultUseCasesFolder;
 		}
 	}
@@ -70,7 +71,6 @@ export default class CreateUseCase extends ProjectStructure{
 		}
 	}
 
-	// TODO - Check if add request and response files
 	async run(options: CreateUseCaseOptions): Promise<void>{
 		console.info('Creating use case...');
 		this.setUseCasesFolder();
@@ -79,7 +79,7 @@ export default class CreateUseCase extends ProjectStructure{
 
 		if (options.useContext && options.contextName) {
 			const pascalCaseContextName = formatName(options.contextName);
-			const contextPath = this.createContextFolder(this.useCasesFolder, pascalCaseContextName);
+			const contextPath = this._ps.createContextFolder(this.useCasesFolder, pascalCaseContextName);
 
 			if (pathExists(this.useCasesFolder)) {
 				createFolder(pascalCaseContextName);

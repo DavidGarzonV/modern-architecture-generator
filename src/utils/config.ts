@@ -1,6 +1,6 @@
+import fs from 'fs';
 import { enabledConfigurationKeys } from 'constants/constants';
 import { ConfigurationOptions, MagConfiguration } from 'constants/types';
-import fs from 'fs';
 
 // TODO - Validate values and types
 const validateConfigurationOptions = (config: object): void => {

@@ -5,8 +5,13 @@ import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 import { readTypescriptFile } from 'utils/typescript';
 
-export default class CreateAdapter extends ProjectStructure {
+export default class CreateAdapter {
 	private _adaptersFolder: string = '';
+	private _ps: ProjectStructure;
+
+	constructor(){
+		this._ps = new ProjectStructure();
+	}
 
 	private getImportPath(origin: string, destination: string): string {
 		const finalPath = path.relative(origin, destination).replace(/\\/g, '/');
@@ -21,7 +26,7 @@ export default class CreateAdapter extends ProjectStructure {
 		let adapterMethodsTemplate = readFile(`${projectPath}/src/templates/adapters/adapter.txt`);
 
 		const repositoryName = `${interfaceAdapterName}.repository.ts`;
-		const interfaceAdaptersFolder = this.findFolderPathByName('interface-adapters');
+		const interfaceAdaptersFolder = this._ps.findFolderPathByName('interface-adapters');
 		const repositoryFile = await readTypescriptFile(
 			`${interfaceAdaptersFolder}/${repositoryName}`
 		);
@@ -40,7 +45,7 @@ export default class CreateAdapter extends ProjectStructure {
 	}
 
 	private async createAdapter(options: CreateAdapterOptions): Promise<void> {
-		const adapterName = await this.askForCreateProjectFile(options.name, this._adaptersFolder, 'adapter');
+		const adapterName = await this._ps.askForCreateProjectFile(options.name, this._adaptersFolder, 'adapter');
 		const content = await this.getContent(adapterName, options.iadapter);
 		createFolder(this._adaptersFolder);
 		writeFile(`${this._adaptersFolder}/${adapterName}.adapter.ts`, content);
@@ -49,7 +54,7 @@ export default class CreateAdapter extends ProjectStructure {
 	async run(options: CreateAdapterOptions): Promise<void> {
 		console.info(`Creating adapter ${options.name}...`);
 
-		this._adaptersFolder = this.findFolderPathByName('adapters');
+		this._adaptersFolder = this._ps.findFolderPathByName('adapters');
 		if (!pathExists(this._adaptersFolder)) {
 			throw new Error('Adapters folder not found');
 		}

@@ -3,14 +3,19 @@ import { CreateIAdapterOptions } from 'types/clean/iadapter';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 
-export default class CreateIAdapter extends ProjectStructure{
+export default class CreateIAdapter{
 	private _interfaceAdaptersFolder: string = '';
+	private _ps: ProjectStructure;
+
+	constructor(){
+		this._ps = new ProjectStructure();
+	}
 
 	private getContent(name: string, entityPath?: string){
 		const projectPath = process.cwd();
 		let adapterTemplate = readFile(`${projectPath}/src/templates/adapters/iadapter.txt`);
 
-		const entitiesFolder = this.findFolderPathByName('entities');
+		const entitiesFolder = this._ps.findFolderPathByName('entities');
 		const finalEntityPath = `${entitiesFolder}/${entityPath}/${entityPath}.entity.ts`;
 
 		if (entityPath) {
@@ -28,7 +33,7 @@ export default class CreateIAdapter extends ProjectStructure{
 	}
 
 	private async createAdapter(options: CreateIAdapterOptions): Promise<void> {
-		const adapterName = await this.askForCreateProjectFile(options.name, this._interfaceAdaptersFolder, 'repository');
+		const adapterName = await this._ps.askForCreateProjectFile(options.name, this._interfaceAdaptersFolder, 'repository');
 		const content = this.getContent(adapterName, options.entity);
 		createFolder(this._interfaceAdaptersFolder);
 		writeFile(`${this._interfaceAdaptersFolder}/${adapterName}.repository.ts`, content);
@@ -37,7 +42,7 @@ export default class CreateIAdapter extends ProjectStructure{
 	async run(options: CreateIAdapterOptions): Promise<void>{
 		console.info(`Creating interface adapter ${options.name}...`);
 
-		this._interfaceAdaptersFolder = this.findFolderPathByName('interface-adapters');
+		this._interfaceAdaptersFolder = this._ps.findFolderPathByName('interface-adapters');
 		if (!pathExists(this._interfaceAdaptersFolder)) {
 			throw new Error('Interface adapters folder not found');
 		}

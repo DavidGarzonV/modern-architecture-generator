@@ -12,9 +12,11 @@ import { FolderItem, MagConfiguration } from 'constants/types';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { copyFile, createFolder, deleteFolder, readDirectory } from 'utils/file';
 
-export default class CreateProject extends ProjectStructure {
+export default class CreateProject {
+	private _ps: ProjectStructure;
+
 	constructor(){
-		super();
+		this._ps = new ProjectStructure();
 	}
 
 	private async createDirectory(path: string): Promise<void> {
@@ -68,7 +70,7 @@ export default class CreateProject extends ProjectStructure {
 
 	private createParentFolder(item: FolderItem, srcPath: string): string {
 		if (item.parent) {
-			const findParent = this.projectStructure.find((folder) => folder.name === item.parent);
+			const findParent = this._ps.projectStructure.find((folder) => folder.name === item.parent);
 			const parentPath = this.createParentFolder(findParent!, srcPath);
 			return createFolder(`${parentPath}/${item.name}`);
 		}else{
@@ -80,7 +82,7 @@ export default class CreateProject extends ProjectStructure {
 		const srcPath = `${newFolderPath}/src`;
 		createFolder(srcPath);
 
-		for (const item of this.projectStructure) {
+		for (const item of this._ps.projectStructure) {
 			this.createParentFolder(item, srcPath);
 		}
 	}

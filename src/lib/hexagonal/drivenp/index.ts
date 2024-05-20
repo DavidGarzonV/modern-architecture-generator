@@ -3,14 +3,19 @@ import { CreateDrivenPortOptions } from 'types/hexagonal/drivenp';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 
-export class CreateDrivenPort extends ProjectStructure{
+export class CreateDrivenPort{
 	private _drivenPortsFolder: string = '';
+	private _ps: ProjectStructure;
+
+	constructor(){
+		this._ps = new ProjectStructure();
+	}
 
 	private getContent(name: string, entityPath?: string){
 		const projectPath = process.cwd();
 		let adapterTemplate = readFile(`${projectPath}/src/templates/ports/driven-port.txt`);
 		
-		const entitiesFolder = this.findFolderPathByName('entities');
+		const entitiesFolder = this._ps.findFolderPathByName('entities');
 		const finalEntityPath = `${entitiesFolder}/${entityPath}/${entityPath}.entity.ts`;
 
 		if (entityPath) {
@@ -28,7 +33,7 @@ export class CreateDrivenPort extends ProjectStructure{
 	}
 
 	private async createDrivenPort(options: CreateDrivenPortOptions): Promise<void> {
-		const portName = await this.askForCreateProjectFile(options.name, this._drivenPortsFolder, 'port');
+		const portName = await this._ps.askForCreateProjectFile(options.name, this._drivenPortsFolder, 'port');
 		const content = this.getContent(portName, options.entity);
 
 		createFolder(this._drivenPortsFolder);
@@ -38,7 +43,7 @@ export class CreateDrivenPort extends ProjectStructure{
 	async run(options: CreateDrivenPortOptions): Promise<void> {
 		console.info('Creating driven port...');
 		
-		this._drivenPortsFolder = this.findFolderPathByName('driven-ports');
+		this._drivenPortsFolder = this._ps.findFolderPathByName('driven-ports');
 		if (!pathExists(this._drivenPortsFolder)) {
 			throw new Error('Driven ports folder not found');
 		}

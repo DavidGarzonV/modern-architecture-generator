@@ -4,15 +4,16 @@ import { CreateEntityOptions, Property } from 'types/entity';
 import { createFolder, pathExists, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 
-export default class CreateEntity extends ProjectStructure {
+export default class CreateEntity{
 	private entitiesFolder: string = '';
+	private _ps: ProjectStructure;
 
-	constructor() {
-		super();
+	constructor(){
+		this._ps = new ProjectStructure();
 	}
 
 	private setEntitiesFolder(): void {
-		const defaultEntitiesFolder = this.findFolderPathByName('entities');
+		const defaultEntitiesFolder = this._ps.findFolderPathByName('entities');
 		this.entitiesFolder = defaultEntitiesFolder;
 	}
 
@@ -78,7 +79,7 @@ export default class CreateEntity extends ProjectStructure {
 
 		if (options.useContext && options.contextName) {
 			const pascalCaseContextName = formatName(options.contextName);
-			const contextPath = this.createContextFolder(
+			const contextPath = this._ps.createContextFolder(
 				this.entitiesFolder,
 				pascalCaseContextName
 			);

@@ -3,8 +3,13 @@ import { CreateDrivingPortOptions } from 'types/hexagonal/drivingp';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 
-export class CreateDrivingPort extends ProjectStructure{
+export class CreateDrivingPort{
 	private _drivingPortsFolder: string = '';
+	private _ps: ProjectStructure;
+
+	constructor(){
+		this._ps = new ProjectStructure();
+	}
 
 	private getContent(name: string){
 		const projectPath = process.cwd();
@@ -13,7 +18,7 @@ export class CreateDrivingPort extends ProjectStructure{
 	}
 
 	private async createDrivingPort(options: CreateDrivingPortOptions): Promise<void> {
-		const portName = await this.askForCreateProjectFile(options.name, this._drivingPortsFolder, 'port');
+		const portName = await this._ps.askForCreateProjectFile(options.name, this._drivingPortsFolder, 'port');
 		const content = this.getContent(portName);
 
 		createFolder(this._drivingPortsFolder);
@@ -23,7 +28,7 @@ export class CreateDrivingPort extends ProjectStructure{
 	async run(options: CreateDrivingPortOptions): Promise<void> {
 		console.info('Creating driving port...');
 		
-		this._drivingPortsFolder = this.findFolderPathByName('driving-ports');
+		this._drivingPortsFolder = this._ps.findFolderPathByName('driving-ports');
 		if (!pathExists(this._drivingPortsFolder)) {
 			throw new Error('Driving ports folder not found');
 		}
