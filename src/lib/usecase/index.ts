@@ -1,6 +1,6 @@
 import { CreateUseCaseOptions } from 'types/usecase';
 import { formatName, formatNameAttributes } from 'utils/string';
-import { getProjectConfiguration } from 'utils/config';
+import { getConfigVar } from 'utils/config';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 
@@ -13,7 +13,7 @@ export default class CreateUseCase{
 	}
 
 	private setUseCasesFolder(): void {
-		const { useCasesFolder } = getProjectConfiguration();
+		const useCasesFolder = getConfigVar('useCasesFolder') as string | undefined;
 		if (useCasesFolder) {
 			this._useCasesFolder = useCasesFolder;
 		}else{

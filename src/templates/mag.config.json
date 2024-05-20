@@ -1,5 +1,6 @@
 {
 	"architecture": "clean",
 	"usePascalCase": true,
-	"useCamelCase": true
+	"useCamelCase": true,
+	"filesEOL": "LF"
 }

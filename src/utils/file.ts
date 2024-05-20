@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { getConfigVar } from 'utils/config';
 
 export const createFolder = (path: string): string => {
 	if (!fs.existsSync(path)) {
@@ -34,6 +35,10 @@ export const readFile = (path: string, encoding: BufferEncoding = 'utf-8'): stri
 };
 
 export const writeFile = (path: string, data: string, encoding: BufferEncoding = 'utf-8'): void => {
+	const filesEol = getConfigVar('filesEOL');
+	if (filesEol === 'CRLF') {
+		data = data.replace(/\n/g, '\r\n');
+	}
 	fs.writeFileSync(path, data, encoding);
 };
 

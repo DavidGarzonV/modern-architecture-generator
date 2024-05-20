@@ -1,5 +1,5 @@
 import { EnabledArchitectures } from 'constants/constants';
-import { getProjectConfiguration } from 'utils/config';
+import { getConfigVar } from 'utils/config';
 
 export class ArchitectureManager {
 	private _architecture: EnabledArchitectures = EnabledArchitectures.Clean;
@@ -9,8 +9,7 @@ export class ArchitectureManager {
 	}
 
 	constructor(){
-		const config = getProjectConfiguration();
-		this._architecture = config.architecture;
+		this._architecture = getConfigVar('architecture') as EnabledArchitectures;
 	}
 
 	/**

@@ -1,4 +1,4 @@
-import { getProjectConfiguration } from 'utils/config';
+import { getConfigVar } from 'utils/config';
 
 export const convertToPascalCase = (str: string): string => {
 	if (str.includes('_')) {
@@ -55,10 +55,10 @@ export const convertToCamelCase = (str: string): string => {
 };
 
 export const formatName = (str: string): string => {
-	const config = getProjectConfiguration();
+	const usePascalCase = getConfigVar('usePascalCase');
 	str = str.replace(/[^a-zA-Z0-9 ]/g, '');
 
-	if (config.usePascalCase) {
+	if (usePascalCase) {
 		str = convertToPascalCase(str);
 	}
 
@@ -66,10 +66,10 @@ export const formatName = (str: string): string => {
 };
 
 export const formatNameAttributes = (str: string): string => {
-	const config = getProjectConfiguration();
+	const useCamelCase = getConfigVar('useCamelCase');
 	let finalStr = str.replace(/[^a-zA-Z0-9 ]/g, '');
 
-	if (config.useCamelCase) {
+	if (useCamelCase) {
 		finalStr = convertToCamelCase(finalStr);
 	}else{
 		finalStr = convertToSnakeCase(finalStr);

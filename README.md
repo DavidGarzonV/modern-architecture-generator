@@ -173,6 +173,7 @@ You can modify or create a file called `mag.config.json` to set custom configura
 |`useCasesFolder`|Set a custom use cases folder|`string`| "" | According to architecture |
 |`usePascalCase`|Define if use pascal case for class names|`boolean`| `true`, `false` | true |
 |`useCamelCase`|Use camel case for name class attributes and variables otherwise snake case|`boolean`| `true`, `false` | true |
+|`filesEOL`|End of line prefered for new files created|`string`| `LF`, `CRLF` | `LF` |
 
 ---
 

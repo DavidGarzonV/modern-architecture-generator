@@ -5,6 +5,7 @@ export type MagConfiguration = {
 	usePascalCase?: boolean | undefined
 	useCamelCase?: boolean | undefined
 	useCasesFolder?: string | undefined
+	filesEOL?: 'LF' | 'CRLF'
 }
 
 export type ConfigurationOptions = keyof MagConfiguration;

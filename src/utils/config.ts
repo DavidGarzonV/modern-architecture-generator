@@ -38,3 +38,8 @@ export const getProjectConfiguration = (): MagConfiguration => {
 
 	return finalConfig;
 };
+
+export const getConfigVar = (key: ConfigurationOptions): MagConfiguration[typeof key] => {
+	const configuration = getProjectConfiguration();
+	return configuration[key];
+};

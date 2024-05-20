@@ -16,5 +16,7 @@ export const README_PUBLIC_PATH = `${README_PATH}/public`;
 export const enabledConfigurationKeys: ConfigurationOptions[] = [
 	'architecture',
 	'useCasesFolder',
-	'usePascalCase'
+	'usePascalCase',
+	'useCamelCase',
+	'filesEOL',
 ];
