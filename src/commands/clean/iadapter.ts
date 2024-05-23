@@ -1,12 +1,10 @@
-import { program } from 'commander';
-import prompts from 'prompts';
-
+import { PromptObject } from 'prompts';
 import { EnabledArchitectures } from 'constants/constants';
-import { ArchitectureManager } from 'lib/shared/architecture-manager';
 import CreateIAdapter from 'lib/clean/iadapter';
 import { ContextsManager } from 'lib/shared/contexts-manager';
+import { CommandOption, createCustomCommand } from 'utils/command';
 
-const questions: prompts.PromptObject[] = [
+const questions: PromptObject[] = [
 	{
 		type: 'text',
 		name: 'name',
@@ -14,31 +12,38 @@ const questions: prompts.PromptObject[] = [
 	}
 ];
 
-export default program
-	.createCommand('iadapter')
-	.option('-e, --entity <entity>','Name of the entity related to the interface adapter')
-	.hook('preAction', () => {
-		const result = new ArchitectureManager().validateProjectArchitecture(
-			EnabledArchitectures.Clean
-		);
-		if (!result) {
-			throw new Error(
-				'Invalid project architecture. This command is only available for Clean Architecture projects.'
-			);
-		}
-	})
-	.description('Creates a new interface adapter')
-	.action(async (options) => {
-		const { name } = await prompts(questions);
+const options: CommandOption[] = [{
+	command: '-e, --entity <entity>',
+	description: 'Name of the entity related to the interface adapter'
+}];
+
+type CommandQuestions = {
+	name: string;
+};
+
+type CommandOptions = {
+	entity?: string;
+}
+
+export default createCustomCommand<CommandQuestions, CommandOptions>(
+	'iadapter',
+	'Creates a new interface adapter',
+	async ({ name, entity }) => {
 		const contextsManager = new ContextsManager();
 		const context = await contextsManager.getContextName('interface-adapters');
 
 		try {
 			const adapter = new CreateIAdapter();
-			await adapter.run({ name, entity: options.entity, contextName: context });
+			await adapter.run({ name, entity, contextName: context });
 		} catch (error) {
 			throw new Error(
 				`Error creating interface adapter, ${(error as Error).message}`
 			);
 		}
-	});
+	},
+	{
+		questions,
+		options,
+		architecture: EnabledArchitectures.Clean,
+	}
+);

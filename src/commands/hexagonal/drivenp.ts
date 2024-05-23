@@ -1,15 +1,13 @@
-import { program } from 'commander';
-import prompts from 'prompts';
-
+import { PromptObject } from 'prompts';
 import { EnabledArchitectures } from 'constants/constants';
-import { ArchitectureManager } from 'lib/shared/architecture-manager';
 import { ContextsManager } from 'lib/shared/contexts-manager';
 import { CreateDrivenPort } from 'lib/hexagonal/drivenp';
 import validateDTO from 'validators/validate';
 import { ValidateEntityDTO } from 'validators/shared/entity.dto';
 import { ValidateNameDTO } from 'validators/shared/name.dto';
+import { CommandOption, createCustomCommand } from 'utils/command';
 
-const questions: prompts.PromptObject[] = [
+const questions: PromptObject[] = [
 	{
 		type: 'text',
 		name: 'name',
@@ -17,24 +15,24 @@ const questions: prompts.PromptObject[] = [
 	}
 ];
 
-export default program
-	.createCommand('drivenp')
-	.option('-e, --entity <entity>','Name of the entity related to the driven port')
-	.hook('preAction', () => {
-		const result = new ArchitectureManager().validateProjectArchitecture(
-			EnabledArchitectures.Hexagonal
-		);
-		if (!result) {
-			throw new Error(
-				'Invalid project architecture. This command is only available for hexagonal architecture projects'
-			);
-		}
-	})
-	.description('Creates a new driven port')
-	.action(async (options) => {
-		await validateDTO(options, ValidateEntityDTO);
+const options: CommandOption[] = [{
+	command: '-e, --entity <entity>',
+	description: 'Name of the entity related to the driven port'
+}];
 
-		const { name } = await prompts(questions);
+type CommandQuestions = {
+	name: string;
+};
+
+type CommandOptions = {
+	entity?: string;
+}
+
+export default createCustomCommand<CommandQuestions, CommandOptions>(
+	'drivenp',
+	'Creates a new driven port',
+	async ({ name , entity }) => {
+		await validateDTO({ entity }, ValidateEntityDTO);
 		await validateDTO({ name }, ValidateNameDTO);
 
 		const contextsManager = new ContextsManager();
@@ -42,10 +40,16 @@ export default program
 
 		try {
 			const adapter = new CreateDrivenPort();
-			await adapter.run({ name, entity: options.entity, contextName: context });
+			await adapter.run({ name, entity, contextName: context });
 		} catch (error) {
 			throw new Error(
 				`Error creating driven port, ${(error as Error).message}`
 			);
 		}
-	});
+	},
+	{
+		questions,
+		options,
+		architecture: EnabledArchitectures.Hexagonal,
+	}
+);

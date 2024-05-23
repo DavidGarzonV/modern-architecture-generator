@@ -1,39 +1,57 @@
-import { program } from 'commander';
-import prompts from 'prompts';
-import { exec } from 'child_process';
-
+import prompts, { PromptObject } from 'prompts';
 import { EnabledArchitectures } from 'constants/constants';
 import CreateProject from 'lib/create-project';
 import validateDTO from 'validators/validate';
 import { ValidatePathDTO } from 'validators/shared/path.dto';
 import { ValidateNameDTO } from 'validators/shared/name.dto';
+import { CommandArgument, CommandOption, createCustomCommand } from 'utils/command';
+import { openDirectory } from 'utils/file';
 
-type CreateProjectArguments = {
-	path?: string;
-};
-
-const questions: prompts.PromptObject[] = [
+const questions: PromptObject[] = [
 	{
 		type: 'select',
 		name: 'type',
 		message: 'Pick one architecture',
 		choices: [
 			{ title: 'Clean Architecture', value: EnabledArchitectures.Clean },
-			{ title: 'Hexagonal Architecture', value: EnabledArchitectures.Hexagonal }
+			{
+				title: 'Hexagonal Architecture',
+				value: EnabledArchitectures.Hexagonal,
+			},
 		],
 		initial: 0,
+	},
+];
+
+const options: CommandOption[] = [
+	{
+		command: '-p, --path <string>',
+		description: 'Path to create the project',
+	},
+];
+
+const commandArguments: CommandArgument[] = [
+	{
+		type: 'string',
+		description: 'Name of the project'
 	}
 ];
 
-export default program
-	.createCommand('create')
-	.description('Creates a new project')
-	.argument('<string>', 'Name of the project')
-	.option('-p, --path <string>', 'Path to create the project')
-	.action(async (name: string, options: CreateProjectArguments) => {
-		await validateDTO(options, ValidatePathDTO);
+type CommandOptions = {
+	path: string;
+};
 
-		const response = await prompts(questions);
+type CommandQuestions = {
+	type: EnabledArchitectures;
+};
+
+type CommandArguments = { name: string };
+
+export default createCustomCommand<CommandQuestions,CommandOptions,CommandArguments>(
+	'create',
+	'Creates a new project',
+	async ({ name, ...response }) => {
+		await validateDTO(response, ValidatePathDTO);
 		const createProject = new CreateProject();
 
 		await validateDTO({ name }, ValidateNameDTO);
@@ -41,10 +59,10 @@ export default program
 		try {
 			const projectPath = await createProject.run({
 				name,
-				path: options.path,
-				type: response.type
+				path: response.path,
+				type: response.type,
 			});
-	
+
 			console.info(`Project created at ${projectPath}.`);
 
 			const { openFolder } = await prompts([
@@ -52,19 +70,18 @@ export default program
 					type: 'confirm',
 					name: 'openFolder',
 					message: 'Do you want to open the project folder?',
-				}
+				},
 			]);
 
 			if (openFolder) {
 				console.info('Opening folder...');
-
-				exec(`start "" ${projectPath}`, () => {
-					console.info('Folder opened, enjoy!');
-				});
-			}else{
+				openDirectory(projectPath);
+			} else {
 				console.info('Project generated, enjoy!');
 			}
 		} catch (error) {
 			console.error(`Error creating project, ${(error as Error).message}`);
 		}
-	});
+	},
+	{ questions, options, arguments: commandArguments }
+);

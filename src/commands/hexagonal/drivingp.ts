@@ -1,36 +1,28 @@
-import { program } from 'commander';
 import prompts from 'prompts';
 
-import { EnabledArchitectures } from 'constants/constants';
-import { ArchitectureManager } from 'lib/shared/architecture-manager';
 import { ContextsManager } from 'lib/shared/contexts-manager';
 import { CreateDrivingPort } from 'lib/hexagonal/drivingp';
 import validateDTO from 'validators/validate';
 import { ValidateNameDTO } from 'validators/shared/name.dto';
+import { createCustomCommand } from 'utils/command';
+import { EnabledArchitectures } from 'constants/constants';
 
 const questions: prompts.PromptObject[] = [
 	{
 		type: 'text',
 		name: 'name',
 		message: 'Name of the driving port:',
-	}
+	},
 ];
 
-export default program
-	.createCommand('drivingp')
-	.hook('preAction', () => {
-		const result = new ArchitectureManager().validateProjectArchitecture(
-			EnabledArchitectures.Hexagonal
-		);
-		if (!result) {
-			throw new Error(
-				'Invalid project architecture. This command is only available for hexagonal architecture projects'
-			);
-		}
-	})
-	.description('Creates a new driving port')
-	.action(async () => {
-		const { name } = await prompts(questions);
+type CommandQuestions = {
+	name: string;
+};
+
+export default createCustomCommand<CommandQuestions>(
+	'drivingp',
+	'Creates a new driving port',
+	async ({ name }) => {
 		await validateDTO({ name }, ValidateNameDTO);
 
 		const contextsManager = new ContextsManager();
@@ -44,4 +36,9 @@ export default program
 				`Error creating driving port, ${(error as Error).message}`
 			);
 		}
-	});
+	},
+	{
+		questions,
+		architecture: EnabledArchitectures.Hexagonal,
+	}
+);

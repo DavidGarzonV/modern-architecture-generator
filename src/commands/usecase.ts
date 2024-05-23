@@ -1,26 +1,39 @@
-import { program } from 'commander';
-import prompts from 'prompts';
+import { PromptObject } from 'prompts';
 import { ContextsManager } from 'lib/shared/contexts-manager';
 import CreateUseCase from 'lib/usecase';
 import validateDTO from 'validators/validate';
 import { UseCaseDTO } from 'validators/usecase.dto';
+import { CommandOption, createCustomCommand } from 'utils/command';
 
-const questions: prompts.PromptObject[] = [
+const questions: PromptObject[] = [
 	{
 		type: 'text',
 		name: 'name',
 		message: 'What is the name of the use case?',
-	}
+	},
 ];
 
-export default program
-	.createCommand('usecase')
-	.description('Creates a new use case')
-	.option('-t, --tests', 'Create tests file')
-	.action(async (options) => {
-		const { name, useContext } = await prompts(questions);
+const options: CommandOption[] = [
+	{
+		command: '-t, --tests',
+		description: 'Create tests file',
+	},
+];
 
-		await validateDTO({ name, ...options }, UseCaseDTO);
+type CommandOptions = {
+	tests: boolean;
+};
+
+type CommandQuestions = {
+	name: string;
+};
+
+export default createCustomCommand<CommandQuestions, CommandOptions>(
+	'usecase',
+	'Creates a new use case',
+	async (response) => {
+		await validateDTO(response, UseCaseDTO);
+		const { name } = response;
 
 		const contextsManager = new ContextsManager();
 		const context = await contextsManager.getContextName('use-cases');
@@ -29,11 +42,12 @@ export default program
 			const createUseCase = new CreateUseCase();
 			await createUseCase.run({
 				name,
-				useContext,
 				contextName: context,
-				createTests: options.tests,
+				createTests: response.tests,
 			});
 		} catch (error) {
 			console.error('Error creating use case:', (error as Error).message);
 		}
-	});
+	},
+	{ questions, options }
+);

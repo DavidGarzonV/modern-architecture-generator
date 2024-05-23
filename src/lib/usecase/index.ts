@@ -5,8 +5,7 @@ import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
 
 type CreateUseCaseOptions = {
 	name: string;
-	useContext: boolean;
-	createTests: boolean;
+	createTests?: boolean;
 	contextName?: string;
 }
 
@@ -60,7 +59,7 @@ export default class CreateUseCase{
 
 		const pascalCaseName = formatName(options.name);
 
-		if (options.useContext && options.contextName) {
+		if (options.contextName) {
 			const pascalCaseContextName = formatName(options.contextName);
 			const contextPath = this._ps.createContextFolder(this._useCasesFolder, pascalCaseContextName);
 

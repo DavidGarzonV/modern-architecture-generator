@@ -1,3 +1,4 @@
+import { exec } from 'child_process';
 import fs from 'fs';
 import { getConfigVar } from 'utils/config';
 
@@ -48,4 +49,31 @@ export const validatePath = (path: string): void => {
 	} catch (error) {
 		throw new Error('Invalid path');
 	}
+};
+
+export const openDirectory = (path: string): void => {
+	exec(`start "" ${path}`, () => {
+		console.info('Folder opened, enjoy!');
+	});
+};
+
+export const getDirectoryItems = (directory: string, filterPath?: string) => {
+	const currentItems = readDirectory(directory);
+	let filteredItems: string[] = [];
+
+	currentItems.forEach((item) => {
+		if (filterPath) {
+			if (item.includes(filterPath)) {
+				const fileName = item.replace(filterPath, '');
+				filteredItems.push(fileName);
+			}
+		}else{
+			filteredItems.push(item);
+		}
+
+		const subItems = getDirectoryItems(`${directory}/${item}`, filterPath);
+		filteredItems = [...filteredItems, ...subItems];
+	});
+
+	return filteredItems;
 };

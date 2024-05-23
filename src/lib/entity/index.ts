@@ -9,7 +9,6 @@ export type Property = {
 
 type CreateEntityOptions = {
 	name: string
-	useContext: boolean
 	contextName?: string
 	useClass?: boolean
 	defaultProperties?: Property[]
@@ -57,7 +56,7 @@ export default class CreateEntity{
 
 		const pascalCaseName = formatName(options.name);
 
-		if (options.useContext && options.contextName) {
+		if (options.contextName) {
 			const pascalCaseContextName = formatName(options.contextName);
 			const contextPath = this._ps.createContextFolder(
 				this._entitiesFolder,
