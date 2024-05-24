@@ -22,10 +22,14 @@ npm install -g modern-architecture-generator
 
 ### Testing in local
 
-Execute commands:
+**Configure enviroment file:**
+
+Create a `.env` file with the variable `NODE_ENV="local"` for development purposes.
+
+**Execute commands:**
 
 ```sh
-npm run start [command] [options]
+npm run start [command] [arguments] -- --[options]
 ```
 
 Find the outputs:
