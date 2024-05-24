@@ -5,10 +5,11 @@ import {
 	TypescriptFileResponse,
 	TypescriptInterfaceType,
 } from 'constants/types';
+import { CustomCommand } from 'utils/singleton/command';
 
 export const readTypescriptConfig = (): ts.CompilerOptions | null => {
 	const configFilePath = 'tsconfig.json';
-	const executionPath = process.cwd();
+	const executionPath = CustomCommand.getExecutionPath();
 	const srcPath = `${executionPath}/${configFilePath}`;
 
 	if (pathExists(srcPath)) {

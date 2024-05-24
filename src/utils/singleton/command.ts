@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import { EnabledArchitectures } from 'constants/constants';
 import prompts, { PromptObject } from 'prompts';
 import { ArchitectureManager } from 'utils/singleton/architecture-manager';
+import { Configuration } from 'utils/singleton/configuration';
 
 
 type CommandAdditionalOptions = {
@@ -62,7 +63,7 @@ export class CustomCommand {
 				commandOptions[optionName as keyof typeof commandOptions] = optionsObject[optionName as keyof typeof optionsObject];
 			});
 		}
-		
+
 		if (commandOptions.path) {
 			CustomCommand.setExecutionPath(commandOptions.path as string);
 		}
@@ -94,8 +95,14 @@ export class CustomCommand {
 		commandOptions?: CommandAdditionalOptions
 	) {
 		type ResponseType = CommandActionResponse<Arguments, CommandOptions<Options>, Questions>
-	
 		const command = new Command(commandName).description(description);
+
+		command.hook('preAction', async () => {
+			if (commandName !== 'create') {			
+				Configuration.validateMagAndConfig();
+			}
+		});
+
 		const options = [ ...(commandOptions?.options ?? []), ...CustomCommand.defaultCommandOptions];
 	
 		if (options) {
@@ -103,7 +110,7 @@ export class CustomCommand {
 				command.option(option.command, option.description);
 			});
 		}
-	
+
 		if (commandOptions) {
 			const { questions, arguments: commandArguments, hooks, architecture } = commandOptions;
 	

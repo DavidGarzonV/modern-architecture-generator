@@ -1,7 +1,7 @@
 import { formatName, formatNameAttributes } from 'utils/string';
-import { getConfigVar } from 'utils/config';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
+import { Configuration } from 'utils/singleton/configuration';
 
 type CreateUseCaseOptions = {
 	name: string;
@@ -18,7 +18,7 @@ export default class CreateUseCase{
 	}
 
 	private setUseCasesFolder(): void {
-		const useCasesFolder = getConfigVar('useCasesFolder') as string | undefined;
+		const useCasesFolder = Configuration.get('useCasesFolder') as string | undefined;
 		if (useCasesFolder) {
 			this._useCasesFolder = useCasesFolder;
 		}else{
@@ -28,7 +28,7 @@ export default class CreateUseCase{
 	}
 
 	private async createClass(name: string): Promise<void> {
-		const projectPath = process.cwd();
+		const projectPath = Configuration.getMagPath();
 		const useCaseTemplate = readFile(`${projectPath}/src/templates/use-cases/index.txt`);
 
 		const useCaseName = await this._ps.askForCreateProjectFile(name, this._useCasesFolder, 'usecase');
@@ -40,7 +40,7 @@ export default class CreateUseCase{
 	}
 
 	private createTestsFile(name: string): void {
-		const projectPath = process.cwd();
+		const projectPath = Configuration.getMagPath();
 		const useCaseTemplate = readFile(`${projectPath}/src/templates/use-cases/test.txt`);
 
 		let content = useCaseTemplate.replace(/UseCaseName/g, name);

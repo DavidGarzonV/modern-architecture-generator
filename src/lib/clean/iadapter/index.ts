@@ -1,5 +1,6 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
+import { Configuration } from 'utils/singleton/configuration';
 import { formatName } from 'utils/string';
 
 type CreateIAdapterOptions = {
@@ -17,7 +18,7 @@ export default class CreateIAdapter{
 	}
 
 	private getContent(name: string, entityPath?: string){
-		const projectPath = process.cwd();
+		const projectPath = Configuration.getMagPath();
 		let adapterTemplate = readFile(`${projectPath}/src/templates/adapters/iadapter.txt`);
 
 		const entitiesFolder = this._ps.findFolderPathByName('entities');

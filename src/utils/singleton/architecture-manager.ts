@@ -1,5 +1,5 @@
 import { EnabledArchitectures } from 'constants/constants';
-import { getConfigVar } from 'utils/config';
+import { Configuration } from 'utils/singleton/configuration';
 
 export class ArchitectureManager {
 	private static _architecture: EnabledArchitectures;
@@ -9,7 +9,7 @@ export class ArchitectureManager {
 	 */
 	private static setArchitecture(){
 		if (!ArchitectureManager._architecture) {
-			ArchitectureManager._architecture = getConfigVar('architecture') as EnabledArchitectures;
+			ArchitectureManager._architecture = Configuration.get('architecture') as EnabledArchitectures;
 		}
 	}
 

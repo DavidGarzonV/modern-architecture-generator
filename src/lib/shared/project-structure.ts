@@ -4,6 +4,7 @@ import { FolderItem, FolderStructure } from 'constants/types';
 import { createDirectory, pathExists } from 'utils/file';
 import { formatName } from 'utils/string';
 import { ArchitectureManager } from 'utils/singleton/architecture-manager';
+import { Configuration } from 'utils/singleton/configuration';
 
 export class ProjectStructure {
 	private _projectStructure: FolderStructure = [];
@@ -15,7 +16,7 @@ export class ProjectStructure {
 	constructor(){
 		const architecture = ArchitectureManager.getArchitecture();
 
-		const projectPath = process.cwd();
+		const projectPath = Configuration.getMagPath();
 		const jsonFile = fs.readFileSync(`${projectPath}/src/templates/folder-structure/${architecture}.json`, 'utf-8');
 
 		const structure = JSON.parse(jsonFile) as FolderStructure;
@@ -56,7 +57,7 @@ export class ProjectStructure {
 
 		let srcPath = 'src';
 		if (process.env.NODE_ENV === 'local') {
-			const executionPath = process.cwd();
+			const executionPath = Configuration.getMagPath();
 			srcPath = `${executionPath}/test-environment`;
 		}
 

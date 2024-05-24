@@ -1,5 +1,4 @@
-import { getConfigVar } from 'utils/config';
-
+import { Configuration } from './singleton/configuration';
 export const convertToPascalCase = (str: string): string => {
 	if (str.includes('_')) {
 		return str
@@ -55,7 +54,7 @@ export const convertToCamelCase = (str: string): string => {
 };
 
 export const formatName = (str: string): string => {
-	const usePascalCase = getConfigVar('usePascalCase');
+	const usePascalCase = Configuration.get('usePascalCase');
 	str = str.replace(/[^a-zA-Z0-9 ]/g, '');
 
 	if (usePascalCase) {
@@ -66,7 +65,7 @@ export const formatName = (str: string): string => {
 };
 
 export const formatNameAttributes = (str: string): string => {
-	const useCamelCase = getConfigVar('useCamelCase');
+	const useCamelCase = Configuration.get('useCamelCase');
 	let finalStr = str.replace(/[^a-zA-Z0-9 ]/g, '');
 
 	if (useCamelCase) {

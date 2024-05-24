@@ -1,5 +1,6 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
+import { Configuration } from 'utils/singleton/configuration';
 import { formatName } from 'utils/string';
 
 type CreateDrivingPortOptions = {
@@ -16,7 +17,7 @@ export class CreateDrivingPort{
 	}
 
 	private getContent(name: string){
-		const projectPath = process.cwd();
+		const projectPath = Configuration.getMagPath();
 		const adapterTemplate = readFile(`${projectPath}/src/templates/ports/driving-port.txt`);
 		return adapterTemplate.replace(/PortName/g, name);
 	}

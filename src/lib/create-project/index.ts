@@ -11,6 +11,7 @@ import { FolderItem, MagConfiguration } from 'constants/types';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { copyFile, createDirectory, deleteFolder, readDirectory } from 'utils/file';
 import { CustomCommand } from 'utils/singleton/command';
+import { Configuration } from 'utils/singleton/configuration';
 
 type CreateProjectOptions = {
 	name: string;
@@ -70,7 +71,7 @@ export default class CreateProject {
 
 	private createDocumentation(type: EnabledArchitectures, newFolderPath: string): void {
 		try {
-			const projectPath = process.cwd();
+			const projectPath = Configuration.getMagPath();
 			copyFile(
 				`${projectPath}/${README_PATH}/${type}.md`,
 				`${newFolderPath}/README.md`
@@ -183,7 +184,7 @@ export default class CreateProject {
 			const config: MagConfiguration = {
 				architecture: type,
 			};
-			writeFile(`${projectPath}/mag.config.json`, JSON.stringify(config, null, 2));
+			writeFile(`${projectPath}/${Configuration.configurationFile}`, JSON.stringify(config, null, 2));
 		} catch (error) {
 			throw new Error('Could not create config file');
 		}

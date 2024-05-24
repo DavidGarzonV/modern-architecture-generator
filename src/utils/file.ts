@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 import fs from 'fs';
-import { getConfigVar } from 'utils/config';
+import { Configuration } from 'utils/singleton/configuration';
 
 export const createDirectory = (path: string): string => {
 	if (!fs.existsSync(path)) {
@@ -36,7 +36,7 @@ export const readFile = (path: string, encoding: BufferEncoding = 'utf-8'): stri
 };
 
 export const writeFile = (path: string, data: string, encoding: BufferEncoding = 'utf-8'): void => {
-	const filesEol = getConfigVar('filesEOL');
+	const filesEol = Configuration.get('filesEOL');
 	if (filesEol === 'CRLF') {
 		data = data.replace(/\n/g, '\r\n');
 	}

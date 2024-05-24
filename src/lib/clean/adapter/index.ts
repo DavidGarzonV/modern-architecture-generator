@@ -3,6 +3,7 @@ import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 import { readTypescriptFile } from 'utils/typescript';
+import { Configuration } from 'utils/singleton/configuration';
 
 type CreateAdapterOptions = {
 	name: string
@@ -28,7 +29,7 @@ export default class CreateAdapter {
 	private async getContent(name: string, iadapter: string): Promise<string> {
 		const interfaceAdapterName = formatName(iadapter);
 
-		const projectPath = process.cwd();
+		const projectPath = Configuration.getMagPath();
 		let adapterMethodsTemplate = readFile(`${projectPath}/src/templates/adapters/adapter.txt`);
 
 		const repositoryName = `${interfaceAdapterName}.repository.ts`;
