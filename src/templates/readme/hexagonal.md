@@ -54,9 +54,7 @@ In the Application Notes, the left-right asymmetry will be brought up again. How
 
 ## Structure
 
-![hexagonal structure with adapters](./public/hexagonal1.gif)
-
-shows an application having two active ports and several adapters for each port. The two ports are the application-controlling side and the data-retrieval side. This drawing shows that the application can be equally driven by an automated, system-level regression test suite, by a human user, by a remote http application, or by another local application. On the data side, the application can be configured to run decoupled from external databases using an in-memory oracle, or ‘’mock’’, database replacement; or it can run against the test- or run-time database. The functional specification of the application, perhaps in use cases, is made against the inner hexagon’s interface and not against any one of the external technologies that might be used.
+![hexagonal structure with adapters](./public/hexagonal/hexagonal1.png)
 
 ### Application Notes
 
@@ -93,4 +91,4 @@ The weather system described in the Known Uses has four natural ports: the weath
 
 It doesn’t appear that there is any particular damage in choosing the “wrong” number of ports, so that remains a matter of intuition. My selection tends to favor a small number, two, three or four ports, as described above and in the Known Uses.
 
-![hexagonal structure complex example](./public/hexagonal2.gif)
+![hexagonal structure complex example](./public/hexagonal/hexagonal2.png)

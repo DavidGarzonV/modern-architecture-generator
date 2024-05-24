@@ -1,6 +1,6 @@
 # The Clean Architecture
 
-![clean architecture diagram](./public/clean.jpg)
+![clean architecture diagram](./public/clean/clean.jpg)
 
 Over the last several years we’ve seen a whole range of ideas regarding the architecture of systems. These include:
 
