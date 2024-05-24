@@ -50,6 +50,14 @@ mag [command] --help
 
 **Note**: The projects uses the `src` folder to handle all the code.
 
+### Global Options enabled for all commands
+
+|ARGUMENT|SHORT ARGUMENT|DESCRIPTION|VALUE TYPE|
+|---|---|---|---|
+|`--path`|`-p`|Path to execute the command|`string`|
+
+## Commands
+
 ### Create new project:
 
 Creates a new project with a defined architecture using:
@@ -63,7 +71,7 @@ mag create mag-test --path "C:\Users\user\Documents\GitHub\modern-architecture-g
 
 |ARGUMENT|SHORT ARGUMENT|DESCRIPTION|VALUE TYPE|
 |---|---|---|---|
-|`--path`|`-p`|Path where the project will be created|`string`|
+|`--path`|`-p`|Path where the project will be created (Overwrites global path option)|`string`|
 
 ### Use cases
 
