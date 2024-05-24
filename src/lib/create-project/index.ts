@@ -9,7 +9,7 @@ import {
 } from 'constants/constants';
 import { FolderItem, MagConfiguration } from 'constants/types';
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { copyFile, createDirectory, deleteFolder, readDirectory } from 'utils/file';
+import { copyFile, createDirectory, deleteDirectory, readDirectory } from 'utils/file';
 import { CustomCommand } from 'utils/singleton/command';
 import { Configuration } from 'utils/singleton/configuration';
 
@@ -59,7 +59,7 @@ export default class CreateProject {
 				process.exit(0);
 			}
 
-			deleteFolder(projectPath);
+			deleteDirectory(projectPath);
 		}
 
 		try {
@@ -191,10 +191,14 @@ export default class CreateProject {
 	}
 
 	private async installMagDependencies(projectPath: string): Promise<void> {
+		if (process.env.INSTALL_MAG_DEPENDENCIES === 'false') {
+			return Promise.resolve();
+		}
+
 		return new Promise((resolve, reject) => {
 			exec('npm install modern-architecture-generator --save-dev', { cwd: projectPath }, (error) => {
 				if (error) {
-					reject('Could not install mag dependencies');
+					reject(error);
 					return;
 				}
 
@@ -204,6 +208,7 @@ export default class CreateProject {
 	}
 
 	async run(options: CreateProjectOptions): Promise<string> {
+		this._ps.setProjectStructure(options.type);
 		const projectPath = CustomCommand.getExecutionPath();
 
 		this.validateExecutionPath(projectPath);
@@ -223,9 +228,15 @@ export default class CreateProject {
 		await this.configureTypescript(newFolderPath);
 
 		console.info('Installing mag dependencies...');
-		this.installMagDependencies(newFolderPath);
+		await this.installMagDependencies(newFolderPath);
 		console.info('Dependencies installed.');
 
 		return newFolderPath;
+	}
+
+	deleteProject(projectPath: string){
+		console.info('Deleting project...');
+		deleteDirectory(projectPath);
+		console.info('Project deleted.');
 	}
 }

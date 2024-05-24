@@ -10,7 +10,7 @@ export const createDirectory = (path: string): string => {
 	return path;
 };
 
-export const deleteFolder = (path: string, recursive: boolean = true): void => {
+export const deleteDirectory = (path: string, recursive: boolean = true): void => {
 	if (fs.existsSync(path)) {
 		fs.rmSync(path, { recursive });
 	}

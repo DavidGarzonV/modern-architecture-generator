@@ -50,12 +50,14 @@ export default CustomCommand.createCustomCommand<CommandQuestions,CommandOptions
 		const createProject = new CreateProject();
 
 		await validateDTO({ name }, ValidateNameDTO);
+		let projectPath = '';
 
 		try {
-			const projectPath = await createProject.run({
+			projectPath = await createProject.run({
 				name,
 				type: response.type,
 			});
+			
 
 			console.info(`Project created at ${projectPath}.`);
 
@@ -74,7 +76,11 @@ export default CustomCommand.createCustomCommand<CommandQuestions,CommandOptions
 				console.info('Project generated, enjoy!');
 			}
 		} catch (error) {
-			console.error(`Error creating project, ${(error as Error).message}`);
+			console.error(`Error creating project, ${(error as Error).message ?? 'unknown error'}`);
+
+			if (projectPath) {
+				createProject.deleteProject(projectPath);
+			}
 		}
 	},
 	{ questions, arguments: commandArguments }

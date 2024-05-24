@@ -6,6 +6,7 @@ import { formatName } from 'utils/string';
 import { ArchitectureManager } from 'utils/singleton/architecture-manager';
 import { Configuration } from 'utils/singleton/configuration';
 import { CustomCommand } from 'utils/singleton/command';
+import { EnabledArchitectures } from 'constants/constants';
 
 export class ProjectStructure {
 	private _projectStructure: FolderStructure = [];
@@ -15,11 +16,17 @@ export class ProjectStructure {
 	}
 
 	constructor(){
-		const architecture = ArchitectureManager.getArchitecture();
+		this.setProjectStructure();
+	}
+
+	setProjectStructure(architecture?: EnabledArchitectures){
+		if (!architecture) {
+			architecture = ArchitectureManager.getArchitecture();
+		}
 
 		const projectPath = Configuration.getMagPath();
-		const jsonFile = fs.readFileSync(`${projectPath}/src/templates/folder-structure/${architecture}.json`, 'utf-8');
 
+		const jsonFile = fs.readFileSync(`${projectPath}/src/templates/folder-structure/${architecture}.json`, 'utf-8');
 		const structure = JSON.parse(jsonFile) as FolderStructure;
 		this._projectStructure = structure;
 	}
