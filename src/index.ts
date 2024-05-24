@@ -3,8 +3,8 @@ import figlet from 'figlet';
 import { program } from 'commander';
 import * as dotenv from 'dotenv';
 
-import usecase from 'commands/usecase';
 import create from 'commands/create';
+import usecase from 'commands/usecase';
 import entity from 'commands/entity';
 import iadapter from 'commands/clean/iadapter';
 import adapter from 'commands/clean/adapter';
@@ -50,8 +50,10 @@ console.log(
 
 program.parse();
 
-function handleError(error: Error | unknown){
-	console.error('\n\nApplication error: ', (error as Error).message);
+function handleError(error: Error | unknown | undefined){
+	if (error) {
+		console.error('\nApplication error: ', (error as Error).message);
+	}
 	process.exit(1);
 }
 

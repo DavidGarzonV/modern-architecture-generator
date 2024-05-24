@@ -57,7 +57,17 @@ export const openDirectory = (path: string): void => {
 	});
 };
 
+export const isDirectory = (path: string): boolean => {
+	return fs.statSync(path).isDirectory();
+};
+
 export const getDirectoryItems = (directory: string, filterPath?: string) => {
+	if (!isDirectory(directory)) {
+		return [];
+	}
+
+	const ignoredFolders = ['.git', 'node_modules', 'dist', 'build', 'coverage', 'test', 'tests', 'temp', 'tmp'];
+
 	const currentItems = readDirectory(directory);
 	let filteredItems: string[] = [];
 
@@ -71,8 +81,10 @@ export const getDirectoryItems = (directory: string, filterPath?: string) => {
 			filteredItems.push(item);
 		}
 
-		const subItems = getDirectoryItems(`${directory}/${item}`, filterPath);
-		filteredItems = [...filteredItems, ...subItems];
+		if (!ignoredFolders.includes(item)) {
+			const subItems = getDirectoryItems(`${directory}/${item}`, filterPath);
+			filteredItems = [...filteredItems, ...subItems.map((subItem) => `${item}/${subItem}`)];
+		}
 	});
 
 	return filteredItems;

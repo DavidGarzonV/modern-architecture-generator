@@ -1,4 +1,4 @@
-import { pathExists, readFile, validatePath, writeFile } from './../../utils/file';
+import { getDirectoryItems, pathExists, readFile, validatePath, writeFile } from './../../utils/file';
 import { exec } from 'child_process';
 import prompts from 'prompts';
 import {
@@ -24,9 +24,28 @@ export default class CreateProject {
 		this._ps = new ProjectStructure();
 	}
 
-	private async createDirectory(path: string): Promise<void> {
-		if (pathExists(path)) {
+	private validateExecutionPath(executionPath: string){
+		validatePath(executionPath);
+
+		const files = getDirectoryItems(executionPath);
+		const projectFilesExtensions = ['ts', 'js', 'json', 'yaml', 'yml'];
+
+		if(files.length > 0){
+			const existsProjectConfigurationFile = files.some(
+				(file) => file === 'package.json' || projectFilesExtensions.includes(file.split('.').pop()!)
+			);
+
+			if (existsProjectConfigurationFile) {
+				console.error(`The directory ${executionPath} has an existent project. Please select another directory.`);
+				process.exit(0);
+			}
+		}
+	}
+
+	private async createDirectory(projectPath: string): Promise<void> {
+		if (pathExists(projectPath)) {
 			console.info('The directory already exists');
+
 			const response = await prompts([
 				{
 					type: 'confirm',
@@ -39,11 +58,11 @@ export default class CreateProject {
 				process.exit(0);
 			}
 
-			deleteFolder(path);
+			deleteFolder(projectPath);
 		}
 
 		try {
-			createFolder(path);
+			createFolder(projectPath);
 		} catch (error) {
 			throw new Error('Could not create directory');
 		}
@@ -181,7 +200,7 @@ export default class CreateProject {
 		const executionPath = process.cwd();
 		const projectPath = options.path ?? executionPath;
 
-		validatePath(projectPath);
+		this.validateExecutionPath(projectPath);
 
 		console.info('Creating folder...');
 		const newFolderPath = `${projectPath}/${options.name}`;

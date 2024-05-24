@@ -49,7 +49,11 @@ export const askOptionFromDirectory = async (
 	filterPath?: string
 ): Promise<string> => {
 	const items = getDirectoryItems(directory, filterPath);
-	const choices = items.map((item) => ({ title: item, value: item }));
+
+	const choices = items.map((item) => {
+		const itemValue = item.split('/').pop()!;
+		return { title: itemValue, value: itemValue };
+	});
 
 	const { selectedValue } = await prompts([
 		{

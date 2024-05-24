@@ -33,6 +33,7 @@ const options: CommandOption[] = [
 const commandArguments: CommandArgument[] = [
 	{
 		type: 'string',
+		value: 'name',
 		description: 'Name of the project'
 	}
 ];
