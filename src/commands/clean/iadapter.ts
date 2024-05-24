@@ -14,7 +14,8 @@ const questions: PromptObject[] = [
 
 const options: CommandOption[] = [{
 	command: '-e, --entity <entity>',
-	description: 'Name of the entity related to the interface adapter'
+	description: 'Name of the entity related to the interface adapter',
+	value: 'entity',
 }];
 
 type CommandQuestions = {

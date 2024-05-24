@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { FolderItem, FolderStructure } from 'constants/types';
-import { createFolder, pathExists } from 'utils/file';
+import { createDirectory, pathExists } from 'utils/file';
 import { ArchitectureManager } from 'lib/shared/architecture-manager';
 import { formatName } from 'utils/string';
 import prompts from 'prompts';
@@ -36,7 +36,7 @@ export class ProjectStructure {
 			const findParent = this.projectStructure.find((folder) => folder.name === item.parent);
 			const parentPath = this.organizeParentFolder(findParent!, basePath);
 
-			createFolder(parentPath);
+			createDirectory(parentPath);
 
 			return `${parentPath}/${item.name}`;
 		}else{
@@ -76,7 +76,7 @@ export class ProjectStructure {
 		try {
 			if (pathExists(baseFolder)) {
 				const contextFolder = `${baseFolder}/${contextName}`;
-				createFolder(contextFolder);
+				createDirectory(contextFolder);
 				return contextFolder;
 			}
 		} catch (error) {

@@ -29,7 +29,7 @@ Create a `.env` file with the variable `NODE_ENV="local"` for development purpos
 **Execute commands:**
 
 ```sh
-npm run start [command] [arguments] -- --[options]
+npm run start [command] [arguments] [-- --option value]
 ```
 
 Find the outputs:
@@ -37,7 +37,7 @@ All the files created with mag tool are created in the folder `./test-environmen
 
 ### Command-language syntax
 
-`mag [optional-command] [options]`
+`mag [command] [arguments] [options]`
 
 To see all the commands avaliable:
 
@@ -46,11 +46,11 @@ mag --help
 mag [command] --help
 ```
 
-### Using the tool
+## Using the tool
 
 **Note**: The projects uses the `src` folder to handle all the code.
 
-#### Create new project:
+### Create new project:
 
 Creates a new project with a defined architecture using:
 

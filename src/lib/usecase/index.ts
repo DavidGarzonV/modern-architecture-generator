@@ -1,7 +1,7 @@
 import { formatName, formatNameAttributes } from 'utils/string';
 import { getConfigVar } from 'utils/config';
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
+import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
 
 type CreateUseCaseOptions = {
 	name: string;
@@ -32,10 +32,10 @@ export default class CreateUseCase{
 		const useCaseTemplate = readFile(`${projectPath}/src/templates/use-cases/index.txt`);
 
 		const useCaseName = await this._ps.askForCreateProjectFile(name, this._useCasesFolder, 'usecase');
-		createFolder(this._useCasesFolder);
+		createDirectory(this._useCasesFolder);
 
 		const content = useCaseTemplate.replace(/UseCaseName/g, useCaseName);
-		createFolder(`${this._useCasesFolder}/${useCaseName}`);
+		createDirectory(`${this._useCasesFolder}/${useCaseName}`);
 		writeFile(`${this._useCasesFolder}/${useCaseName}/${useCaseName}.usecase.ts`, content);
 	}
 
@@ -64,7 +64,7 @@ export default class CreateUseCase{
 			const contextPath = this._ps.createContextFolder(this._useCasesFolder, pascalCaseContextName);
 
 			if (pathExists(this._useCasesFolder)) {
-				createFolder(pascalCaseContextName);
+				createDirectory(pascalCaseContextName);
 			}
 
 			this._useCasesFolder = contextPath;

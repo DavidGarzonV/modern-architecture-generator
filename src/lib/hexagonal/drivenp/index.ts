@@ -1,5 +1,5 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
+import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 
 type CreateDrivenPortOptions = {
@@ -41,7 +41,7 @@ export class CreateDrivenPort{
 		const portName = await this._ps.askForCreateProjectFile(options.name, this._drivenPortsFolder, 'port');
 		const content = this.getContent(portName, options.entity);
 
-		createFolder(this._drivenPortsFolder);
+		createDirectory(this._drivenPortsFolder);
 		writeFile(`${this._drivenPortsFolder}/${portName}.port.ts`, content);
 	}
 
@@ -56,7 +56,7 @@ export class CreateDrivenPort{
 		if (options.contextName) {
 			const contextName = formatName(options.contextName);
 			this._drivenPortsFolder += `/${contextName}`;
-			createFolder(this._drivenPortsFolder);
+			createDirectory(this._drivenPortsFolder);
 		}
 
 		await this.createDrivenPort(options);

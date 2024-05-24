@@ -27,6 +27,7 @@ const options: CommandOption[] = [
 	{
 		command: '-p, --path <string>',
 		description: 'Path to create the project',
+		value: 'path',
 	},
 ];
 
@@ -52,6 +53,7 @@ export default createCustomCommand<CommandQuestions,CommandOptions,CommandArgume
 	'create',
 	'Creates a new project',
 	async ({ name, ...response }) => {
+		console.log('response:', response);
 		await validateDTO(response, ValidatePathDTO);
 		const createProject = new CreateProject();
 

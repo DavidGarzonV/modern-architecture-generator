@@ -51,7 +51,7 @@ console.log(
 program.parse();
 
 function handleError(error: Error | unknown | undefined){
-	if (error) {
+	if (error && (error as Error).message) {
 		console.error('\nApplication error: ', (error as Error).message);
 	}
 	process.exit(1);

@@ -17,6 +17,7 @@ const options: CommandOption[] = [
 	{
 		command: '-t, --tests',
 		description: 'Create tests file',
+		value: 'tests',
 	},
 ];
 

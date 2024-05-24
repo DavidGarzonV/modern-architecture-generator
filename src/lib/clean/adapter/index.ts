@@ -1,6 +1,6 @@
 import path from 'path';
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
+import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 import { readTypescriptFile } from 'utils/typescript';
 
@@ -53,7 +53,7 @@ export default class CreateAdapter {
 	private async createAdapter(options: CreateAdapterOptions): Promise<void> {
 		const adapterName = await this._ps.askForCreateProjectFile(options.name, this._adaptersFolder, 'adapter');
 		const content = await this.getContent(adapterName, options.iadapter);
-		createFolder(this._adaptersFolder);
+		createDirectory(this._adaptersFolder);
 		writeFile(`${this._adaptersFolder}/${adapterName}.adapter.ts`, content);
 	}
 
@@ -68,7 +68,7 @@ export default class CreateAdapter {
 		if (options.contextName) {
 			const contextName = formatName(options.contextName);
 			this._adaptersFolder += `/${contextName}`;
-			createFolder(this._adaptersFolder);
+			createDirectory(this._adaptersFolder);
 		}
 
 		await this.createAdapter(options);

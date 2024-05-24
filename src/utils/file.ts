@@ -2,7 +2,7 @@ import { exec } from 'child_process';
 import fs from 'fs';
 import { getConfigVar } from 'utils/config';
 
-export const createFolder = (path: string): string => {
+export const createDirectory = (path: string): string => {
 	if (!fs.existsSync(path)) {
 		fs.mkdirSync(path);
 	}
@@ -52,7 +52,10 @@ export const validatePath = (path: string): void => {
 };
 
 export const openDirectory = (path: string): void => {
-	exec(`start "" ${path}`, () => {
+	exec(`start "" ${path}`, (error) => {
+		if (error) {
+			throw new Error(`Error opening folder ${path}`);
+		}
 		console.info('Folder opened, enjoy!');
 	});
 };

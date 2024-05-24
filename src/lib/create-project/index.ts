@@ -1,4 +1,4 @@
-import { getDirectoryItems, pathExists, readFile, validatePath, writeFile } from './../../utils/file';
+import { pathExists, readFile, validatePath, writeFile } from './../../utils/file';
 import { exec } from 'child_process';
 import prompts from 'prompts';
 import {
@@ -9,7 +9,7 @@ import {
 } from 'constants/constants';
 import { FolderItem, MagConfiguration } from 'constants/types';
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { copyFile, createFolder, deleteFolder, readDirectory } from 'utils/file';
+import { copyFile, createDirectory, deleteFolder, readDirectory } from 'utils/file';
 
 type CreateProjectOptions = {
 	name: string;
@@ -27,7 +27,7 @@ export default class CreateProject {
 	private validateExecutionPath(executionPath: string){
 		validatePath(executionPath);
 
-		const files = getDirectoryItems(executionPath);
+		const files = readDirectory(executionPath);
 		const projectFilesExtensions = ['ts', 'js', 'json', 'yaml', 'yml'];
 
 		if(files.length > 0){
@@ -62,7 +62,7 @@ export default class CreateProject {
 		}
 
 		try {
-			createFolder(projectPath);
+			createDirectory(projectPath);
 		} catch (error) {
 			throw new Error('Could not create directory');
 		}
@@ -76,7 +76,13 @@ export default class CreateProject {
 				`${newFolderPath}/README.md`
 			);
 
-			createFolder(`${newFolderPath}/public`);
+			copyFile(
+				`${projectPath}/${README_PATH}/${type}.md`,
+				`${newFolderPath}/README.md`
+			);
+
+			createDirectory(`${newFolderPath}/public`);
+			createDirectory(`${newFolderPath}/public/${type}`);
 
 			const resourcesPath = `${projectPath}/${README_PUBLIC_PATH}/${type}`;
 			const files = readDirectory(resourcesPath);
@@ -84,7 +90,7 @@ export default class CreateProject {
 			files.forEach((file) => {
 				copyFile(
 					`${resourcesPath}/${file}`,
-					`${newFolderPath}/public/${file}`
+					`${newFolderPath}/public/${type}/${file}`
 				);
 			});
 		} catch (error) {
@@ -96,15 +102,15 @@ export default class CreateProject {
 		if (item.parent) {
 			const findParent = this._ps.projectStructure.find((folder) => folder.name === item.parent);
 			const parentPath = this.createParentFolder(findParent!, srcPath);
-			return createFolder(`${parentPath}/${item.name}`);
+			return createDirectory(`${parentPath}/${item.name}`);
 		}else{
-			return createFolder(`${srcPath}/${item.name}`);
+			return createDirectory(`${srcPath}/${item.name}`);
 		}
 	}
 
 	private createFolderStructure(newFolderPath: string): void {
 		const srcPath = `${newFolderPath}/src`;
-		createFolder(srcPath);
+		createDirectory(srcPath);
 
 		for (const item of this._ps.projectStructure) {
 			this.createParentFolder(item, srcPath);
@@ -134,8 +140,8 @@ export default class CreateProject {
 				const executionPath = 'dist/index.js';
 				packageJson.keywords.push('typescript');
 				packageJson.scripts.build = 'tsc';
+				packageJson.scripts.start = `npm run build && node ${executionPath}`;
 
-				packageJson.scripts.start = `node ${executionPath}`;
 				writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
 				console.info('package.json created.');

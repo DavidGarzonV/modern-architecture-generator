@@ -1,5 +1,5 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { createFolder, pathExists, writeFile } from 'utils/file';
+import { createDirectory, pathExists, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 
 export type Property = {
@@ -46,7 +46,7 @@ export default class CreateEntity{
 	private async createFile(name: string,defaultProperties?: Property[]): Promise<void> {
 		const entityName = await this._ps.askForCreateProjectFile(name, this._entitiesFolder, 'entity');
 		const content = this.getFileContent(entityName, defaultProperties);
-		createFolder(`${this._entitiesFolder}/${entityName}`);
+		createDirectory(`${this._entitiesFolder}/${entityName}`);
 		writeFile(`${this._entitiesFolder}/${entityName}/${entityName}.entity.ts`, content);
 	}
 
@@ -64,7 +64,7 @@ export default class CreateEntity{
 			);
 
 			if (pathExists(this._entitiesFolder)) {
-				createFolder(pascalCaseContextName);
+				createDirectory(pascalCaseContextName);
 			}
 
 			this._entitiesFolder = contextPath;

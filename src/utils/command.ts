@@ -16,6 +16,7 @@ type CommandAdditionalOptions = {
 
 export type CommandOption = {
 	command: string;
+	value: string;
 	description: string;
 };
 
@@ -97,10 +98,10 @@ export function createCustomCommand<CommandQuestions = object, CommandOptions = 
 
 			const commandOptions: Partial<CommandOptions> = {};
 			if (options) {
+				const optionsObject = response[lastResponseIndex + 1];
 				options.forEach((option) => {
-					lastResponseIndex++;
-					const optionName = option.command.split(',')[1].trim();
-					commandOptions[optionName as keyof typeof commandOptions] = response[lastResponseIndex];
+					const optionName = option.value;
+					commandOptions[optionName as keyof typeof commandOptions] = optionsObject[optionName];
 				});
 			}
 

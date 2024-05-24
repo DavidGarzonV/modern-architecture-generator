@@ -1,5 +1,5 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { createFolder, pathExists, readFile, writeFile } from 'utils/file';
+import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 
 type CreateIAdapterOptions = {
@@ -40,7 +40,7 @@ export default class CreateIAdapter{
 	private async createAdapter(options: CreateIAdapterOptions): Promise<void> {
 		const adapterName = await this._ps.askForCreateProjectFile(options.name, this._interfaceAdaptersFolder, 'repository');
 		const content = this.getContent(adapterName, options.entity);
-		createFolder(this._interfaceAdaptersFolder);
+		createDirectory(this._interfaceAdaptersFolder);
 		writeFile(`${this._interfaceAdaptersFolder}/${adapterName}.repository.ts`, content);
 	}
 
@@ -55,7 +55,7 @@ export default class CreateIAdapter{
 		if (options.contextName) {
 			const contextName = formatName(options.contextName);
 			this._interfaceAdaptersFolder += `/${contextName}`;
-			createFolder(this._interfaceAdaptersFolder);
+			createDirectory(this._interfaceAdaptersFolder);
 		}
 
 		await this.createAdapter(options);
