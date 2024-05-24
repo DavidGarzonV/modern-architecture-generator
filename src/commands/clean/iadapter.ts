@@ -1,8 +1,8 @@
 import { PromptObject } from 'prompts';
 import { EnabledArchitectures } from 'constants/constants';
 import CreateIAdapter from 'lib/clean/iadapter';
-import { ContextsManager } from 'lib/shared/contexts-manager';
-import { CommandOption, createCustomCommand } from 'utils/command';
+import { CommandOption, CustomCommand } from 'utils/singleton/command';
+import { ContextsManager } from 'utils/singleton/contexts-manager';
 
 const questions: PromptObject[] = [
 	{
@@ -26,12 +26,11 @@ type CommandOptions = {
 	entity?: string;
 }
 
-export default createCustomCommand<CommandQuestions, CommandOptions>(
+export default CustomCommand.createCustomCommand<CommandQuestions, CommandOptions>(
 	'iadapter',
 	'Creates a new interface adapter',
 	async ({ name, entity }) => {
-		const contextsManager = new ContextsManager();
-		const context = await contextsManager.getContextName('interface-adapters');
+		const context = await ContextsManager.getContextName('interface-adapters');
 
 		try {
 			const adapter = new CreateIAdapter();

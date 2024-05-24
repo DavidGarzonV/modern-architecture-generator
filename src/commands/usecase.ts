@@ -1,9 +1,9 @@
 import { PromptObject } from 'prompts';
-import { ContextsManager } from 'lib/shared/contexts-manager';
 import CreateUseCase from 'lib/usecase';
 import validateDTO from 'validators/validate';
 import { UseCaseDTO } from 'validators/usecase.dto';
-import { CommandOption, createCustomCommand } from 'utils/command';
+import { CommandOption, CustomCommand } from 'utils/singleton/command';
+import { ContextsManager } from 'utils/singleton/contexts-manager';
 
 const questions: PromptObject[] = [
 	{
@@ -29,15 +29,14 @@ type CommandQuestions = {
 	name: string;
 };
 
-export default createCustomCommand<CommandQuestions, CommandOptions>(
+export default CustomCommand.createCustomCommand<CommandQuestions, CommandOptions>(
 	'usecase',
 	'Creates a new use case',
 	async (response) => {
 		await validateDTO(response, UseCaseDTO);
 		const { name } = response;
 
-		const contextsManager = new ContextsManager();
-		const context = await contextsManager.getContextName('use-cases');
+		const context = await ContextsManager.getContextName('use-cases');
 
 		try {
 			const createUseCase = new CreateUseCase();

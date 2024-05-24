@@ -10,10 +10,10 @@ import {
 import { FolderItem, MagConfiguration } from 'constants/types';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { copyFile, createDirectory, deleteFolder, readDirectory } from 'utils/file';
+import { CustomCommand } from 'utils/singleton/command';
 
 type CreateProjectOptions = {
 	name: string;
-	path?: string;
 	type: EnabledArchitectures;
 };
 
@@ -203,8 +203,7 @@ export default class CreateProject {
 	}
 
 	async run(options: CreateProjectOptions): Promise<string> {
-		const executionPath = process.cwd();
-		const projectPath = options.path ?? executionPath;
+		const projectPath = CustomCommand.getExecutionPath();
 
 		this.validateExecutionPath(projectPath);
 

@@ -1,10 +1,10 @@
 import { PromptObject } from 'prompts';
 import { EnabledArchitectures } from 'constants/constants';
-import { ContextsManager } from 'lib/shared/contexts-manager';
-import { ProjectStructure } from 'lib/shared/project-structure';
 import CreateAdapter from 'lib/clean/adapter';
-import { createCustomCommand } from 'utils/command';
 import { askOptionFromDirectory } from 'utils/questions';
+import { CustomCommand } from 'utils/singleton/command';
+import { ProjectStructure } from 'lib/shared/project-structure';
+import { ContextsManager } from 'utils/singleton/contexts-manager';
 
 const questions: PromptObject[] = [
 	{
@@ -18,7 +18,7 @@ type CommandQuestions = {
 	name: string;
 };
 
-export default createCustomCommand<CommandQuestions>(
+export default CustomCommand.createCustomCommand<CommandQuestions>(
 	'adapter',
 	'Creates a new infrastructure adapter',
 	async ({ name }) => {
@@ -31,8 +31,7 @@ export default createCustomCommand<CommandQuestions>(
 			'.repository.ts'
 		);
 
-		const contextsManager = new ContextsManager();
-		const context = await contextsManager.getContextName('adapters');
+		const context = await ContextsManager.getContextName('adapters');
 
 		try {
 			const adapter = new CreateAdapter();

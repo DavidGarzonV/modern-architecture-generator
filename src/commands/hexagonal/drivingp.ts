@@ -1,11 +1,11 @@
 import prompts from 'prompts';
 
-import { ContextsManager } from 'lib/shared/contexts-manager';
 import { CreateDrivingPort } from 'lib/hexagonal/drivingp';
 import validateDTO from 'validators/validate';
 import { ValidateNameDTO } from 'validators/shared/name.dto';
-import { createCustomCommand } from 'utils/command';
 import { EnabledArchitectures } from 'constants/constants';
+import { CustomCommand } from 'utils/singleton/command';
+import { ContextsManager } from 'utils/singleton/contexts-manager';
 
 const questions: prompts.PromptObject[] = [
 	{
@@ -19,14 +19,13 @@ type CommandQuestions = {
 	name: string;
 };
 
-export default createCustomCommand<CommandQuestions>(
+export default CustomCommand.createCustomCommand<CommandQuestions>(
 	'drivingp',
 	'Creates a new driving port',
 	async ({ name }) => {
 		await validateDTO({ name }, ValidateNameDTO);
 
-		const contextsManager = new ContextsManager();
-		const context = await contextsManager.getContextName('driving-ports');
+		const context = await ContextsManager.getContextName('driving-ports');
 
 		try {
 			const adapter = new CreateDrivingPort();

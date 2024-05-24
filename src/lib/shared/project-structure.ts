@@ -1,21 +1,19 @@
 import fs from 'fs';
+import prompts from 'prompts';
 import { FolderItem, FolderStructure } from 'constants/types';
 import { createDirectory, pathExists } from 'utils/file';
-import { ArchitectureManager } from 'lib/shared/architecture-manager';
 import { formatName } from 'utils/string';
-import prompts from 'prompts';
+import { ArchitectureManager } from 'utils/singleton/architecture-manager';
 
 export class ProjectStructure {
 	private _projectStructure: FolderStructure = [];
-	private _architectureManager: ArchitectureManager;
 
 	get projectStructure() {
 		return this._projectStructure;
 	}
 
 	constructor(){
-		this._architectureManager = new ArchitectureManager();
-		const architecture = this._architectureManager.architecture;
+		const architecture = ArchitectureManager.getArchitecture();
 
 		const projectPath = process.cwd();
 		const jsonFile = fs.readFileSync(`${projectPath}/src/templates/folder-structure/${architecture}.json`, 'utf-8');

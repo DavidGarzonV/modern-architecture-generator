@@ -1,10 +1,10 @@
 import { PromptObject } from 'prompts';
 import CreateEntity, { Property } from 'lib/entity';
-import { ContextsManager } from 'lib/shared/contexts-manager';
 import { ValidateNameDTO } from 'validators/shared/name.dto';
 import validateDTO from 'validators/validate';
-import { createCustomCommand } from 'utils/command';
 import { asyncaskForDynamicFields } from 'utils/questions';
+import { CustomCommand } from 'utils/singleton/command';
+import { ContextsManager } from 'utils/singleton/contexts-manager';
 
 const dynamicQuestions: PromptObject[] = [
 	{
@@ -43,14 +43,13 @@ type CommandQuestions = {
 	name: string;
 };
 
-export default createCustomCommand<CommandQuestions>(
+export default CustomCommand.createCustomCommand<CommandQuestions>(
 	'entity',
 	'Creates a new entity',
 	async ({ name }) => {
 		await validateDTO({ name }, ValidateNameDTO);
 
-		const contextsManager = new ContextsManager();
-		const context = await contextsManager.getContextName('entities');
+		const context = await ContextsManager.getContextName('entities');
 
 		const entityProperties = await asyncaskForDynamicFields<Property>('Do you want to add properties?', dynamicQuestions);
 

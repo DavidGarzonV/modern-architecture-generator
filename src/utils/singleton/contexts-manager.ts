@@ -1,24 +1,19 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
-import prompts from 'prompts';
+import prompts, { Choice, PromptObject } from 'prompts';
 import { pathExists, readDirectory } from 'utils/file';
 
 export class ContextsManager {
-	private _projectStructure: ProjectStructure;
-
-	constructor(){
-		this._projectStructure = new ProjectStructure();
-	}
-
 	/**
 	 * @description Get the contexts from a specific folder
 	 * @private
 	 * @param {string} pathToSearch
-	 * @return {*}  {Promise<prompts.Choice[]>}
+	 * @return {*}  {Promise<Choice[]>}
 	 * @memberof ContextsManager
 	 */
-	private async getContexts(pathToSearch: string): Promise<prompts.Choice[]> {
-		const folder = this._projectStructure.findFolderPathByName(pathToSearch);
-		const contexts: prompts.Choice[] = [];
+	private static async getContexts(pathToSearch: string): Promise<Choice[]> {
+		const projectStructure = new ProjectStructure();
+		const folder = projectStructure.findFolderPathByName(pathToSearch);
+		const contexts: Choice[] = [];
 
 		if (pathExists(folder)) {
 			const folders = readDirectory(folder);
@@ -40,7 +35,7 @@ export class ContextsManager {
 	 * @return {*}  {(Promise<string | undefined>)}
 	 * @memberof ContextsManager
 	 */
-	async getContextName(pathToSearch: string): Promise<string | undefined> {
+	public static async getContextName(pathToSearch: string): Promise<string | undefined> {
 		let context = undefined;
 
 		const { useContext } = await prompts([
@@ -55,8 +50,8 @@ export class ContextsManager {
 		]);
 
 		if (useContext) {
-			const currentContexts = await this.getContexts(pathToSearch);
-			let contextQuestion: prompts.PromptObject | undefined;
+			const currentContexts = await ContextsManager.getContexts(pathToSearch);
+			let contextQuestion: PromptObject | undefined;
 
 			if (currentContexts.length > 0) {
 				contextQuestion = {

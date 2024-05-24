@@ -1,11 +1,12 @@
 import prompts, { PromptObject } from 'prompts';
+import { CustomCommand } from 'utils/singleton/command';
 import { EnabledArchitectures } from 'constants/constants';
 import CreateProject from 'lib/create-project';
 import validateDTO from 'validators/validate';
 import { ValidatePathDTO } from 'validators/shared/path.dto';
 import { ValidateNameDTO } from 'validators/shared/name.dto';
-import { CommandArgument, CommandOption, createCustomCommand } from 'utils/command';
 import { openDirectory } from 'utils/file';
+import { CommandArgument } from 'utils/singleton/command';
 
 const questions: PromptObject[] = [
 	{
@@ -20,14 +21,6 @@ const questions: PromptObject[] = [
 			},
 		],
 		initial: 0,
-	},
-];
-
-const options: CommandOption[] = [
-	{
-		command: '-p, --path <string>',
-		description: 'Path to create the project',
-		value: 'path',
 	},
 ];
 
@@ -49,11 +42,10 @@ type CommandQuestions = {
 
 type CommandArguments = { name: string };
 
-export default createCustomCommand<CommandQuestions,CommandOptions,CommandArguments>(
+export default CustomCommand.createCustomCommand<CommandQuestions,CommandOptions,CommandArguments>(
 	'create',
 	'Creates a new project',
 	async ({ name, ...response }) => {
-		console.log('response:', response);
 		await validateDTO(response, ValidatePathDTO);
 		const createProject = new CreateProject();
 
@@ -62,7 +54,6 @@ export default createCustomCommand<CommandQuestions,CommandOptions,CommandArgume
 		try {
 			const projectPath = await createProject.run({
 				name,
-				path: response.path,
 				type: response.type,
 			});
 
@@ -86,5 +77,5 @@ export default createCustomCommand<CommandQuestions,CommandOptions,CommandArgume
 			console.error(`Error creating project, ${(error as Error).message}`);
 		}
 	},
-	{ questions, options, arguments: commandArguments }
+	{ questions, arguments: commandArguments }
 );
