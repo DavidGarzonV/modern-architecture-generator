@@ -32,9 +32,6 @@ Create a `.env` file with the variable `NODE_ENV="local"` for development purpos
 npm run start [command] [arguments] [-- --option value]
 ```
 
-Find the outputs:
-All the files created with mag tool are created in the folder `./test-environment` when the environment variable `NODE_ENV` has the `"local"` value
-
 ### Command-language syntax
 
 `mag [command] [arguments] [options]`

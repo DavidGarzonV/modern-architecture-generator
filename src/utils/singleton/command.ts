@@ -55,20 +55,42 @@ export class CustomCommand {
 		CustomCommand._executionPath = path;
 	}
 
-	private static handleCommandOptions<Options>(options: CommandOption[], optionsObject: object){
-		const commandOptions: Partial<CommandOptions<Options>> = {};
-		if (options) {
-			options.forEach((option) => {
-				const optionName = option.value;
-				commandOptions[optionName as keyof typeof commandOptions] = optionsObject[optionName as keyof typeof optionsObject];
-			});
+	/**
+	 * Handles command options, setting the path if it is present and returning the command options
+	 * @template Options 
+	 * @param options Command options
+	 * @param responseOptions Options given in the command line
+	 * @returns  
+	 */
+	private static handleCommandOptions<Options>(options: CommandOption[], responseOptions: object){
+		if (Object.keys(responseOptions).length === 0) {
+			return {};
 		}
 
+		const commandOptions: Partial<CommandOptions<Options>> = {};
+		options.forEach((option) => {
+			const optionName = option.value;
+			const responseValue = responseOptions[optionName as keyof typeof responseOptions];
+			if (responseValue) {
+				commandOptions[optionName as keyof typeof commandOptions] = responseValue;
+			}
+		});
+
 		if (commandOptions.path) {
-			CustomCommand.setExecutionPath(commandOptions.path as string);
+			CustomCommand.setExecutionPath(commandOptions.path);
 		}
 
 		return commandOptions;
+	}
+
+	/**
+	 * Validates configuration after setting the command options
+	 * @param commandName Command executed
+	 */
+	private static validateConfiguration(commandName: string){
+		if (commandName !== 'create') {			
+			Configuration.validateMagAndConfig();
+		}
 	}
 
 	/**
@@ -96,12 +118,6 @@ export class CustomCommand {
 	) {
 		type ResponseType = CommandActionResponse<Arguments, CommandOptions<Options>, Questions>
 		const command = new Command(commandName).description(description);
-
-		command.hook('preAction', async () => {
-			if (commandName !== 'create') {			
-				Configuration.validateMagAndConfig();
-			}
-		});
 
 		const options = [ ...(commandOptions?.options ?? []), ...CustomCommand.defaultCommandOptions];
 	
@@ -139,16 +155,17 @@ export class CustomCommand {
 	
 			return command.action(async (...response) => {
 				const responseArguments: Partial<Arguments> = {};
-				let lastResponseIndex = response.length - 1;
+				let responseIndex = 0;
 				if (commandArguments) {
 					commandArguments.forEach((argument, index: number) => {
 						responseArguments[argument.value as keyof typeof responseArguments] = response[index];
-						lastResponseIndex = index;
 					});
+					responseIndex = commandArguments.length;
 				}
-	
-				const commandOptions = CustomCommand.handleCommandOptions<Options>(options, response[lastResponseIndex + 1]);
-	
+
+				const commandOptions = CustomCommand.handleCommandOptions<Options>(options, response[responseIndex]);
+				CustomCommand.validateConfiguration(commandName);
+
 				if (questions) {
 					const answers = await prompts(questions);
 					await action({ ...responseArguments, ...commandOptions, ...answers } as ResponseType);
@@ -160,6 +177,7 @@ export class CustomCommand {
 	
 		return command.action(async (response) => {
 			const commandOptions = CustomCommand.handleCommandOptions<Options>(options, response);
+			CustomCommand.validateConfiguration(commandName);
 			await action(commandOptions as ResponseType);
 		});
 	}

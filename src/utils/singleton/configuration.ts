@@ -51,12 +51,7 @@ export class Configuration {
 		let finalConfig: MagConfiguration = originalConfig;
 
 		const projectPath = CustomCommand.getExecutionPath();
-		let customConfigurationPath = '';
-		if (process.env.NODE_ENV === 'local') {
-			customConfigurationPath = `${projectPath}/test-environment/${Configuration.configurationFile}`;
-		}else{
-			customConfigurationPath = `${projectPath}/${Configuration.configurationFile}`;
-		}
+		const customConfigurationPath = `${projectPath}/${Configuration.configurationFile}`;
 
 		if (fs.existsSync(customConfigurationPath)) {
 			const customConfig = JSON.parse(fs.readFileSync(customConfigurationPath, 'utf8'));

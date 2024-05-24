@@ -5,6 +5,7 @@ import { createDirectory, pathExists } from 'utils/file';
 import { formatName } from 'utils/string';
 import { ArchitectureManager } from 'utils/singleton/architecture-manager';
 import { Configuration } from 'utils/singleton/configuration';
+import { CustomCommand } from 'utils/singleton/command';
 
 export class ProjectStructure {
 	private _projectStructure: FolderStructure = [];
@@ -55,12 +56,7 @@ export class ProjectStructure {
 			throw new Error(`Could not find ${name} folder`);
 		}
 
-		let srcPath = 'src';
-		if (process.env.NODE_ENV === 'local') {
-			const executionPath = Configuration.getMagPath();
-			srcPath = `${executionPath}/test-environment`;
-		}
-
+		const srcPath = CustomCommand.getExecutionPath() + '/src';
 		return this.organizeParentFolder(itemFolder, srcPath);
 	}
 

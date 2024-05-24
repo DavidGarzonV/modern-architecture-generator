@@ -54,6 +54,11 @@ function handleError(error: Error | unknown | undefined){
 	if (error && (error as Error).message) {
 		console.error('\nApplication error: ', (error as Error).message);
 	}
+
+	if (process.env.NODE_ENV === 'local' && error) {
+		console.error('\nApplication error: ', error);
+	}
+
 	process.exit(1);
 }
 
