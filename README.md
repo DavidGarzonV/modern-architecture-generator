@@ -1,6 +1,7 @@
 <h1 align="center">Modern Architecture Generator - Mag</h1>
 
-Plugin to create and enhance projects using software architectures.
+Plugin to create and structure projects with a architecture pattern.
+
 In this plugin we can found the next architectures:
 
 - Clean Architecture
