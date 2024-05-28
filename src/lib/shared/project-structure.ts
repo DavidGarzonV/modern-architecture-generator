@@ -1,7 +1,8 @@
 import fs from 'fs';
 import prompts from 'prompts';
+import path from 'path';
 import { FolderItem, FolderStructure } from 'constants/types';
-import { createDirectory, pathExists } from 'utils/file';
+import { createDirectory, findFileFilePath, pathExists } from 'utils/file';
 import { formatName } from 'utils/string';
 import { ArchitectureManager } from 'utils/singleton/architecture-manager';
 import { Configuration } from 'utils/singleton/configuration';
@@ -19,6 +20,10 @@ export class ProjectStructure {
 		this.setProjectStructure();
 	}
 
+	/**
+	 * @description Set the project structure based on the architecture
+	 * @param {EnabledArchitectures} [architecture]
+	 */
 	setProjectStructure(architecture?: EnabledArchitectures){
 		if (!architecture) {
 			architecture = ArchitectureManager.getArchitecture();
@@ -138,5 +143,41 @@ export class ProjectStructure {
 		}
 
 		return adapterName;
+	}
+
+	/**
+	 * @description Get the import path from a given origin to a destination
+	 * @param {string} origin Folder where the import is going to be made
+	 * @param {string} destination File path to be imported
+	 * @return {*} {string} Import path
+	 */
+	getImportPath(origin: string, destination: string): string {
+		const finalPath = path.relative(origin, destination).replace(/\\/g, '/');
+		return finalPath;
+	}
+
+	/**
+	 * Gets entity import path from a given entity base path
+	 * @param entityPath Entity name or entity path with name
+	 * @param baseFolder Folder where the entity is going to be imported
+	 * @returns entity import path 
+	 */
+	getEntityImportPath(entityPath: string, baseFolder: string): string | undefined{
+		const entitiesFolder = this.findFolderPathByName('entities');
+
+		let entityFile = `${entityPath}.entity.ts`;
+		if (entityPath.includes('/')) {
+			entityFile = entityPath;
+		}
+
+		const finalEntityPath = findFileFilePath(entitiesFolder, entityFile);
+
+		if (entityPath && finalEntityPath) {
+			if (pathExists(finalEntityPath)) {
+				return this.getImportPath(baseFolder, finalEntityPath).replace('.ts', '');
+			}
+		}
+
+		return undefined;
 	}
 }

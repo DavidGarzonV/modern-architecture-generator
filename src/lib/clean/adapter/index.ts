@@ -1,4 +1,3 @@
-import path from 'path';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, findFileFilePath, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
@@ -20,11 +19,6 @@ export default class CreateAdapter {
 		this._ps = new ProjectStructure();
 	}
 
-	private getImportPath(origin: string, destination: string): string {
-		const finalPath = path.relative(origin, destination).replace(/\\/g, '/');
-		return finalPath;
-	}
-
 	// TODO - Implement interface methods
 	private async getContent(name: string, iadapter: string): Promise<string> {
 		const interfaceAdapterName = formatName(iadapter);
@@ -35,7 +29,7 @@ export default class CreateAdapter {
 		const repositoryName = `${interfaceAdapterName}.repository.ts`;
 		const interfaceAdaptersFolder = this._ps.findFolderPathByName('interface-adapters');
 
-		const repositoryPath = findFileFilePath(repositoryName, interfaceAdaptersFolder);
+		const repositoryPath = findFileFilePath(interfaceAdaptersFolder, repositoryName);
 
 		if (!repositoryPath) {
 			throw new Error('Invalid interface adapter');
@@ -47,7 +41,7 @@ export default class CreateAdapter {
 
 		if (repositoryFile && repositoryFile.interfaces.length > 0) {
 			const [interfaceName] = repositoryFile.interfaces;
-			const repositoryImportPath = this.getImportPath(this._adaptersFolder, repositoryPath);
+			const repositoryImportPath = this._ps.getImportPath(this._adaptersFolder, repositoryPath);
 
 			adapterMethodsTemplate = adapterMethodsTemplate.replace(/IAdapterRoute/g, repositoryImportPath.replace('.ts', ''));
 			adapterMethodsTemplate = adapterMethodsTemplate.replace(/IAdapter/g, interfaceName.name);

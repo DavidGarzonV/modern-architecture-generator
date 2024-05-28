@@ -141,7 +141,12 @@ export class CustomCommand {
 			}
 	
 			if (architecture) {
-				command.hook('preAction', async () => {
+				command.hook('preAction', async (_: Command, actionCommand: Command) => {
+					const options = actionCommand.opts();
+					if (options.path) {
+						CustomCommand.setExecutionPath(options.path);
+					}
+
 					const result = ArchitectureManager.validateProjectArchitecture(
 						architecture
 					);

@@ -93,7 +93,13 @@ export const getDirectoryItems = (directory: string, filterPath?: string) => {
 	return filteredItems;
 };
 
-export const findFileFilePath = (fileName: string, directory: string): string | undefined => {
+/**
+ * Find a file in a directory
+ * @param {string} directory - The directory to search the file
+ * @param {string} fileName - The name of the file to find
+ * @returns The file path if found, otherwise undefined
+ */
+export const findFileFilePath = (directory: string, fileName: string): string | undefined => {
 	const items = getDirectoryItems(directory);
 	const file = items.find((item) => item.includes(fileName));
 

@@ -20,16 +20,15 @@ export class CreateDrivenPort{
 	private getContent(name: string, entityPath?: string){
 		const projectPath = Configuration.getMagPath();
 		let adapterTemplate = readFile(`${projectPath}/src/templates/ports/driven-port.txt`);
-		
-		const entitiesFolder = this._ps.findFolderPathByName('entities');
-		const finalEntityPath = `${entitiesFolder}/${entityPath}/${entityPath}.entity.ts`;
 
 		if (entityPath) {
-			if (pathExists(finalEntityPath)) {
+			const importPath = this._ps.getEntityImportPath(entityPath, this._drivenPortsFolder);
+			if (importPath && entityPath) {
+				adapterTemplate = `import { IEntity } from '${importPath}';\n${adapterTemplate}`;
 				const entityName = entityPath.split('/').pop()?.split('\\').pop();
 				adapterTemplate = adapterTemplate.replace(/IEntity/g, entityName!);
 			}else{
-				console.info(`Entity ${finalEntityPath} not found, ignoring...`);
+				console.info(`Entity ${entityPath} not found, ignoring...`);
 			}
 		}else{
 			adapterTemplate = adapterTemplate.replace(/IEntity/g, 'object');

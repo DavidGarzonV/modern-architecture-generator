@@ -21,20 +21,19 @@ export default class CreateIAdapter{
 		const projectPath = Configuration.getMagPath();
 		let adapterTemplate = readFile(`${projectPath}/src/templates/adapters/iadapter.txt`);
 
-		const entitiesFolder = this._ps.findFolderPathByName('entities');
-		const finalEntityPath = `${entitiesFolder}/${entityPath}/${entityPath}.entity.ts`;
-
 		if (entityPath) {
-			if (pathExists(finalEntityPath)) {
+			const importPath = this._ps.getEntityImportPath(entityPath, this._interfaceAdaptersFolder);
+			if (importPath && entityPath) {
+				adapterTemplate = `import { IEntity } from '${importPath}';\n${adapterTemplate}`;
 				const entityName = entityPath.split('/').pop()?.split('\\').pop();
 				adapterTemplate = adapterTemplate.replace(/IEntity/g, entityName!);
 			}else{
-				console.info(`Entity ${finalEntityPath} not found, ignoring...`);
+				console.info(`Entity ${entityPath} not found, ignoring...`);
 			}
 		}else{
 			adapterTemplate = adapterTemplate.replace(/IEntity/g, 'object');
 		}
-
+	
 		return adapterTemplate.replace(/IAdapter/g, name);
 	}
 
