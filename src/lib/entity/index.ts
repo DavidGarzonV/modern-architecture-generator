@@ -1,5 +1,5 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { createDirectory, pathExists, writeFile } from 'utils/file';
+import { createDirectory, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 
 export type Property = {
@@ -62,10 +62,6 @@ export default class CreateEntity{
 				this._entitiesFolder,
 				pascalCaseContextName
 			);
-
-			if (pathExists(this._entitiesFolder)) {
-				createDirectory(pascalCaseContextName);
-			}
 
 			this._entitiesFolder = contextPath;
 		}

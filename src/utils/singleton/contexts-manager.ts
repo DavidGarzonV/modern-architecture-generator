@@ -16,12 +16,13 @@ export class ContextsManager {
 		const contexts: Choice[] = [];
 
 		if (pathExists(folder)) {
-			const folders = readDirectory(folder);
-			folders.forEach((folder) => {
-				const contents = readDirectory(`${folder}/${folder}`);
+			const items = readDirectory(folder);
+			items.forEach((item) => {
+				const contents = readDirectory(`${folder}/${item}`);
 				const hasFiles = contents.some((content) => content.includes('.'));
-				if (!hasFiles) {
-					contexts.push({ title: folder, value: folder });
+
+				if (!hasFiles || item.includes('.')) {
+					contexts.push({ title: item, value: item });
 				}
 			});
 		}
@@ -54,6 +55,7 @@ export class ContextsManager {
 			let contextQuestion: PromptObject | undefined;
 
 			if (currentContexts.length > 0) {
+				currentContexts.push({ title: '- Create new context', value: 'new' });
 				contextQuestion = {
 					type: 'select',
 					name: 'contextName',
@@ -69,7 +71,18 @@ export class ContextsManager {
 			}
 
 			const { contextName } = await prompts([contextQuestion]);
-			context = contextName;
+			if (contextName === 'new') {
+				const { newContext } = await prompts([
+					{
+						type: 'text',
+						name: 'newContext',
+						message: 'What is the new context name?',
+					},
+				]);
+				context = newContext;
+			}else{
+				context = contextName;
+			}
 		}
 
 		return context;
