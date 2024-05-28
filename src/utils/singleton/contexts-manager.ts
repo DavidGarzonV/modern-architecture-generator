@@ -1,27 +1,36 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
 import prompts, { Choice, PromptObject } from 'prompts';
-import { pathExists, readDirectory } from 'utils/file';
+import { isDirectory, pathExists, readDirectory } from 'utils/file';
 
 export class ContextsManager {
 	/**
 	 * @description Get the contexts from a specific folder
 	 * @private
-	 * @param {string} pathToSearch
+	 * @param {string} pathToSearch The path to search the contexts
+	 * @param {boolean} [onlyFolders] Define if the search should be only for folders
 	 * @return {*}  {Promise<Choice[]>}
 	 * @memberof ContextsManager
 	 */
-	private static async getContexts(pathToSearch: string): Promise<Choice[]> {
+	private static async getContexts(pathToSearch: string, onlyFolders?: boolean): Promise<Choice[]> {
 		const projectStructure = new ProjectStructure();
 		const folder = projectStructure.findFolderPathByName(pathToSearch);
 		const contexts: Choice[] = [];
 
-		if (pathExists(folder)) {
+		if (pathExists(folder) && isDirectory(folder)) {
 			const items = readDirectory(folder);
 			items.forEach((item) => {
-				const contents = readDirectory(`${folder}/${item}`);
-				const hasFiles = contents.some((content) => content.includes('.'));
+				let addItem = !item.includes('.');
+				if (isDirectory(`${folder}/${item}`)) {
+					const contents = readDirectory(`${folder}/${item}`);
 
-				if (!hasFiles || item.includes('.')) {
+					if (onlyFolders) {
+						addItem = contents.every((content) => !content.includes('.'));
+					}else{
+						addItem = contents.every((content) => content.includes('.'));
+					}
+				}
+
+				if (addItem) {
 					contexts.push({ title: item, value: item });
 				}
 			});
@@ -32,11 +41,12 @@ export class ContextsManager {
 
 	/**
 	 * @description Ask for the context name and search options
-	 * @param {string} pathToSearch
+	 * @param {string} pathToSearch The path to search the contexts
+	 * @param {boolean} [onlyFolders] Define if the search should be only for folders
 	 * @return {*}  {(Promise<string | undefined>)}
 	 * @memberof ContextsManager
 	 */
-	public static async getContextName(pathToSearch: string): Promise<string | undefined> {
+	public static async getContextName(pathToSearch: string, onlyFolders?: boolean): Promise<string | undefined> {
 		let context = undefined;
 
 		const { useContext } = await prompts([
@@ -51,7 +61,7 @@ export class ContextsManager {
 		]);
 
 		if (useContext) {
-			const currentContexts = await ContextsManager.getContexts(pathToSearch);
+			const currentContexts = await ContextsManager.getContexts(pathToSearch, onlyFolders);
 			let contextQuestion: PromptObject | undefined;
 
 			if (currentContexts.length > 0) {

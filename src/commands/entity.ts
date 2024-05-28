@@ -49,7 +49,7 @@ export default CustomCommand.createCustomCommand<CommandQuestions>(
 	async ({ name }) => {
 		await validateDTO({ name }, ValidateNameDTO);
 
-		const context = await ContextsManager.getContextName('entities');
+		const context = await ContextsManager.getContextName('entities', true);
 
 		const entityProperties = await asyncaskForDynamicFields<Property>('Do you want to add properties?', dynamicQuestions);
 

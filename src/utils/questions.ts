@@ -43,12 +43,23 @@ export const asyncaskForDynamicFields = async <Field = object>(
 	return getDynamicFields<Field>(askForFields, dynamicQuestions);
 };
 
+/**
+ * @description Ask for select an option from a directory files
+ * @param {string} question question to ask
+ * @param {string} directory directory to search for options
+ * @param {string} [filterPath] filter the results by a specific path
+ * @return {*}  {(Promise<string | null>)} If not found return null
+ */
 export const askOptionFromDirectory = async (
 	question: string,
 	directory: string,
 	filterPath?: string
-): Promise<string> => {
+): Promise<string | null> => {
 	const items = getDirectoryItems(directory, filterPath);
+
+	if (items.length === 0) {
+		return null;
+	}
 
 	const choices = items.map((item) => {
 		const itemValue = item.split('/').pop()!;

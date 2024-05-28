@@ -92,3 +92,14 @@ export const getDirectoryItems = (directory: string, filterPath?: string) => {
 
 	return filteredItems;
 };
+
+export const findFileFilePath = (fileName: string, directory: string): string | undefined => {
+	const items = getDirectoryItems(directory);
+	const file = items.find((item) => item.includes(fileName));
+
+	if (file) {
+		return `${directory}/${file}`;
+	}
+
+	return undefined;
+};

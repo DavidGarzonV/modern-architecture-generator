@@ -36,7 +36,7 @@ export default CustomCommand.createCustomCommand<CommandQuestions, CommandOption
 		await validateDTO(response, UseCaseDTO);
 		const { name } = response;
 
-		const context = await ContextsManager.getContextName('use-cases');
+		const context = await ContextsManager.getContextName('use-cases', true);
 
 		try {
 			const createUseCase = new CreateUseCase();

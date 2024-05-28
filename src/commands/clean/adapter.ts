@@ -31,6 +31,10 @@ export default CustomCommand.createCustomCommand<CommandQuestions>(
 			'.repository.ts'
 		);
 
+		if (!iadapter) {
+			throw new Error('No interface adapters found');
+		}
+
 		const context = await ContextsManager.getContextName('adapters');
 
 		try {

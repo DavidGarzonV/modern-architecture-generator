@@ -1,6 +1,6 @@
 import path from 'path';
 import { ProjectStructure } from 'lib/shared/project-structure';
-import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
+import { createDirectory, findFileFilePath, pathExists, readFile, writeFile } from 'utils/file';
 import { formatName } from 'utils/string';
 import { readTypescriptFile } from 'utils/typescript';
 import { Configuration } from 'utils/singleton/configuration';
@@ -34,15 +34,22 @@ export default class CreateAdapter {
 
 		const repositoryName = `${interfaceAdapterName}.repository.ts`;
 		const interfaceAdaptersFolder = this._ps.findFolderPathByName('interface-adapters');
+
+		const repositoryPath = findFileFilePath(repositoryName, interfaceAdaptersFolder);
+
+		if (!repositoryPath) {
+			throw new Error('Invalid interface adapter');
+		}
+
 		const repositoryFile = await readTypescriptFile(
-			`${interfaceAdaptersFolder}/${repositoryName}`
+			repositoryPath
 		);
 
 		if (repositoryFile && repositoryFile.interfaces.length > 0) {
 			const [interfaceName] = repositoryFile.interfaces;
-			const repositoryImportPath = this.getImportPath(this._adaptersFolder, `${interfaceAdaptersFolder}/${repositoryName}`);
+			const repositoryImportPath = this.getImportPath(this._adaptersFolder, repositoryPath);
 
-			adapterMethodsTemplate = adapterMethodsTemplate.replace(/IAdapterRoute/g, repositoryImportPath);
+			adapterMethodsTemplate = adapterMethodsTemplate.replace(/IAdapterRoute/g, repositoryImportPath.replace('.ts', ''));
 			adapterMethodsTemplate = adapterMethodsTemplate.replace(/IAdapter/g, interfaceName.name);
 		}else{
 			throw new Error('Invalid interface adapter');
