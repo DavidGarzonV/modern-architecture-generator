@@ -1,25 +1,23 @@
-import prompts from 'prompts';
-
 import { CreateDrivingPort } from 'lib/hexagonal/drivingp';
 import validateDTO from 'validators/validate';
 import { ValidateNameDTO } from 'validators/shared/name.dto';
 import { EnabledArchitectures } from 'constants/constants';
-import { CustomCommand } from 'utils/singleton/command';
+import { CommandArgument, CustomCommand } from 'utils/singleton/command';
 import { ContextsManager } from 'utils/singleton/contexts-manager';
 
-const questions: prompts.PromptObject[] = [
+const commandArguments: CommandArgument[] = [
 	{
-		type: 'text',
-		name: 'name',
-		message: 'Name of the driving port:',
+		type: 'string',
+		value: 'name',
+		description: 'Name of the driving port',
 	},
 ];
 
-type CommandQuestions = {
+type CommandArguments = {
 	name: string;
 };
 
-export default CustomCommand.createCustomCommand<CommandQuestions>(
+export default CustomCommand.createCustomCommand<unknown, unknown, CommandArguments>(
 	'drivingp',
 	'Creates a new driving port',
 	async ({ name }) => {
@@ -37,7 +35,7 @@ export default CustomCommand.createCustomCommand<CommandQuestions>(
 		}
 	},
 	{
-		questions,
+		arguments:commandArguments,
 		architecture: EnabledArchitectures.Hexagonal,
 	}
 );

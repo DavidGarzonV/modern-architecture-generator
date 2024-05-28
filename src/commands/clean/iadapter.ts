@@ -1,15 +1,14 @@
-import { PromptObject } from 'prompts';
 import { EnabledArchitectures } from 'constants/constants';
 import CreateIAdapter from 'lib/clean/iadapter';
-import { CommandOption, CustomCommand } from 'utils/singleton/command';
+import { CommandArgument, CommandOption, CustomCommand } from 'utils/singleton/command';
 import { ContextsManager } from 'utils/singleton/contexts-manager';
 
-const questions: PromptObject[] = [
+const commandArguments: CommandArgument[] = [
 	{
-		type: 'text',
-		name: 'name',
-		message: 'Name of the interface adapter:',
-	}
+		type: 'string',
+		value: 'name',
+		description: 'Name of the interface adapter',
+	},
 ];
 
 const options: CommandOption[] = [{
@@ -18,7 +17,7 @@ const options: CommandOption[] = [{
 	value: 'entity',
 }];
 
-type CommandQuestions = {
+type CommandArguments = {
 	name: string;
 };
 
@@ -26,7 +25,7 @@ type CommandOptions = {
 	entity?: string;
 }
 
-export default CustomCommand.createCustomCommand<CommandQuestions, CommandOptions>(
+export default CustomCommand.createCustomCommand<unknown, CommandOptions, CommandArguments>(
 	'iadapter',
 	'Creates a new interface adapter',
 	async ({ name, entity }) => {
@@ -42,7 +41,7 @@ export default CustomCommand.createCustomCommand<CommandQuestions, CommandOption
 		}
 	},
 	{
-		questions,
+		arguments: commandArguments,
 		options,
 		architecture: EnabledArchitectures.Clean,
 	}

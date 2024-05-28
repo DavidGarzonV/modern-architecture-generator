@@ -16,7 +16,7 @@ In this plugin we can found the next architectures:
 
 Install MAG CLI globally using `npm` package manager:
 
-```sh
+```md
 npm install -g modern-architecture-generator
 ```
 
@@ -28,7 +28,7 @@ Create a `.env` file with the variable `NODE_ENV="local"` for development purpos
 
 **Execute commands:**
 
-```sh
+```md
 npm run start [command] [arguments] [-- --option value]
 ```
 
@@ -38,7 +38,7 @@ npm run start [command] [arguments] [-- --option value]
 
 To see all the commands avaliable:
 
-```sh
+```md
 mag --help
 mag [command] --help
 ```
@@ -59,8 +59,8 @@ mag [command] --help
 
 Creates a new project with a defined architecture using:
 
-```sh
-mag create [PROJECT NAME] [OPTIONS]
+```md
+mag create <PROJECT NAME> [OPTIONS]
 mag create mag-test --path "C:\Users\user\Documents\GitHub\modern-architecture-generator\test"
 ```
 
@@ -78,8 +78,8 @@ The use cases describe the rules that govern the interaction between users and e
 
 Creates a personalized use case in your architecture folder using:
 
-```sh
-mag usecase
+```md
+mag usecase <usecase-name>
 ```
 
 ### Entities
@@ -92,8 +92,8 @@ An entity can be an object with methods, or it can be a set of functions and dat
 
 Creates a personalized entity in your architecture folder.
 
-```sh
-mag entity
+```md
+mag entity <entity-name>
 ```
 
 ---
@@ -132,7 +132,7 @@ The models are likely just data structures that are passed from the controllers 
 Creates a new interface adapter using:
 
 ```md
-mag iadapter
+mag iadapter <interface-adapter-name>
 ```
 
 **Options:**
@@ -150,7 +150,7 @@ The software in this layer is a set of adapters that convert data from the forma
 Also in this layer is any other adapter necessary to convert data from some external form, such as an external service, to the internal form used by the use cases and entities.
 
 ```md
-mag adapter
+mag adapter <adapter-name>
 ```
 ---
 
@@ -188,7 +188,7 @@ For the driving/driver ports (Input ports), use case interfaces that the adapter
 Creates a new driving port using:
 
 ```md
-mag drivingp
+mag drivingp <driving-port-name>
 ```
 ### Driven ports
 
@@ -199,7 +199,7 @@ For the driven ports (Output ports), interfaces are defined that must be impleme
 Creates a new driven port using:
 
 ```md
-mag drivenp
+mag drivenp <driven-port-name>
 ```
 
 **Options:**

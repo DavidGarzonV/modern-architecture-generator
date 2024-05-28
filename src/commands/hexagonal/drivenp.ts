@@ -1,18 +1,17 @@
-import { PromptObject } from 'prompts';
 import { EnabledArchitectures } from 'constants/constants';
 import { CreateDrivenPort } from 'lib/hexagonal/drivenp';
 import validateDTO from 'validators/validate';
 import { ValidateEntityDTO } from 'validators/shared/entity.dto';
 import { ValidateNameDTO } from 'validators/shared/name.dto';
-import { CommandOption, CustomCommand } from 'utils/singleton/command';
+import { CommandArgument, CommandOption, CustomCommand } from 'utils/singleton/command';
 import { ContextsManager } from 'utils/singleton/contexts-manager';
 
-const questions: PromptObject[] = [
+const commandArguments: CommandArgument[] = [
 	{
-		type: 'text',
-		name: 'name',
-		message: 'Name of the driven port:',
-	}
+		type: 'string',
+		value: 'name',
+		description: 'Name of the driven port',
+	},
 ];
 
 const options: CommandOption[] = [{
@@ -21,7 +20,7 @@ const options: CommandOption[] = [{
 	value: 'entity',
 }];
 
-type CommandQuestions = {
+type CommandArguments = {
 	name: string;
 };
 
@@ -29,7 +28,7 @@ type CommandOptions = {
 	entity?: string;
 }
 
-export default CustomCommand.createCustomCommand<CommandQuestions, CommandOptions>(
+export default CustomCommand.createCustomCommand<unknown, CommandOptions, CommandArguments>(
 	'drivenp',
 	'Creates a new driven port',
 	async ({ name , entity }) => {
@@ -48,7 +47,7 @@ export default CustomCommand.createCustomCommand<CommandQuestions, CommandOption
 		}
 	},
 	{
-		questions,
+		arguments: commandArguments,
 		options,
 		architecture: EnabledArchitectures.Hexagonal,
 	}

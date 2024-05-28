@@ -1,24 +1,23 @@
-import { PromptObject } from 'prompts';
 import { EnabledArchitectures } from 'constants/constants';
 import CreateAdapter from 'lib/clean/adapter';
 import { askOptionFromDirectory } from 'utils/questions';
-import { CustomCommand } from 'utils/singleton/command';
+import { CommandArgument, CustomCommand } from 'utils/singleton/command';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { ContextsManager } from 'utils/singleton/contexts-manager';
 
-const questions: PromptObject[] = [
+const commandArguments: CommandArgument[] = [
 	{
-		type: 'text',
-		name: 'name',
-		message: 'Name of the adapter:',
+		type: 'string',
+		value: 'name',
+		description: 'Name of the adapter',
 	},
 ];
 
-type CommandQuestions = {
+type CommandArguments = {
 	name: string;
 };
 
-export default CustomCommand.createCustomCommand<CommandQuestions>(
+export default CustomCommand.createCustomCommand<unknown, unknown, CommandArguments>(
 	'adapter',
 	'Creates a new infrastructure adapter',
 	async ({ name }) => {
@@ -49,7 +48,7 @@ export default CustomCommand.createCustomCommand<CommandQuestions>(
 		}
 	},
 	{
-		questions,
+		arguments: commandArguments,
 		architecture: EnabledArchitectures.Clean,
 	}
 );

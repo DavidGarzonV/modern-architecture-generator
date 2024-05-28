@@ -1,15 +1,14 @@
-import { PromptObject } from 'prompts';
 import CreateUseCase from 'lib/usecase';
 import validateDTO from 'validators/validate';
 import { UseCaseDTO } from 'validators/usecase.dto';
-import { CommandOption, CustomCommand } from 'utils/singleton/command';
+import { CommandArgument, CommandOption, CustomCommand } from 'utils/singleton/command';
 import { ContextsManager } from 'utils/singleton/contexts-manager';
 
-const questions: PromptObject[] = [
+const commandArguments: CommandArgument[] = [
 	{
-		type: 'text',
-		name: 'name',
-		message: 'What is the name of the use case?',
+		type: 'string',
+		value: 'name',
+		description: 'Name of the use case',
 	},
 ];
 
@@ -25,11 +24,11 @@ type CommandOptions = {
 	tests: boolean;
 };
 
-type CommandQuestions = {
+type CommandArguments = {
 	name: string;
 };
 
-export default CustomCommand.createCustomCommand<CommandQuestions, CommandOptions>(
+export default CustomCommand.createCustomCommand<unknown, CommandOptions, CommandArguments>(
 	'usecase',
 	'Creates a new use case',
 	async (response) => {
@@ -49,5 +48,5 @@ export default CustomCommand.createCustomCommand<CommandQuestions, CommandOption
 			console.error('Error creating use case:', (error as Error).message);
 		}
 	},
-	{ questions, options }
+	{ arguments: commandArguments, options }
 );

@@ -3,7 +3,7 @@ import CreateEntity, { Property } from 'lib/entity';
 import { ValidateNameDTO } from 'validators/shared/name.dto';
 import validateDTO from 'validators/validate';
 import { asyncaskForDynamicFields } from 'utils/questions';
-import { CustomCommand } from 'utils/singleton/command';
+import { CommandArgument, CustomCommand } from 'utils/singleton/command';
 import { ContextsManager } from 'utils/singleton/contexts-manager';
 
 const dynamicQuestions: PromptObject[] = [
@@ -31,19 +31,19 @@ const dynamicQuestions: PromptObject[] = [
 	},
 ];
 
-const questions: PromptObject[] = [
+const commandArguments: CommandArgument[] = [
 	{
 		type: 'text',
-		name: 'name',
-		message: 'What is the name of the entity?',
+		value: 'name',
+		description: 'What is the name of the entity?',
 	}
 ];
 
-type CommandQuestions = {
+type CommandArguments = {
 	name: string;
 };
 
-export default CustomCommand.createCustomCommand<CommandQuestions>(
+export default CustomCommand.createCustomCommand<unknown, unknown, CommandArguments>(
 	'entity',
 	'Creates a new entity',
 	async ({ name }) => {
@@ -64,5 +64,5 @@ export default CustomCommand.createCustomCommand<CommandQuestions>(
 			console.error('Error creating entity:', (error as Error).message);
 		}
 	},
-	{ questions }
+	{ arguments: commandArguments }
 );
