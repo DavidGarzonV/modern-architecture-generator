@@ -1,5 +1,6 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, writeFile } from 'utils/file';
+import Loader from 'utils/loader';
 import { formatName } from 'utils/string';
 
 export type Property = {
@@ -51,7 +52,7 @@ export default class CreateEntity{
 	}
 
 	async run(options: CreateEntityOptions) {
-		console.info('Creating entity...');
+		Loader.create('Creating entity', { doneMessage: 'Entity created!' });
 		this.setEntitiesFolder();
 
 		const pascalCaseName = formatName(options.name);
@@ -67,6 +68,6 @@ export default class CreateEntity{
 		}
 
 		await this.createFile(pascalCaseName, options.defaultProperties);
-		console.info('Entity created!');
+		Loader.stopAll();
 	}
 }

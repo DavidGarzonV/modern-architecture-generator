@@ -1,5 +1,6 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
+import Loader from 'utils/loader';
 import { Configuration } from 'utils/singleton/configuration';
 import { formatName } from 'utils/string';
 
@@ -46,8 +47,8 @@ export class CreateDrivenPort{
 	}
 
 	async run(options: CreateDrivenPortOptions): Promise<void> {
-		console.info('Creating driven port...');
-		
+		Loader.create(`Creating driven port ${options.name}`, { doneMessage: 'Driven port created!' });
+
 		this._drivenPortsFolder = this._ps.findFolderPathByName('driven-ports');
 		if (!pathExists(this._drivenPortsFolder)) {
 			throw new Error('Driven ports folder not found');
@@ -60,6 +61,6 @@ export class CreateDrivenPort{
 		}
 
 		await this.createDrivenPort(options);
-		console.info('Driven port created!');
+		Loader.stopAll();
 	}
 }

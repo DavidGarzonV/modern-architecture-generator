@@ -1,5 +1,6 @@
 import { exec } from 'child_process';
 import fs from 'fs';
+import Loader from 'utils/loader';
 import { Configuration } from 'utils/singleton/configuration';
 
 export const createDirectory = (path: string): string => {
@@ -56,7 +57,7 @@ export const openDirectory = (path: string): void => {
 		if (error) {
 			throw new Error(`Error opening folder ${path}`);
 		}
-		console.info('Folder opened, enjoy!');
+		Loader.stopAll();
 	});
 };
 

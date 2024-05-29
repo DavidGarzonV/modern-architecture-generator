@@ -3,6 +3,7 @@ import { createDirectory, findFileFilePath, pathExists, readFile, writeFile } fr
 import { formatName } from 'utils/string';
 import { readTypescriptFile } from 'utils/typescript';
 import { Configuration } from 'utils/singleton/configuration';
+import Loader from 'utils/loader';
 
 type CreateAdapterOptions = {
 	name: string
@@ -60,7 +61,7 @@ export default class CreateAdapter {
 	}
 
 	async run(options: CreateAdapterOptions): Promise<void> {
-		console.info(`Creating adapter ${options.name}...`);
+		Loader.create(`Creating adapter ${options.name}`, { doneMessage: 'Adapter created!' });
 
 		this._adaptersFolder = this._ps.findFolderPathByName('adapters');
 		if (!pathExists(this._adaptersFolder)) {
@@ -74,6 +75,6 @@ export default class CreateAdapter {
 		}
 
 		await this.createAdapter(options);
-		console.info('Adapter created!');
+		Loader.stopAll();
 	}
 }

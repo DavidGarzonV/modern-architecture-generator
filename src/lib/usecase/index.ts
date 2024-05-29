@@ -2,6 +2,7 @@ import { formatName, formatNameAttributes } from 'utils/string';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, readFile, writeFile } from 'utils/file';
 import { Configuration } from 'utils/singleton/configuration';
+import Loader from 'utils/loader';
 
 type CreateUseCaseOptions = {
 	name: string;
@@ -54,7 +55,8 @@ export default class CreateUseCase{
 	}
 
 	async run(options: CreateUseCaseOptions): Promise<void>{
-		console.info('Creating use case...');
+		Loader.create('Creating use case', { doneMessage: 'Use case created!' });
+
 		this.setUseCasesFolder();
 
 		const pascalCaseName = formatName(options.name);
@@ -72,6 +74,6 @@ export default class CreateUseCase{
 			this.createTestsFile(pascalCaseName);
 		}
 
-		console.info('Use case created!');
+		Loader.stopAll();
 	}
 }

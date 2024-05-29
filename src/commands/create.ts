@@ -7,6 +7,7 @@ import { ValidatePathDTO } from 'validators/shared/path.dto';
 import { ValidateNameDTO } from 'validators/shared/name.dto';
 import { openDirectory } from 'utils/file';
 import { CommandArgument } from 'utils/singleton/command';
+import Loader from 'utils/loader';
 
 const questions: PromptObject[] = [
 	{
@@ -69,17 +70,17 @@ export default CustomCommand.createCustomCommand<CommandQuestions,CommandOptions
 			]);
 
 			if (openFolder) {
-				console.info('Opening folder...');
+				Loader.create('Opening folder', { doneMessage: 'Folder opened, enjoy' });
 				openDirectory(projectPath);
 			} else {
 				console.info('Project generated, enjoy!');
 			}
 		} catch (error) {
-			console.error(`Error creating project, ${(error as Error).message ?? 'unknown error'}`);
-
 			if (projectPath) {
 				createProject.deleteProject(projectPath);
 			}
+
+			throw new Error(`Error creating project, ${(error as Error).message ?? 'unknown error'}`);
 		}
 	},
 	{ questions, arguments: commandArguments }

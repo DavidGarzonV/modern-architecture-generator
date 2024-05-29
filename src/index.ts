@@ -10,6 +10,7 @@ import iadapter from 'commands/clean/iadapter';
 import adapter from 'commands/clean/adapter';
 import drivingp from 'commands/hexagonal/drivingp';
 import drivenp from 'commands/hexagonal/drivenp';
+import Loader from 'utils/loader';
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ console.log(
 program.parse();
 
 function handleError(error: Error | unknown | undefined){
+	Loader.stopAll();
 	if (error && (error as Error).message) {
 		console.error('\nApplication error: ', (error as Error).message);
 	}

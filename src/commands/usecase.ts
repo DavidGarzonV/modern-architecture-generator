@@ -45,7 +45,7 @@ export default CustomCommand.createCustomCommand<unknown, CommandOptions, Comman
 				createTests: response.tests,
 			});
 		} catch (error) {
-			console.error('Error creating use case:', (error as Error).message);
+			throw new Error(`Error creating use case: ${(error as Error).message}`);
 		}
 	},
 	{ arguments: commandArguments, options }

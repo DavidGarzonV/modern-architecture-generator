@@ -61,7 +61,7 @@ export default CustomCommand.createCustomCommand<unknown, unknown, CommandArgume
 				defaultProperties: entityProperties
 			});
 		} catch (error) {
-			console.error('Error creating entity:', (error as Error).message);
+			throw new Error(`Error creating entity: ${(error as Error).message}`);
 		}
 	},
 	{ arguments: commandArguments }

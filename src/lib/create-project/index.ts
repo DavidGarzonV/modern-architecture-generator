@@ -12,6 +12,7 @@ import { ProjectStructure } from 'lib/shared/project-structure';
 import { copyFile, createDirectory, deleteDirectory, readDirectory } from 'utils/file';
 import { CustomCommand } from 'utils/singleton/command';
 import { Configuration } from 'utils/singleton/configuration';
+import Loader from 'utils/loader';
 
 type CreateProjectOptions = {
 	name: string;
@@ -45,6 +46,7 @@ export default class CreateProject {
 
 	private async createProjectDirectory(projectPath: string): Promise<void> {
 		if (pathExists(projectPath)) {
+			Loader.stopAll();
 			console.info('The directory already exists');
 
 			const response = await prompts([
@@ -59,7 +61,10 @@ export default class CreateProject {
 				process.exit(0);
 			}
 
+			Loader.create('Creating folder', { doneMessage: 'Folder created' });
 			deleteDirectory(projectPath);
+		}else{
+			Loader.create('Creating folder', { doneMessage: 'Folder created' });
 		}
 
 		try {
@@ -121,7 +126,7 @@ export default class CreateProject {
 	private async createPackageJson(options: CreateProjectOptions, projectPath: string): Promise<void> {
 		const { name: projectName } = options;
 
-		console.info('Creating npm project...');
+		Loader.create('Creating npm project', { doneMessage: 'Npm project created' });
 
 		return new Promise((resolve, reject) => {
 			exec('npm init -y', { cwd: projectPath }, (error) => {
@@ -145,8 +150,6 @@ export default class CreateProject {
 
 				writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-				console.info('package.json created.');
-
 				const indexContent = 'console.log("Hello World!");';
 				writeFile(`${projectPath}/src/index.ts`, indexContent);
 
@@ -156,23 +159,22 @@ export default class CreateProject {
 	}
 
 	private async configureTypescript(projectPath: string): Promise<void> {
-		console.info('Installing typescript...');
+		Loader.create('Installing typescript', { doneMessage: 'Typescript installed' });
+
 		return new Promise((resolve, reject) => {
 			exec('npm install typescript -g ', { cwd: projectPath}, (error) => {
 				if (error) {
 					reject(error);
 					return;
 				}
-				console.info('Typescript installed.');
 
-				console.info('Creating tsconfig.json...');
+				Loader.create('Configuring typescript', { doneMessage: 'Typescript configured' });
 				exec('tsc --init --baseUrl "./src" --rootDir "./src" --outDir "./dist"', { cwd: projectPath }, (error) => {
 					if (error) {
 						reject(error);
 						return;
 					}
 
-					console.info('tsconfig.json created.');
 					resolve();
 				});
 			});
@@ -195,6 +197,8 @@ export default class CreateProject {
 			return Promise.resolve();
 		}
 
+		Loader.create('Installing mag dependencies', { doneMessage: 'Mag dependencies installed' });
+
 		return new Promise((resolve, reject) => {
 			exec('npm install modern-architecture-generator --save-dev', { cwd: projectPath }, (error) => {
 				if (error) {
@@ -208,35 +212,31 @@ export default class CreateProject {
 	}
 
 	async run(options: CreateProjectOptions): Promise<string> {
+		console.info('Creating project...');
 		this._ps.setProjectStructure(options.type);
 		const projectPath = CustomCommand.getExecutionPath();
 
 		this.validateExecutionPath(projectPath);
 
-		console.info('Creating folder...');
 		const newFolderPath = `${projectPath}/${options.name}`;
 		await this.createProjectDirectory(newFolderPath);
-		console.info('Folder created.');
 
-		console.info('Creating project structure...');
+		Loader.create('Creating project structure', { doneMessage: 'Project structure created' });
 		this.createDocumentation(options.type, newFolderPath);
 		this.createFolderStructure(newFolderPath);
 		this.createDefaultConfigFile(options.type, newFolderPath);
-		console.info('Project structure created.');
 
 		await this.createPackageJson(options, newFolderPath);
 		await this.configureTypescript(newFolderPath);
 
-		console.info('Installing mag dependencies...');
 		await this.installMagDependencies(newFolderPath);
-		console.info('Dependencies installed.');
+		Loader.stopAll();
 
 		return newFolderPath;
 	}
 
 	deleteProject(projectPath: string){
-		console.info('Deleting project...');
 		deleteDirectory(projectPath);
-		console.info('Project deleted.');
+		Loader.stopAll();
 	}
 }

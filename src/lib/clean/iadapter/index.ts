@@ -1,5 +1,6 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
+import Loader from 'utils/loader';
 import { Configuration } from 'utils/singleton/configuration';
 import { formatName } from 'utils/string';
 
@@ -45,7 +46,7 @@ export default class CreateIAdapter{
 	}
 
 	async run(options: CreateIAdapterOptions): Promise<void>{
-		console.info(`Creating interface adapter ${options.name}...`);
+		Loader.create(`Creating interface adapter ${options.name}`, { doneMessage: 'Interface adapter created!' });
 
 		this._interfaceAdaptersFolder = this._ps.findFolderPathByName('interface-adapters');
 		if (!pathExists(this._interfaceAdaptersFolder)) {
@@ -59,6 +60,6 @@ export default class CreateIAdapter{
 		}
 
 		await this.createAdapter(options);
-		console.info('Interface adapter created!');
+		Loader.stopAll();
 	}
 }
