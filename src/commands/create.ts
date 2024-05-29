@@ -57,7 +57,6 @@ export default CustomCommand.createCustomCommand<CommandQuestions,CommandOptions
 				name,
 				type: response.type,
 			});
-			
 
 			console.info(`Project created at ${projectPath}.`);
 

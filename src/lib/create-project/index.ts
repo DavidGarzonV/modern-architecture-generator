@@ -43,7 +43,7 @@ export default class CreateProject {
 		}
 	}
 
-	private async createDirectory(projectPath: string): Promise<void> {
+	private async createProjectDirectory(projectPath: string): Promise<void> {
 		if (pathExists(projectPath)) {
 			console.info('The directory already exists');
 
@@ -129,7 +129,7 @@ export default class CreateProject {
 					reject(error);
 					return;
 				}
-	
+
 				const packageJsonPath = `${projectPath}/package.json`;
 				const packageJson = JSON.parse(readFile(packageJsonPath, 'utf-8'));
 				packageJson.name = projectName;
@@ -215,7 +215,7 @@ export default class CreateProject {
 
 		console.info('Creating folder...');
 		const newFolderPath = `${projectPath}/${options.name}`;
-		await this.createDirectory(newFolderPath);
+		await this.createProjectDirectory(newFolderPath);
 		console.info('Folder created.');
 
 		console.info('Creating project structure...');
