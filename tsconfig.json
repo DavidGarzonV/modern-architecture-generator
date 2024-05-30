@@ -26,6 +26,8 @@
     "resolveJsonModule": true,
   },
   "include": [
-    "src/**/**.ts", "src/index.js",
+    "src/**/**.ts",
+    "src/index.js",
+    "src/cli.js",
   ]
 }
