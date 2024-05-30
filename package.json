@@ -1,6 +1,6 @@
 {
   "name": "modern-architecture-generator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Plugin to create and structure projects with a architecture pattern",
   "engines": {
     "node": ">= 18.20.3",
@@ -24,7 +24,7 @@
     "hexagonal-architecture"
   ],
   "license": "GPL-3.0-only",
-  "main": "dist/cli.js",
+  "main": "dist/cli",
   "scripts": {
     "lint": "eslint .  --ext .ts",
     "tsc": "tsc -p . && tsc-alias",
