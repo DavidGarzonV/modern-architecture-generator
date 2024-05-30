@@ -14,55 +14,57 @@ import Loader from 'utils/loader';
 
 dotenv.config();
 
-program
-	.name('mag')
-	.description('Modern Architecture Generation Tool')
-	.version('1.0.0');
+export default function command(){
+	program
+		.name('mag')
+		.description('Modern Architecture Generation Tool')
+		.version('1.0.0');
 
-program.hook('preAction', () => {
-	return new Promise((resolve) => {
-		exec('tsc --noEmit', (error) => {
-			if (error) {
-				throw new Error('The project has incorrect typescript configuration. Please fix it before running the CLI tool.');
-			}
+	program.hook('preAction', () => {
+		return new Promise((resolve) => {
+			exec('tsc --noEmit', (error) => {
+				if (error) {
+					throw new Error('The project has incorrect typescript configuration. Please fix it before running the CLI tool.');
+				}
 
-			resolve();
+				resolve();
+			});
 		});
 	});
-});
 
-program.addCommand(create);
-program.addCommand(usecase);
-program.addCommand(entity);
-// Clean
-program.addCommand(iadapter);
-program.addCommand(adapter);
-// Hexagonal
-program.addCommand(drivingp);
-program.addCommand(drivenp);
+	program.addCommand(create);
+	program.addCommand(usecase);
+	program.addCommand(entity);
+	// Clean
+	program.addCommand(iadapter);
+	program.addCommand(adapter);
+	// Hexagonal
+	program.addCommand(drivingp);
+	program.addCommand(drivenp);
 
-console.log(
-	figlet.textSync('MAG CLI TOOL', {
-		horizontalLayout: 'default',
-		verticalLayout: 'default',
-		whitespaceBreak: true,
-	})
-);
+	console.log(
+		figlet.textSync('MAG CLI TOOL', {
+			horizontalLayout: 'default',
+			verticalLayout: 'default',
+			whitespaceBreak: true,
+		})
+	);
 
-program.parse();
+	program.parse();
 
-function handleError(error: Error | unknown | undefined){
-	Loader.stopAll();
-	if (error && (error as Error).message) {
-		console.error('\nApplication error: ', (error as Error).message);
+	function handleError(error: Error | unknown | undefined){
+		Loader.stopAll();
+		if (error && (error as Error).message) {
+			console.error('\nApplication error: ', (error as Error).message);
+		}
+
+		if (process.env.NODE_ENV === 'local' && error) {
+			console.error('\nApplication error: ', error);
+		}
+
+		process.exit(1);
 	}
 
-	if (process.env.NODE_ENV === 'local' && error) {
-		console.error('\nApplication error: ', error);
-	}
-
-	process.exit(1);
+	process.on('unhandledRejection', handleError);
+	process.on('uncaughtException', handleError);
 }
-
-process.on('unhandledRejection', handleError);
-process.on('uncaughtException', handleError);

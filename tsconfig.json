@@ -26,6 +26,6 @@
     "resolveJsonModule": true,
   },
   "include": [
-    "src/**/**.ts",
+    "src/**/**.ts", "src/index.js",
   ]
 }
