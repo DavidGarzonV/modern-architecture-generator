@@ -27,7 +27,6 @@
   },
   "include": [
     "src/**/**.ts",
-    "src/index.js",
-    "src/cli.js",
+    "cli.mjs",
   ]
 }
