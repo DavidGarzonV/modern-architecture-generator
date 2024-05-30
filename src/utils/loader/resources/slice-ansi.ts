@@ -1,4 +1,4 @@
-import isFullwidthCodePoint from 'is-fullwidth-code-point';
+import isFullwidthCodePoint from './is-fullwidth-code-point';
 import ansiStyles from './ansi-styles';
 
 const ESCAPES = new Set([27, 155]);

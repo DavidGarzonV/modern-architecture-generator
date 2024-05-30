@@ -1,5 +1,5 @@
-import stringWidth from 'string-width';
-import stripAnsi from 'strip-ansi';
+import stringWidth from './string-width';
+import stripAnsi from './strip-ansi';
 import ansiStyles from './ansi-styles';
 
 const ESCAPES: Set<string> = new Set(['\u001B', '\u009B']);

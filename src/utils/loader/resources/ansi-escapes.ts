@@ -1,5 +1,6 @@
 import process from 'node:process';
-import {isBrowser} from 'environment';
+
+export const isBrowser = globalThis.window?.document !== undefined;
 
 const ESC = '\u001B[';
 const OSC = '\u001B]';
