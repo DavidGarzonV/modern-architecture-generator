@@ -1,6 +1,6 @@
 {
   "name": "modern-architecture-generator",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Plugin to create and structure projects with a architecture pattern",
   "engines": {
     "node": ">= 18.20.3",
@@ -56,8 +56,6 @@
     "typescript-eslint": "^7.8.0"
   },
   "dependencies": {
-    "ansi-escapes": "^7.0.0",
-    "ansi-regex": "^6.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "commander": "^12.0.0",

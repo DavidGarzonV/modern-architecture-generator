@@ -1,5 +1,5 @@
 import process from 'node:process';
-import ansiEscapes from 'ansi-escapes';
+import * as ansiEscapes from './ansi-escapes';
 import cliCursor from './cli-cursor';
 import wrapAnsi from './wrap-ansi';
 import sliceAnsi from './slice-ansi';
