@@ -1,6 +1,6 @@
 {
   "name": "modern-architecture-generator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Plugin to create and structure projects with a architecture pattern",
   "engines": {
     "node": ">= 18.20.3",
@@ -34,10 +34,10 @@
     "start": "node ./dist/cli.js",
     "test": "jest --coverage"
   },
+  "preferGlobal": true,
   "bin": {
     "mag": "dist/cli.js"
   },
-  "preferGlobal": true,
   "devDependencies": {
     "@eslint/js": "^9.1.1",
     "@types/figlet": "^1.5.8",
