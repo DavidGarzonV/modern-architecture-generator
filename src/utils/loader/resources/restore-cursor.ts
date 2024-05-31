@@ -1,5 +1,5 @@
 import process from 'node:process';
-import onetime from 'onetime';
+import onetime from './onetime';
 import { onExit } from 'signal-exit';
 
 type WritableStream = NodeJS.WritableStream;
