@@ -7,48 +7,9 @@ In this plugin we can found the next architectures:
 - Clean Architecture
 - Hexagonal Architecture
 
-## Development Setup
+## Usage
 
-### Prerequisites
-
-- Install [Node.js](https://nodejs.org/) which includes [Node Package Manager](https://www.npmjs.com/get-npm)
-
-### Setting Up a Project
-
-Install MAG CLI globally using `npm` package manager:
-
-```md
-npm install -g modern-architecture-generator
-```
-
-### Testing in local
-
-**Configure enviroment file:**
-
-Create a `.env` file with the variable `NODE_ENV="local"` for development purposes.
-
-**Execute commands:**
-
-```md
-npm run start [command] [arguments] [-- --option value]
-```
-
-### Command-language syntax
-
-`mag [command] [arguments] [options]`
-
-To see all the commands avaliable:
-
-```md
-mag --help
-mag [command] --help
-```
-
-## Using the tool
-
-**Note**: The projects uses the `src` folder to handle all the code.
-
-### Global Options enabled for all commands
+### Global Options commands
 
 |ARGUMENT|SHORT ARGUMENT|DESCRIPTION|VALUE TYPE|
 |---|---|---|---|
@@ -223,6 +184,43 @@ You can modify or create a file called `mag.config.json` to set custom configura
 |`usePascalCase`|Define if use pascal case for class names|`boolean`| `true`, `false` | true |
 |`useCamelCase`|Use camel case for name class attributes and variables otherwise snake case|`boolean`| `true`, `false` | true |
 |`filesEOL`|End of line prefered for new files created|`string`| `LF`, `CRLF` | `LF` |
+
+## Development Setup
+
+### Prerequisites
+
+- Install [Node.js](https://nodejs.org/) which includes [Node Package Manager](https://www.npmjs.com/get-npm)
+
+### Setting Up a Project
+
+Install MAG CLI globally using `npm` package manager:
+
+```md
+npm install -g modern-architecture-generator
+```
+
+### Testing in local
+
+**Configure enviroment file:**
+
+Create a `.env` file with the variable `NODE_ENV="local"` for development purposes.
+
+**Execute commands:**
+
+```md
+npm run start [command] [arguments] [-- --option value]
+```
+
+### Command-language syntax
+
+`mag [command] [arguments] [options]`
+
+To see all the commands avaliable:
+
+```md
+mag --help
+mag [command] --help
+```
 
 ---
 
