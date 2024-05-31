@@ -12,7 +12,7 @@ import { ProjectStructure } from 'lib/shared/project-structure';
 import { copyFile, createDirectory, deleteDirectory, readDirectory } from 'utils/file';
 import { CustomCommand } from 'utils/singleton/command';
 import { Configuration } from 'utils/singleton/configuration';
-import Loader from 'utils/loader';
+import Loader from 'node-cli-loader';
 import { formatPath } from 'utils/string';
 
 type CreateProjectOptions = {

@@ -2,7 +2,7 @@ import { formatName, formatNameAttributes } from 'utils/string';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, readFile, writeFile } from 'utils/file';
 import { Configuration } from 'utils/singleton/configuration';
-import Loader from 'utils/loader';
+import Loader from 'node-cli-loader';
 
 type CreateUseCaseOptions = {
 	name: string;

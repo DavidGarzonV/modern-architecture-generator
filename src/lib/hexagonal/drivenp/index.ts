@@ -1,6 +1,6 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, pathExists, readFile, writeFile } from 'utils/file';
-import Loader from 'utils/loader';
+import Loader from 'node-cli-loader';
 import { Configuration } from 'utils/singleton/configuration';
 import { formatName } from 'utils/string';
 

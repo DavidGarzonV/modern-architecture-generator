@@ -1,6 +1,6 @@
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, writeFile } from 'utils/file';
-import Loader from 'utils/loader';
+import Loader from 'node-cli-loader';
 import { formatName } from 'utils/string';
 
 export type Property = {

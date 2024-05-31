@@ -10,7 +10,7 @@ import iadapter from 'commands/clean/iadapter';
 import adapter from 'commands/clean/adapter';
 import drivingp from 'commands/hexagonal/drivingp';
 import drivenp from 'commands/hexagonal/drivenp';
-import Loader from 'utils/loader';
+import Loader from 'node-cli-loader';
 
 dotenv.config();
 

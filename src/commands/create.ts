@@ -7,7 +7,7 @@ import { ValidatePathDTO } from 'validators/shared/path.dto';
 import { ValidateNameDTO } from 'validators/shared/name.dto';
 import { openDirectory } from 'utils/file';
 import { CommandArgument } from 'utils/singleton/command';
-import Loader from 'utils/loader';
+import Loader from 'node-cli-loader';
 
 const questions: PromptObject[] = [
 	{

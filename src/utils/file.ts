@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 import fs from 'fs';
-import Loader from 'utils/loader';
+import Loader from 'node-cli-loader';
 import { Configuration } from 'utils/singleton/configuration';
 
 export const createDirectory = (path: string): string => {

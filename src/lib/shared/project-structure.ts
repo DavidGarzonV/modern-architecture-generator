@@ -8,7 +8,7 @@ import { ArchitectureManager } from 'utils/singleton/architecture-manager';
 import { Configuration } from 'utils/singleton/configuration';
 import { CustomCommand } from 'utils/singleton/command';
 import { EnabledArchitectures } from 'constants/constants';
-import Loader from 'utils/loader';
+import Loader from 'node-cli-loader';
 
 export class ProjectStructure {
 	private _projectStructure: FolderStructure = [];

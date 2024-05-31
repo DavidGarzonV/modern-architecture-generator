@@ -3,7 +3,7 @@ import { createDirectory, findFileFilePath, pathExists, readFile, writeFile } fr
 import { formatName } from 'utils/string';
 import { readTypescriptFile } from 'utils/typescript';
 import { Configuration } from 'utils/singleton/configuration';
-import Loader from 'utils/loader';
+import Loader from 'node-cli-loader';
 
 type CreateAdapterOptions = {
 	name: string
