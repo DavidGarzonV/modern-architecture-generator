@@ -13,6 +13,7 @@ import { copyFile, createDirectory, deleteDirectory, readDirectory } from 'utils
 import { CustomCommand } from 'utils/singleton/command';
 import { Configuration } from 'utils/singleton/configuration';
 import Loader from 'utils/loader';
+import { formatPath } from 'utils/string';
 
 type CreateProjectOptions = {
 	name: string;
@@ -21,6 +22,7 @@ type CreateProjectOptions = {
 
 export default class CreateProject {
 	private _ps: ProjectStructure;
+	private _projectPath: string = '';
 
 	constructor(){
 		this._ps = new ProjectStructure();
@@ -38,7 +40,7 @@ export default class CreateProject {
 			);
 
 			if (existsProjectConfigurationFile) {
-				console.error(`The directory ${executionPath} has an existent project. Please select another directory.`);
+				console.error(`The directory ${formatPath(executionPath)} has an existent project. Please select another directory.`);
 				process.exit(0);
 			}
 		}
@@ -131,6 +133,7 @@ export default class CreateProject {
 		return new Promise((resolve, reject) => {
 			exec('npm init -y', { cwd: projectPath }, (error) => {
 				if (error) {
+					Loader.interrupt();
 					reject(error);
 					return;
 				}
@@ -164,6 +167,7 @@ export default class CreateProject {
 		return new Promise((resolve, reject) => {
 			exec('npm install typescript -g ', { cwd: projectPath}, (error) => {
 				if (error) {
+					Loader.interrupt();
 					reject(error);
 					return;
 				}
@@ -202,6 +206,7 @@ export default class CreateProject {
 		return new Promise((resolve, reject) => {
 			exec('npm install modern-architecture-generator --save-dev', { cwd: projectPath }, (error) => {
 				if (error) {
+					Loader.interrupt();
 					reject(error);
 					return;
 				}
@@ -214,12 +219,13 @@ export default class CreateProject {
 	async run(options: CreateProjectOptions): Promise<string> {
 		console.info('Creating project...');
 		this._ps.setProjectStructure(options.type);
-		const projectPath = CustomCommand.getExecutionPath();
+		const executionPath = CustomCommand.getExecutionPath();
 
-		this.validateExecutionPath(projectPath);
+		this.validateExecutionPath(executionPath);
 
-		const newFolderPath = `${projectPath}/${options.name}`;
+		const newFolderPath = `${executionPath}/${options.name}`;
 		await this.createProjectDirectory(newFolderPath);
+		this._projectPath = newFolderPath;
 
 		Loader.create('Creating project structure', { doneMessage: 'Project structure created' });
 		this.createDocumentation(options.type, newFolderPath);
@@ -235,8 +241,9 @@ export default class CreateProject {
 		return newFolderPath;
 	}
 
-	deleteProject(projectPath: string){
-		deleteDirectory(projectPath);
+	deleteProject(){
+		Loader.create(`Reversing project creation in path ${formatPath(this._projectPath)}`);
+		deleteDirectory(this._projectPath);
 		Loader.stopAll();
 	}
 }

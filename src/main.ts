@@ -22,8 +22,9 @@ export default function main(){
 
 	program.hook('preAction', () => {
 		return new Promise((resolve) => {
-			exec('tsc --noEmit', (error) => {
+			exec('tsc -v', (error) => {
 				if (error) {
+					console.log('exec -> error:', error);
 					throw new Error('The project has incorrect typescript configuration. Please fix it before running the CLI tool.');
 				}
 
@@ -53,13 +54,13 @@ export default function main(){
 	program.parse();
 
 	function handleError(error: Error | unknown | undefined){
-		Loader.stopAll();
+		Loader.interrupt();
 		if (error && (error as Error).message) {
-			console.error('\nApplication error: ', (error as Error).message);
+			console.error('\nApplication error:', (error as Error).message);
 		}
 
 		if (process.env.NODE_ENV === 'local' && error) {
-			console.error('\nApplication error: ', error);
+			console.error('\nApplication error:', error);
 		}
 
 		process.exit(1);

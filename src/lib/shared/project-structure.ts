@@ -3,11 +3,12 @@ import prompts from 'prompts';
 import path from 'path';
 import { FolderItem, FolderStructure } from 'constants/types';
 import { createDirectory, findFileFilePath, pathExists } from 'utils/file';
-import { formatName } from 'utils/string';
+import { capitalize, formatName } from 'utils/string';
 import { ArchitectureManager } from 'utils/singleton/architecture-manager';
 import { Configuration } from 'utils/singleton/configuration';
 import { CustomCommand } from 'utils/singleton/command';
 import { EnabledArchitectures } from 'constants/constants';
+import Loader from 'utils/loader';
 
 export class ProjectStructure {
 	private _projectStructure: FolderStructure = [];
@@ -123,19 +124,24 @@ export class ProjectStructure {
 				entity: 'entity',
 			};
 
+			const itemType = itemTypes[fileType];
+
+			Loader.interrupt();
+
 			const { overwrite, newName } = await prompts([
 				{
 					type: 'confirm',
 					name: 'overwrite',
-					message: `The ${itemTypes[fileType]} ${name} already exists. Do you want to overwrite it?`,
+					message: `The ${itemType} ${name} already exists. Do you want to overwrite it?`,
 					initial: false,
 				},
 				{
 					type: (prev) => (!prev ? 'text' : null),
 					name: 'newName',
-					message: `Enter a new name for the ${itemTypes[fileType]}:`,
+					message: `Enter a new name for the ${itemType}:`,
 				},
 			]);
+			Loader.create(`Creating new ${itemType}`, { doneMessage: `${capitalize(itemType)} created!` });
 
 			if (!overwrite) {
 				adapterName = formatName(newName);

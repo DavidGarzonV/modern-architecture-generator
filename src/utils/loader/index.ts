@@ -1,6 +1,20 @@
+import { green, red } from 'kleur';
 import logUpdate, { LogUpdateRender } from './resources/log-update';
 import { Spinner, Spinners } from './types';
 import spinners from './spinners.json';
+
+const sringIcons = {
+	main: {
+		tick: '✔',
+		cross: '✖',
+	},
+	win: {
+		tick: '√',
+		cross: '×',
+	}
+};
+
+const icons = process.platform === 'win32' ? sringIcons.win : sringIcons.main;	
 
 export default class Loader {
 	private static appLoaders: Set<Loader> = new Set();
@@ -17,9 +31,9 @@ export default class Loader {
 	 */
 	private renderSpinner(spinner: Spinner, index: number, description: string) {
 		const { frames } = spinner;
-		const message = `${description ? ' ' + description : ''}...`;
+		const message = `${description}...`;
 
-		this.logUpdate = logUpdate(frames[(index = ++index % frames.length)] +`${message}`);
+		this.logUpdate = logUpdate(frames[(index = ++index % frames.length)] + ' ' +`${message}`);
 		this.loaderMessage = message;
 		return index;
 	}
@@ -58,13 +72,12 @@ export default class Loader {
 		return this;
 	}
 
-	/**
-	 * Persist the loader and mark it as done
-	 */
-	private done() {
+	private finishLoader(loaderDone: boolean = true) {
 		if (this.logUpdate) {
-			const finalMessage = this.doneMessage ? this.doneMessage : this.loaderMessage;
-			this.logUpdate = logUpdate('✔' + ' ' + finalMessage);
+			const finalMessage = this.doneMessage && loaderDone ? this.doneMessage : this.loaderMessage;
+			const icon = loaderDone ? green(icons.tick) : red(icons.cross);
+
+			this.logUpdate = logUpdate(icon + ' ' + finalMessage);
 			this.logUpdate?.done();
 		}
 
@@ -76,7 +89,21 @@ export default class Loader {
 	}
 
 	/**
-	 * Stops all loaders that are not set to stayLoading
+	 * Persist the loader and mark it as done
+	 */
+	private done() {
+		this.finishLoader();
+	}
+
+	/**
+	 * Persist the loader and marks it as failed
+	 */
+	private stop(){
+		this.finishLoader(false);
+	}
+
+	/**
+	 * Stops all pending loaders that are not set to stayLoading
 	 */
 	public static stopAll() {
 		Loader.appLoaders.forEach((spinner) => {
@@ -85,10 +112,12 @@ export default class Loader {
 	}
 
 	/**
-	 * Stops the current loader and removes it from the list of loaders
+	 * Interrupts all pending loaders marking as failed
 	 */
-	public stop() {
-		this.done();
+	public static interrupt(){
+		Loader.appLoaders.forEach((spinner) => {
+			spinner.stop();
+		});
 	}
 
 	/**

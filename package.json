@@ -1,6 +1,6 @@
 {
   "name": "modern-architecture-generator",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Plugin to create and structure projects with a architecture pattern",
   "engines": {
     "node": ">= 18.20.3",
@@ -28,6 +28,7 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "tsc": "tsc -p . && tsc-alias",
+    "link": "npm run build & npm link modern-architecture-generator",
     "prebuild": "npm run lint",
     "build": "npm run tsc & ncp cli.mjs dist/cli.mjs",
     "prestart": "npm run build",
@@ -39,32 +40,31 @@
     "mag": "dist/cli.mjs"
   },
   "devDependencies": {
-    "@eslint/js": "^9.1.1",
-    "@types/figlet": "^1.5.8",
-    "@types/jest": "^29.5.12",
-    "@types/prompts": "^2.4.9",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "@typescript-eslint/parser": "^7.8.0",
-    "eslint": "^8.57.0",
-    "globals": "^15.1.0",
-    "jest": "^29.7.0",
-    "ncp": "^2.0.0",
-    "ts-jest": "^29.1.2",
-    "ts-node": "^10.9.2",
-    "tsc-alias": "^1.8.8",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.8.0"
+    "@eslint/js": "9.1.1",
+    "@types/figlet": "1.5.8",
+    "@types/jest": "29.5.12",
+    "@types/prompts": "2.4.9",
+    "@typescript-eslint/eslint-plugin": "7.8.0",
+    "@typescript-eslint/parser": "7.8.0",
+    "eslint": "8.57.0",
+    "globals": "15.1.0",
+    "jest": "29.7.0",
+    "ncp": "2.0.0",
+    "ts-jest": "29.1.2",
+    "ts-node": "10.9.2",
+    "tsc-alias": "1.8.8",
+    "typescript": "5.4.5",
+    "typescript-eslint": "7.8.0"
   },
   "dependencies": {
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.1",
-    "commander": "^12.0.0",
-    "dotenv": "^16.4.5",
-    "environment": "^1.1.0",
-    "figlet": "^1.7.0",
-    "prompts": "^2.4.2",
-    "signal-exit": "^4.1.0",
-    "slice-ansi": "^7.1.0",
-    "strip-ansi": "^7.1.0"
+    "class-transformer": "0.5.1",
+    "class-validator": "0.14.1",
+    "commander": "12.0.0",
+    "dotenv": "16.4.5",
+    "environment": "1.1.0",
+    "figlet": "1.7.0",
+    "kleur": "4.1.5",
+    "prompts": "2.4.2",
+    "signal-exit": "4.1.0"
   }
 }

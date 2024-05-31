@@ -1,4 +1,5 @@
 import { Configuration } from './singleton/configuration';
+
 export const convertToPascalCase = (str: string): string => {
 	if (str.includes('_')) {
 		return str
@@ -75,4 +76,12 @@ export const formatNameAttributes = (str: string): string => {
 	}
 
 	return finalStr;
+};
+
+export const capitalize = (str: string): string => {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+export const formatPath= (path: string): string => {
+	return path.replace(/\\/g, '/');
 };

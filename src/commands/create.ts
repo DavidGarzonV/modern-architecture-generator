@@ -76,11 +76,10 @@ export default CustomCommand.createCustomCommand<CommandQuestions,CommandOptions
 				console.info('Project generated, enjoy!');
 			}
 		} catch (error) {
-			if (projectPath) {
-				createProject.deleteProject(projectPath);
-			}
+			console.info('An error occurred while creating the project');
+			createProject.deleteProject();
 
-			throw new Error(`Error creating project, ${(error as Error).message ?? 'unknown error'}`);
+			throw new Error(`${(error as Error).message ?? 'unknown error'}`);
 		}
 	},
 	{ questions, arguments: commandArguments }
