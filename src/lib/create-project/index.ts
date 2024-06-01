@@ -14,6 +14,7 @@ import { CustomCommand } from 'utils/singleton/command';
 import { Configuration } from 'utils/singleton/configuration';
 import Loader from 'node-cli-loader';
 import { formatPath } from 'utils/string';
+import { fetchUrl } from 'utils/fetch';
 
 type CreateProjectOptions = {
 	name: string;
@@ -131,7 +132,7 @@ export default class CreateProject {
 		Loader.create('Creating npm project', { doneMessage: 'Npm project created' });
 
 		return new Promise((resolve, reject) => {
-			exec('npm init -y', { cwd: projectPath }, (error) => {
+			exec('npm init -y', { cwd: projectPath }, async (error) => {
 				if (error) {
 					Loader.interrupt();
 					reject(error);
@@ -155,6 +156,9 @@ export default class CreateProject {
 
 				const indexContent = 'console.log("Hello World!");';
 				writeFile(`${projectPath}/index.ts`, indexContent);
+
+				const gitignoreContent = await fetchUrl('https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore');
+				writeFile(`${projectPath}/.gitignore`, gitignoreContent);
 
 				resolve();
 			});

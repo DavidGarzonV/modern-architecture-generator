@@ -1,6 +1,6 @@
 {
   "name": "modern-architecture-generator",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Plugin to create and structure projects with a architecture pattern",
   "engines": {
     "node": ">= 18.20.3",
@@ -65,6 +65,7 @@
     "figlet": "1.7.0",
     "kleur": "4.1.5",
     "node-cli-loader": "^1.1.2",
+    "node-fetch": "^3.3.2",
     "prompts": "2.4.2",
     "signal-exit": "4.1.0"
   }
