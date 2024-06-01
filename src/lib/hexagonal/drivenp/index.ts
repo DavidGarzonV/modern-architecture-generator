@@ -20,7 +20,7 @@ export class CreateDrivenPort{
 
 	private getContent(name: string, entityPath?: string){
 		const projectPath = Configuration.getMagPath();
-		let adapterTemplate = readFile(`${projectPath}/src/templates/ports/driven-port.txt`);
+		let adapterTemplate = readFile(`${projectPath}/templates/ports/driven-port.txt`);
 
 		if (entityPath) {
 			const importPath = this._ps.getEntityImportPath(entityPath, this._drivenPortsFolder);

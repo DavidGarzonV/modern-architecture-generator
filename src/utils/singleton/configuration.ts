@@ -19,7 +19,13 @@ export class Configuration {
 	}
 
 	public static getMagPath(): string {
-		return path.join(__dirname, '../../../').slice(0, -1);
+		let magPath = path.join(__dirname, '../../../').slice(0, -1);
+		if (process.env.NODE_ENV === 'local') {
+			magPath += '/src';
+		}else{
+			magPath += '/dist';
+		}
+		return magPath;
 	}
 
 	public static validateMagAndConfig(): void {
@@ -46,7 +52,7 @@ export class Configuration {
 	private static getProjectConfiguration(): MagConfiguration {
 		const baseMagPath = Configuration.getMagPath();
 
-		const defaultConfigFile = `${baseMagPath}/src/templates/${Configuration.configurationFile}`;
+		const defaultConfigFile = `${baseMagPath}/templates/${Configuration.configurationFile}`;
 		const originalConfig = JSON.parse(fs.readFileSync(defaultConfigFile, 'utf8'));
 		let finalConfig: MagConfiguration = originalConfig;
 

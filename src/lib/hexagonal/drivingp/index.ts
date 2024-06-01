@@ -19,7 +19,7 @@ export class CreateDrivingPort{
 
 	private getContent(name: string){
 		const projectPath = Configuration.getMagPath();
-		const adapterTemplate = readFile(`${projectPath}/src/templates/ports/driving-port.txt`);
+		const adapterTemplate = readFile(`${projectPath}/templates/ports/driving-port.txt`);
 		return adapterTemplate.replace(/PortName/g, name);
 	}
 

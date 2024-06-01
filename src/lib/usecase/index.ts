@@ -30,7 +30,7 @@ export default class CreateUseCase{
 
 	private async createClass(name: string): Promise<void> {
 		const projectPath = Configuration.getMagPath();
-		const useCaseTemplate = readFile(`${projectPath}/src/templates/use-cases/index.txt`);
+		const useCaseTemplate = readFile(`${projectPath}/templates/use-cases/index.txt`);
 
 		const useCaseName = await this._ps.askForCreateProjectFile(name, this._useCasesFolder, 'usecase');
 		createDirectory(this._useCasesFolder);
@@ -42,7 +42,7 @@ export default class CreateUseCase{
 
 	private createTestsFile(name: string): void {
 		const projectPath = Configuration.getMagPath();
-		const useCaseTemplate = readFile(`${projectPath}/src/templates/use-cases/test.txt`);
+		const useCaseTemplate = readFile(`${projectPath}/templates/use-cases/test.txt`);
 
 		let content = useCaseTemplate.replace(/UseCaseName/g, name);
 		content = content.replace(/useCase/g, formatNameAttributes(name));

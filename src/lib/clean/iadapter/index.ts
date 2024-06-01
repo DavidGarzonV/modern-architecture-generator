@@ -20,7 +20,7 @@ export default class CreateIAdapter{
 
 	private getContent(name: string, entityPath?: string){
 		const projectPath = Configuration.getMagPath();
-		let adapterTemplate = readFile(`${projectPath}/src/templates/adapters/iadapter.txt`);
+		let adapterTemplate = readFile(`${projectPath}/templates/adapters/iadapter.txt`);
 
 		if (entityPath) {
 			const importPath = this._ps.getEntityImportPath(entityPath, this._interfaceAdaptersFolder);

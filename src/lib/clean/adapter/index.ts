@@ -25,7 +25,7 @@ export default class CreateAdapter {
 		const interfaceAdapterName = formatName(iadapter);
 
 		const projectPath = Configuration.getMagPath();
-		let adapterMethodsTemplate = readFile(`${projectPath}/src/templates/adapters/adapter.txt`);
+		let adapterMethodsTemplate = readFile(`${projectPath}/templates/adapters/adapter.txt`);
 
 		const repositoryName = `${interfaceAdapterName}.repository.ts`;
 		const interfaceAdaptersFolder = this._ps.findFolderPathByName('interface-adapters');

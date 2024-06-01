@@ -154,7 +154,7 @@ export default class CreateProject {
 				writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
 				const indexContent = 'console.log("Hello World!");';
-				writeFile(`${projectPath}/src/index.ts`, indexContent);
+				writeFile(`${projectPath}/index.ts`, indexContent);
 
 				resolve();
 			});
