@@ -69,12 +69,7 @@ export class ProjectStructure {
 			throw new Error(`Could not find ${name} folder`);
 		}
 
-		let srcPath = CustomCommand.getExecutionPath();
-		if (process.env.NODE_ENV === 'local') {
-			srcPath += '/src';
-		}else{
-			srcPath += '/dist';
-		}
+		const srcPath = CustomCommand.getExecutionPath() + '/src';
 		return this.organizeParentFolder(itemFolder, srcPath);
 	}
 

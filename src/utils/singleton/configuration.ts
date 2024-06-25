@@ -31,6 +31,11 @@ export class Configuration {
 		return magPath;
 	}
 
+	public static getSourcePath(): string {
+		const projectPath = CustomCommand.getExecutionPath();
+		return `${projectPath}/src`;
+	}
+
 	public static validateMagAndConfig(): void {
 		const projectPath = CustomCommand.getExecutionPath();
 		const configPath = `${projectPath}/${Configuration.configurationFile}`;
