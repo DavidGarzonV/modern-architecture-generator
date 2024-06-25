@@ -1,6 +1,6 @@
 {
   "name": "modern-architecture-generator",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "Plugin to create and structure projects with a architecture pattern",
   "engines": {
     "node": ">= 18.20.3",
@@ -31,7 +31,7 @@
     "tsc": "tsc -p . && tsc-alias",
     "link": "npm run build & npm link",
     "prebuild": "npm run lint",
-    "build": "npm run tsc & ncp cli.mjs dist/cli.mjs & ncp src/templates dist/templates",
+    "build": "npm run tsc & ncp ./cli.mjs dist/cli.mjs & ncp ./src/templates dist/templates",
     "prestart": "npm run build",
     "start": "node dist/index.js",
     "test": "jest --coverage"
