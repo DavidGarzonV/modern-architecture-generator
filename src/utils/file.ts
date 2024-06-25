@@ -110,3 +110,11 @@ export const findFileFilePath = (directory: string, fileName: string): string | 
 
 	return undefined;
 };
+
+/**
+ * Create a .gitkeep file in a directory
+ * @param {string} path The directory path
+ */
+export const createGitKeepFile = (path: string): void => {
+	writeFile(`${path}/.gitkeep`, '');
+};

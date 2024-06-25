@@ -7,7 +7,23 @@ In this plugin we can found the next architectures:
 - Clean Architecture
 - Hexagonal Architecture
 
+## Installation
+
+For global usage install with ```-g``` flag:
+
+```md
+npm install -g modern-architecture-generator
+```
+
+For local projects just install:
+
+```md
+npm install modern-architecture-generator
+```
+
 ## Usage
+
+You can install the application globally or integrate it into an existing project.
 
 ### Global Options commands
 
@@ -31,6 +47,14 @@ mag create mag-test --path "C:\Users\user\Documents\GitHub\modern-architecture-g
 |ARGUMENT|SHORT ARGUMENT|DESCRIPTION|VALUE TYPE|
 |---|---|---|---|
 |`--path`|`-p`|Path where the project will be created (Overwrites global path option)|`string`|
+
+### Configure MAG in an existing project 
+
+The application only works with applications with a `src` folder. To configure mag:
+
+```md
+mag configure
+```
 
 ### Use cases
 
@@ -199,7 +223,7 @@ Install MAG CLI globally using `npm` package manager:
 npm install -g modern-architecture-generator
 ```
 
-### Testing in local
+### Executing project in local
 
 **Configure enviroment file:**
 
@@ -209,6 +233,14 @@ Create a `.env` file with the variable `NODE_ENV="local"` for development purpos
 
 ```md
 npm run start [command] [arguments] [-- --option value]
+```
+
+**Global command testing**
+
+First, create a link to execute the project and type `mag` with the desired command.
+
+```md
+npm run link
 ```
 
 ### Command-language syntax

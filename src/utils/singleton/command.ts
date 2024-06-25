@@ -88,7 +88,8 @@ export class CustomCommand {
 	 * @param commandName Command executed
 	 */
 	private static validateConfiguration(commandName: string){
-		if (commandName !== 'create') {			
+		const ignoredCommands = ['configure', 'create'];
+		if (!ignoredCommands.includes(commandName)) {			
 			Configuration.validateMagAndConfig();
 		}
 	}

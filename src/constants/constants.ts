@@ -20,3 +20,8 @@ export const enabledConfigurationKeys: ConfigurationOptions[] = [
 	'useCamelCase',
 	'filesEOL',
 ];
+
+export const arquitectureChoices = [
+	{ title: 'Clean Architecture', value: EnabledArchitectures.Clean },
+	{ title: 'Hexagonal Architecture', value: EnabledArchitectures.Hexagonal },
+];

@@ -2,7 +2,7 @@ import fs from 'fs';
 import prompts from 'prompts';
 import path from 'path';
 import { FolderItem, FolderStructure } from 'constants/types';
-import { createDirectory, findFileFilePath, pathExists } from 'utils/file';
+import { createDirectory, createGitKeepFile, findFileFilePath, pathExists } from 'utils/file';
 import { capitalize, formatName } from 'utils/string';
 import { ArchitectureManager } from 'utils/singleton/architecture-manager';
 import { Configuration } from 'utils/singleton/configuration';
@@ -190,5 +190,42 @@ export class ProjectStructure {
 		}
 
 		return undefined;
+	}
+
+	/**
+	 * @description Create the parent folder of a folder item
+	 * @param {FolderItem} item Folder item to create
+	 * @param {string} srcPath Path where the folder is going to be created
+	 * @return {*} {string} Path of the parent folder
+	 */
+	private createParentFolder(item: FolderItem, srcPath: string): string {
+		let finalPath = '';
+		if (item.parent) {
+			const findParent = this.projectStructure.find((folder) => folder.name === item.parent);
+			const parentPath = this.createParentFolder(findParent!, srcPath);
+			finalPath = createDirectory(`${parentPath}/${item.name}`);
+		}else{
+			finalPath =  createDirectory(`${srcPath}/${item.name}`);
+		}
+
+		const ignoredFolders = ['infrastructure', 'domain', 'application'];
+		if (!ignoredFolders.includes(item.name)) {
+			createGitKeepFile(finalPath);
+		}
+
+		return finalPath;
+	}
+
+	/**
+	 * @description Create the folder structure in the project based on the project structure
+	 * @param {string} newFolderPath Path where the folder structure is going to be created
+	 */
+	createFolderStructure(newFolderPath: string): void {
+		const srcPath = `${newFolderPath}/src`;
+		createDirectory(srcPath);
+
+		for (const item of this.projectStructure) {
+			this.createParentFolder(item, srcPath);
+		}
 	}
 }

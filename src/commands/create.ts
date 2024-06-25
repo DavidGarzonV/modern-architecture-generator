@@ -1,6 +1,6 @@
 import prompts, { PromptObject } from 'prompts';
 import { CustomCommand } from 'utils/singleton/command';
-import { EnabledArchitectures } from 'constants/constants';
+import { EnabledArchitectures, arquitectureChoices } from 'constants/constants';
 import CreateProject from 'lib/create-project';
 import validateDTO from 'validators/validate';
 import { ValidatePathDTO } from 'validators/shared/path.dto';
@@ -14,13 +14,7 @@ const questions: PromptObject[] = [
 		type: 'select',
 		name: 'type',
 		message: 'Pick one architecture',
-		choices: [
-			{ title: 'Clean Architecture', value: EnabledArchitectures.Clean },
-			{
-				title: 'Hexagonal Architecture',
-				value: EnabledArchitectures.Hexagonal,
-			},
-		],
+		choices: arquitectureChoices,
 		initial: 0,
 	},
 ];

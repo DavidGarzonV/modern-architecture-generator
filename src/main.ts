@@ -2,6 +2,7 @@ import { exec } from 'child_process';
 import figlet from 'figlet';
 import { program } from 'commander';
 import * as dotenv from 'dotenv';
+import Loader from 'node-cli-loader';
 
 import create from 'commands/create';
 import usecase from 'commands/usecase';
@@ -10,7 +11,7 @@ import iadapter from 'commands/clean/iadapter';
 import adapter from 'commands/clean/adapter';
 import drivingp from 'commands/hexagonal/drivingp';
 import drivenp from 'commands/hexagonal/drivenp';
-import Loader from 'node-cli-loader';
+import configure from 'commands/configure';
 
 dotenv.config();
 
@@ -24,7 +25,6 @@ export default function main(){
 		return new Promise((resolve) => {
 			exec('tsc -v', (error) => {
 				if (error) {
-					console.log('exec -> error:', error);
 					throw new Error('The project has incorrect typescript configuration. Please fix it before running the CLI tool.');
 				}
 
@@ -36,6 +36,7 @@ export default function main(){
 	program.addCommand(create);
 	program.addCommand(usecase);
 	program.addCommand(entity);
+	program.addCommand(configure);
 	// Clean
 	program.addCommand(iadapter);
 	program.addCommand(adapter);

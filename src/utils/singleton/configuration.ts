@@ -1,8 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import { enabledConfigurationKeys } from 'constants/constants';
+import { exec } from 'child_process';
+import Loader from 'node-cli-loader';
+import { EnabledArchitectures, enabledConfigurationKeys } from 'constants/constants';
 import { ConfigurationOptions, MagConfiguration } from 'constants/types';
 import { CustomCommand } from 'utils/singleton/command';
+import { writeFile } from 'utils/file';
 
 export class Configuration {
 	public static configurationFile = 'mag.config.json';
@@ -33,20 +36,11 @@ export class Configuration {
 		const configPath = `${projectPath}/${Configuration.configurationFile}`;
 
 		if (!fs.existsSync(configPath)) {
-			throw new Error('This is not a mag project');
+			throw new Error('This is not a mag project, run `mag configure` to start');
 		}
 
 		const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 		Configuration.validateConfigurationOptions(config);
-	}
-
-	public static validateConfigurationFile(): void {
-		const projectPath = CustomCommand.getExecutionPath();
-		const configPath = `${projectPath}/${Configuration.configurationFile}`;
-
-		if (!fs.existsSync(configPath)) {
-			throw new Error('Configuration file not found');
-		}
 	}
 
 	private static getProjectConfiguration(): MagConfiguration {
@@ -70,6 +64,37 @@ export class Configuration {
 		}
 
 		return finalConfig;
+	}
+
+	public static createDefaultConfigFile(type: EnabledArchitectures, projectPath: string): void {
+		try {
+			const config: MagConfiguration = {
+				architecture: type,
+			};
+			writeFile(`${projectPath}/${Configuration.configurationFile}`, JSON.stringify(config, null, 2));
+		} catch (error) {
+			throw new Error('Could not create config file');
+		}
+	}
+
+	public static async installMagDependencies(projectPath: string): Promise<void> {
+		if (process.env.INSTALL_MAG_DEPENDENCIES === 'false') {
+			return Promise.resolve();
+		}
+
+		Loader.create('Installing mag dependencies', { doneMessage: 'Mag dependencies installed' });
+
+		return new Promise((resolve, reject) => {
+			exec('npm install modern-architecture-generator --save-dev', { cwd: projectPath }, (error) => {
+				if (error) {
+					Loader.interrupt();
+					reject(error);
+					return;
+				}
+
+				resolve();
+			});
+		});
 	}
 
 	public static get (key: ConfigurationOptions): MagConfiguration[typeof key]{
