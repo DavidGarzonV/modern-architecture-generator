@@ -31,8 +31,9 @@
     "tsc": "tsc -p . && tsc-alias",
     "link": "npm run build & npm link",
     "prebuild": "npm run lint",
-    "build": "npm run tsc & ncp ./cli.mjs dist/cli.mjs & ncp ./src/templates dist/templates",
-    "build-github": "npm run tsc & ncp ../cli.mjs dist/cli.mjs & ncp ../src/templates dist/templates",
+    "build": "npm run tsc",
+    "prepackage": "npm run build",
+    "package": "ncp ./cli.mjs dist/cli.mjs & ncp ./src/templates dist/templates",
     "prestart": "npm run build",
     "start": "node dist/index.js",
     "test": "jest --coverage"

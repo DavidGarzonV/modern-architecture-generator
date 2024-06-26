@@ -16,7 +16,7 @@ jobs:
       - name: Install required dependencies ⚙️
         run: npm install eslint@8.57.0 @typescript-eslint/eslint-plugin@7.8.0 @typescript-eslint/parser@7.8.0
       - name: Build package 🔧
-        run: npm run build-github
+        run: npm run package
       - name: Publish package on NPM 📦
         run: npm publish
         env:
