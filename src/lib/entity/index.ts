@@ -1,18 +1,16 @@
+import Loader from 'node-cli-loader';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { createDirectory, writeFile } from 'utils/file';
-import Loader from 'node-cli-loader';
 import { formatName } from 'utils/string';
-
-export type Property = {
-	name: string
-	type: string
-}
+import { ClassProperty } from 'constants/types';
+import { createJsClassContent, createJsInterfaceContent } from 'utils/jsfiles';
 
 type CreateEntityOptions = {
 	name: string
 	contextName?: string
 	useClass?: boolean
-	defaultProperties?: Property[]
+	defaultProperties?: ClassProperty[]
+	settersAndGetters?: boolean
 }
 
 export default class CreateEntity{
@@ -28,25 +26,21 @@ export default class CreateEntity{
 		this._entitiesFolder = defaultEntitiesFolder;
 	}
 
-	private getFileContent(name: string, defaultProperties?: Property[]){
-		let content = `export interface ${name} {`;
-		content += '\n\t// Add properties here';
+	private async createFile(
+		name: string,
+		useClass?: boolean,
+		defaultProperties?: ClassProperty[],
+		settersAndGetters?: boolean
+	): Promise<void> {
+		let content = '';
+		const entityName = await this._ps.askForCreateProjectFile(name, this._entitiesFolder, 'entity');
 
-		if (defaultProperties && defaultProperties.length > 0) {
-			for (const property of defaultProperties) {
-				content += `\n\t${property.name}: ${property.type}`;
-			}
-		} else {
-			content += '\n\t// property: string | number | boolean | Date';
+		if (useClass) {
+			content = createJsClassContent(entityName, defaultProperties, settersAndGetters);
+		}else{
+			content = createJsInterfaceContent(entityName, defaultProperties);
 		}
 
-		content += '\n}';
-		return content;
-	}
-
-	private async createFile(name: string,defaultProperties?: Property[]): Promise<void> {
-		const entityName = await this._ps.askForCreateProjectFile(name, this._entitiesFolder, 'entity');
-		const content = this.getFileContent(entityName, defaultProperties);
 		createDirectory(`${this._entitiesFolder}/${entityName}`);
 		writeFile(`${this._entitiesFolder}/${entityName}/${entityName}.entity.ts`, content);
 	}
@@ -67,7 +61,7 @@ export default class CreateEntity{
 			this._entitiesFolder = contextPath;
 		}
 
-		await this.createFile(pascalCaseName, options.defaultProperties);
+		await this.createFile(pascalCaseName, options.useClass, options.defaultProperties, options.settersAndGetters);
 		Loader.stopAll();
 	}
 }

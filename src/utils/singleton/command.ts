@@ -4,23 +4,6 @@ import prompts, { PromptObject } from 'prompts';
 import { ArchitectureManager } from 'utils/singleton/architecture-manager';
 import { Configuration } from 'utils/singleton/configuration';
 
-
-type CommandAdditionalOptions = {
-	options?: CommandOption[],
-	arguments?: CommandArgument[],
-	questions?: PromptObject[],
-	architecture?: EnabledArchitectures;
-	hooks?: {
-		preAction?: (thisCommand: Command, actionCommand: Command) => void | Promise<void>;
-	}
-}
-
-type DefaultCommandOptions = {
-	path: string;
-}
-
-type CommandOptions<T> = T & DefaultCommandOptions;
-
 export type CommandOption = {
 	command: string;
 	value: string;
@@ -33,9 +16,28 @@ export type CommandArgument = {
 	description: string;
 };
 
+export type CommandQuestion = PromptObject & {
+	conditional?: PromptObject['name'] // Name of the question that will trigger this question
+}
+
+type CommandAdditionalOptions = {
+	options?: CommandOption[],
+	arguments?: CommandArgument[],
+	questions?: CommandQuestion[],
+	architecture?: EnabledArchitectures;
+	hooks?: {
+		preAction?: (thisCommand: Command, actionCommand: Command) => void | Promise<void>;
+	}
+}
+
+type DefaultCommandOptions = {
+	path: string;
+}
+
+type CommandOptions<T> = T & DefaultCommandOptions;
+
 export type CommandAction<T> = (options: T) => void | Promise<void>;
 export type CommandActionResponse<Arguments, Options, Questions> = Arguments & Partial<Options> & Questions
-
 
 export class CustomCommand {
 	private static defaultCommandOptions: CommandOption[] = [
@@ -173,7 +175,25 @@ export class CustomCommand {
 				CustomCommand.validateConfiguration(commandName);
 
 				if (questions) {
-					const answers = await prompts(questions);
+					const cleanQuestions = questions.filter((question) => question.conditional === undefined);
+					const conditionalQuestions = questions.filter((question) => question.conditional !== undefined);
+					const conditionalsAreValid = conditionalQuestions.every((question) => {
+						return cleanQuestions.findIndex((cleanQuestion) => cleanQuestion.name === question.conditional) > -1;
+					});
+
+					if (!conditionalsAreValid) {
+						throw new Error('Conditional questions must have a valid conditional question');
+					}
+
+					let answers = await prompts(cleanQuestions);
+					const conditionalQuestionsToAsk = conditionalQuestions.filter((question) => {
+						return !!answers[question.conditional as keyof typeof answers];
+					});
+
+					if (conditionalQuestionsToAsk.length > 0) {
+						const conditionalAnswers = await prompts(conditionalQuestionsToAsk);
+						answers = { ...answers, ...conditionalAnswers };
+					}
 					await action({ ...responseArguments, ...commandOptions, ...answers } as ResponseType);
 				}else{
 					await action({ ...responseArguments, ...commandOptions } as ResponseType);

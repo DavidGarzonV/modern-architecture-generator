@@ -27,7 +27,7 @@ const getDynamicFields = async <Field = object>(
  * @param {PromptObject} dynamicQuestions questions to ask in every iteration
  * @return {*} {Promise<Field[]>} array of fields responses
  */
-export const asyncaskForDynamicFields = async <Field = object>(
+export const asyncAskForDynamicFields = async <Field = object>(
 	principalQuestion: string,
 	dynamicQuestions: PromptObject[]
 ): Promise<Field[]> => {

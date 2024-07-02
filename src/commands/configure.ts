@@ -1,11 +1,10 @@
-import { PromptObject } from 'prompts';
-import { CustomCommand } from 'utils/singleton/command';
+import { CommandQuestion, CustomCommand } from 'utils/singleton/command';
 import { EnabledArchitectures, arquitectureChoices } from 'constants/constants';
 import validateDTO from 'validators/validate';
 import { ValidatePathDTO } from 'validators/shared/path.dto';
 import { ConfigureProject } from 'lib/configure';
 
-const questions: PromptObject[] = [
+const questions: CommandQuestion[] = [
 	{
 		type: 'select',
 		name: 'type',

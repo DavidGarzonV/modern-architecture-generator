@@ -40,3 +40,8 @@ export type TypescriptFileResponse = {
 	functions: string[]
 	text: string
 }
+
+export type ClassProperty = {
+	name: string
+	type: 'string' | 'number' | 'boolean' | 'Date'
+}

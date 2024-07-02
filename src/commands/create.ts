@@ -1,5 +1,5 @@
-import prompts, { PromptObject } from 'prompts';
-import { CustomCommand } from 'utils/singleton/command';
+import prompts from 'prompts';
+import { CommandQuestion, CustomCommand } from 'utils/singleton/command';
 import { EnabledArchitectures, arquitectureChoices } from 'constants/constants';
 import CreateProject from 'lib/create-project';
 import validateDTO from 'validators/validate';
@@ -9,7 +9,7 @@ import { openDirectory } from 'utils/file';
 import { CommandArgument } from 'utils/singleton/command';
 import Loader from 'node-cli-loader';
 
-const questions: PromptObject[] = [
+const questions: CommandQuestion[] = [
 	{
 		type: 'select',
 		name: 'type',
