@@ -25,6 +25,8 @@ npm install modern-architecture-generator
 
 You can install the application globally or integrate it into an existing project.
 
+- After installation, run ``mag`` on terminal for help and details of the avaliable commands.
+
 ### Global Options commands
 
 |ARGUMENT|SHORT ARGUMENT|DESCRIPTION|VALUE TYPE|

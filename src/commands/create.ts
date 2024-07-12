@@ -39,7 +39,7 @@ type CommandArguments = { name: string };
 
 export default CustomCommand.createCustomCommand<CommandQuestions,CommandOptions,CommandArguments>(
 	'create',
-	'Creates a new project',
+	'Creates a new project with MAG',
 	async ({ name, ...response }) => {
 		await validateDTO(response, ValidatePathDTO);
 		const createProject = new CreateProject();

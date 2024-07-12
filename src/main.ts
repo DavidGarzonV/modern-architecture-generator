@@ -2,17 +2,9 @@ import { exec } from 'child_process';
 import figlet from 'figlet';
 import { program } from 'commander';
 import * as dotenv from 'dotenv';
+import { readdirSync } from 'fs';
+import { join } from 'path';
 import Loader from 'node-cli-loader';
-
-import create from 'commands/create';
-import usecase from 'commands/usecase';
-import entity from 'commands/entity';
-import util from 'commands/util';
-import iadapter from 'commands/clean/iadapter';
-import adapter from 'commands/clean/adapter';
-import drivingp from 'commands/hexagonal/drivingp';
-import drivenp from 'commands/hexagonal/drivenp';
-import configure from 'commands/configure';
 
 dotenv.config();
 
@@ -34,17 +26,20 @@ export default function main(){
 		});
 	});
 
-	program.addCommand(create);
-	program.addCommand(usecase);
-	program.addCommand(entity);
-	program.addCommand(configure);
-	program.addCommand(util);
-	// Clean
-	program.addCommand(iadapter);
-	program.addCommand(adapter);
-	// Hexagonal
-	program.addCommand(drivingp);
-	program.addCommand(drivenp);
+	const filterFiles = (file: string) => file.endsWith('.js') && !file.includes('.test.js');
+	const commandsFolderPath = join(__dirname, 'commands');
+	const commandFiles = readdirSync(commandsFolderPath).filter(filterFiles).map((file) => join(commandsFolderPath, file));
+	const commandArchitectureFiles = readdirSync(commandsFolderPath)
+		.filter((file) => !file.includes('.'))
+		.reduce((acc, file) => {
+			return [...acc, ...readdirSync(join(commandsFolderPath, file)).filter(filterFiles).map((f) => join(join(commandsFolderPath, file), f))];
+		}, [] as string[]);
+
+	commandFiles.concat(commandArchitectureFiles).forEach((file) => {
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const command = require(file).default;
+		program.addCommand(command);
+	});
 
 	console.log(
 		figlet.textSync('MAG CLI TOOL', {

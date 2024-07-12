@@ -30,7 +30,7 @@ type CommandQuestions = {
 
 export default CustomCommand.createCustomCommand<CommandQuestions,CommandOptions>(
 	'configure',
-	'Configure MAG in your project',
+	'Configure MAG in your existing project',
 	async ({ ...response }) => {
 		await validateDTO(response, ValidatePathDTO);
 		const configureProject = new ConfigureProject();
