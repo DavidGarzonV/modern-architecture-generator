@@ -122,7 +122,7 @@ export default class CreateProject {
 				const packageJsonPath = `${projectPath}/package.json`;
 				const packageJson = JSON.parse(readFile(packageJsonPath, 'utf-8'));
 				packageJson.name = projectName;
-				packageJson.main = 'index.js';
+				packageJson.main = 'src/index.js';
 				packageJson.author = 'MAG CLI Tool';
 				packageJson.description = 'Project created with the MAG CLI tool';
 				packageJson.keywords = ARCHITECTURE_KEYWORDS[options.type];
@@ -135,7 +135,8 @@ export default class CreateProject {
 				writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
 				const indexContent = 'console.log("Hello World!");';
-				writeFile(`${projectPath}/index.ts`, indexContent);
+				createDirectory(`${projectPath}/src`);
+				writeFile(`${projectPath}/src/index.ts`, indexContent);
 
 				const gitignoreContent = await fetchUrl('https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore');
 				writeFile(`${projectPath}/.gitignore`, gitignoreContent);
