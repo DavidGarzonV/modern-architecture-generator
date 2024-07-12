@@ -31,7 +31,6 @@ export class ProjectStructure {
 		}
 
 		const projectPath = Configuration.getMagPath();
-
 		const jsonFile = fs.readFileSync(`${projectPath}/templates/folder-structure/${architecture}.json`, 'utf-8');
 		const structure = JSON.parse(jsonFile) as FolderStructure;
 		this._projectStructure = structure;
@@ -105,9 +104,14 @@ export class ProjectStructure {
 	async askForCreateProjectFile(
 		baseFileName: string,
 		baseFolder: string,
-		fileType: 'adapter' | 'repository' | 'port' | 'usecase' | 'entity'
+		fileType: 'adapter' | 'repository' | 'port' | 'usecase' | 'entity' | 'util'
 	): Promise<string> {
-		const name = formatName(baseFileName);
+		const typesThatIgnoreFormat = ['util'];
+
+		let name = baseFileName;
+		if (!typesThatIgnoreFormat.includes(fileType)) {
+			name = formatName(name);
+		}
 
 		let adapterName = name;
 		let pathToValidate  = baseFolder;
@@ -122,6 +126,7 @@ export class ProjectStructure {
 				port: 'port',
 				usecase: 'use case',
 				entity: 'entity',
+				util: 'utility',
 			};
 
 			const itemType = itemTypes[fileType];

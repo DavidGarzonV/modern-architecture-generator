@@ -7,6 +7,7 @@ import Loader from 'node-cli-loader';
 import create from 'commands/create';
 import usecase from 'commands/usecase';
 import entity from 'commands/entity';
+import util from 'commands/util';
 import iadapter from 'commands/clean/iadapter';
 import adapter from 'commands/clean/adapter';
 import drivingp from 'commands/hexagonal/drivingp';
@@ -37,6 +38,7 @@ export default function main(){
 	program.addCommand(usecase);
 	program.addCommand(entity);
 	program.addCommand(configure);
+	program.addCommand(util);
 	// Clean
 	program.addCommand(iadapter);
 	program.addCommand(adapter);

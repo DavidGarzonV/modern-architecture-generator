@@ -84,6 +84,18 @@ mag entity <entity-name>
 
 ---
 
+### Utilities
+
+Classes with static methods or functions that perform generic and independent operations not related to specific instances or contexts. They often serve as repositories of functions commonly used throughout the application, promoting code reuse and eliminating redundancy.
+
+#### Create a new utility:
+
+Creates a personalized utility in your architecture folder.
+
+```md
+mag util <entity-name>
+```
+
 ## Clean Architecture
 
 ![clean architecture diagram](./src/templates/readme/public/clean/clean.jpg)
@@ -101,6 +113,7 @@ src
 ├── entities
 ├── use-cases
 ├── interface-adapters
+├── utils
 └── infrastructure
     ├── controllers
     ├── presenters
@@ -158,6 +171,7 @@ src
 │   └── ports
 │       ├── driven-ports
 │       └── driving-ports
+├── utils
 └── infrastructure
     ├── driven-adapters
     └── driving-adapters

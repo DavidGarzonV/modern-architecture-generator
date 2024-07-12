@@ -29,7 +29,7 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "tsc": "tsc -p . && tsc-alias",
-    "link": "npm run build & npm link",
+    "link": "npm run package & npm link",
     "prebuild": "npm run lint",
     "build": "npm run tsc",
     "prepackage": "npm run build",

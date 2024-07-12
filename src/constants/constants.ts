@@ -6,8 +6,8 @@ export enum EnabledArchitectures{
 }
 
 export const ARCHITECTURE_KEYWORDS = {
-	[EnabledArchitectures.Clean]: ['architecture', 'clean-architecture', 'nodejs'],
-	[EnabledArchitectures.Hexagonal]: ['architecture', 'hexagonal-architecture', 'nodejs'],
+	[EnabledArchitectures.Clean]: ['clean-architecture', 'nodejs', 'typescript'],
+	[EnabledArchitectures.Hexagonal]: ['hexagonal-architecture', 'nodejs', 'typescript'],
 };
 
 export const README_PATH = 'templates/readme';

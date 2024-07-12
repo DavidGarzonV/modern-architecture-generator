@@ -12,6 +12,9 @@
     "name": "infrastructure"
   },
   {
+    "name": "utils"
+  },
+  {
     "name": "controllers",
     "parent": "infrastructure"
   },

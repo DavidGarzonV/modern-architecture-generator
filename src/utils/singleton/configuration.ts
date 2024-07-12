@@ -21,6 +21,9 @@ export class Configuration {
 		});
 	}
 
+	/**
+	 * @description Get the installation path of mag
+	 */
 	public static getMagPath(): string {
 		let magPath = path.join(__dirname, '../../../').slice(0, -1);
 		if (process.env.NODE_ENV === 'local') {
@@ -31,6 +34,9 @@ export class Configuration {
 		return magPath;
 	}
 
+	/**
+	 * @description Get the path of the execution context folder
+	 */
 	public static getSourcePath(): string {
 		const projectPath = CustomCommand.getExecutionPath();
 		return `${projectPath}/src`;
