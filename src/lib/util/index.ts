@@ -21,7 +21,7 @@ export class CreateUtil {
 
 	private async createUtility(name: string, useClass?: boolean): Promise<void> {
 		const utilitiesFolder = this._ps.findFolderPathByName('utils');
-		const utilityName = await this._ps.askForCreateProjectFile(name, utilitiesFolder, 'port');
+		const utilityName = await this._ps.askForCreateProjectFile(name, utilitiesFolder, 'util');
 		const content = this.getContent(name, useClass);
 
 		createDirectory(utilitiesFolder);

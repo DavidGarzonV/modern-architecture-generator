@@ -3,13 +3,25 @@
     "name": "entities"
   },
   {
+    "name": "domain-helpers",
+    "parent": "entities"
+  },
+  {
     "name": "use-cases"
+  },
+  {
+    "name": "application-helpers",
+    "parent": "use-cases"
   },
   {
     "name": "interface-adapters"
   },
   {
     "name": "infrastructure"
+  },
+  {
+    "name": "infrastructure-helpers",
+    "parent": "infrastructure"
   },
   {
     "name": "utils"
@@ -25,6 +37,8 @@
   {
     "name": "adapters",
     "parent": "infrastructure"
-  }
-
+  },
+  {
+		"name": "shared-helpers"
+	}
 ]

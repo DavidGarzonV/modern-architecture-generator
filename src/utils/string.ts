@@ -65,6 +65,10 @@ export const formatName = (str: string): string => {
 	return str;
 };
 
+export const clearName = (str: string): string => {
+	return str.replace(/[^a-zA-Z0-9 ]/g, '');
+};
+
 export const formatNameAttributes = (str: string): string => {
 	const useCamelCase = Configuration.get('useCamelCase');
 	let finalStr = str.replace(/[^a-zA-Z0-9 ]/g, '');

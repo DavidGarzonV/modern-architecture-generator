@@ -3,7 +3,7 @@ import prompts from 'prompts';
 import path from 'path';
 import { FolderItem, FolderStructure } from 'constants/types';
 import { createDirectory, createGitKeepFile, findFileFilePath, pathExists } from 'utils/file';
-import { capitalize, formatName } from 'utils/string';
+import { capitalize, clearName, formatName } from 'utils/string';
 import { ArchitectureManager } from 'utils/singleton/architecture-manager';
 import { Configuration } from 'utils/singleton/configuration';
 import { CustomCommand } from 'utils/singleton/command';
@@ -104,16 +104,16 @@ export class ProjectStructure {
 	async askForCreateProjectFile(
 		baseFileName: string,
 		baseFolder: string,
-		fileType: 'adapter' | 'repository' | 'port' | 'usecase' | 'entity' | 'util'
+		fileType: 'adapter' | 'repository' | 'port' | 'usecase' | 'entity' | 'util' | 'helper'
 	): Promise<string> {
-		const typesThatIgnoreFormat = ['util'];
+		const typesThatIgnoreFormat = ['util', 'helper'];
 
 		let name = baseFileName;
 		if (!typesThatIgnoreFormat.includes(fileType)) {
 			name = formatName(name);
 		}
 
-		let adapterName = name;
+		let fileName = name;
 		let pathToValidate  = baseFolder;
 		if (fileType === 'usecase' || fileType === 'entity') {
 			pathToValidate = `${baseFolder}/${name}`;
@@ -127,6 +127,7 @@ export class ProjectStructure {
 				usecase: 'use case',
 				entity: 'entity',
 				util: 'utility',
+				helper: 'helper',
 			};
 
 			const itemType = itemTypes[fileType];
@@ -148,12 +149,16 @@ export class ProjectStructure {
 			]);
 			Loader.create(`Creating new ${itemType}`, { doneMessage: `${capitalize(itemType)} created!` });
 
-			if (!overwrite) {
-				adapterName = formatName(newName);
+			if (!overwrite){
+				if(!typesThatIgnoreFormat.includes(fileType)) {
+					fileName = formatName(newName);
+				}else{
+					fileName = clearName(newName);
+				}
 			}
 		}
 
-		return adapterName;
+		return fileName;
 	}
 
 	/**

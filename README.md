@@ -84,11 +84,41 @@ Creates a personalized entity in your architecture folder.
 mag entity <entity-name>
 ```
 
----
+
+### Helpers and Utilities (helpers vs utils)
+
+- **Scope and Specificity**: Helpers are more specialized and context-specific, catering to the needs of a particular module or component. Utilities are broader in scope and are designed to provide general-purpose functionality.
+
+- **Usage Context**: Helpers are usually used within the same module or closely related modules. Utilities are often used across different modules or even different projects.
+
+- **Implementation**: Helpers may involve more domain-specific logic and are sometimes structured as classes to encapsulate related functionality. Utilities are often implemented as static methods or functions for ease of access.
+
+### Helpers
+
+Help to realise tasks or specific operations within a larger context. Uses methods that provide auxiliary functionality to other classes or components.  
+
+Helpers can usually use external libraries to add functionality. 
+
+| Helper Type           | Description                                                                                       |
+|-----------------------|---------------------------------------------------------------------------------------------------|
+| Shared helper         | If is general purpose and does not strictly belong to any layer.                                  |
+| Application helper    | If helps with application-specific logic or coordination between the domain and external systems. |
+| Domain helper         | If is related to core business logic and is purely computational or algorithmic, with no external dependencies. |
+| Infrastructure helper | If interacts with external systems such as databases, web services or external libraries.         |
+
+#### Create a new helper:
+
+Creates a personalized helper in your architecture folder.
+
+```md
+mag helper <entity-name>
+```
 
 ### Utilities
 
-Classes with static methods or functions that perform generic and independent operations not related to specific instances or contexts. They often serve as repositories of functions commonly used throughout the application, promoting code reuse and eliminating redundancy.
+Classes with static methods or functions that perform generic and independent operations not related to specific instances or contexts. They often serve as repositories of functions commonly used throughout the application.
+
+Normally, the utilities do not use external libraries, only the native components to enable generic functionality.
 
 #### Create a new utility:
 
@@ -97,6 +127,8 @@ Creates a personalized utility in your architecture folder.
 ```md
 mag util <entity-name>
 ```
+
+---
 
 ## Clean Architecture
 
@@ -113,13 +145,17 @@ By the same token, data formats used in an outer circle should not be used by an
 ```md
 src
 ├── entities
+│   └── helpers
 ├── use-cases
+│   └── helpers
 ├── interface-adapters
 ├── utils
+│   └── helpers
 └── infrastructure
+    ├── adapters
     ├── controllers
-    ├── presenters
-    └── adapters
+    ├── helpers
+    └── presenters
 ```
 
 ### Avaliable commands:
@@ -166,17 +202,20 @@ The hexagonal architecture, or ports and adapters, is a structural pattern we us
 ```md
 src
 ├── application
-│   └── use-cases
+│   ├── use-cases
+│   └── helpers
 ├── domain
 │   ├── entities
 │   ├── services
+│   ├── helpers
 │   └── ports
 │       ├── driven-ports
 │       └── driving-ports
-├── utils
-└── infrastructure
-    ├── driven-adapters
-    └── driving-adapters
+├── infrastructure
+│   ├── driven-adapters
+│   ├── driving-adapters
+│   └── helpers
+└── helpers
 ```
 
 ### Avaliable commands:

@@ -3,11 +3,23 @@
     "name": "application"
   },
 	{
+    "name": "application-helpers",
+    "parent": "application"
+  },
+	{
 		"name": "domain"
 	},
 	{
+    "name": "domain-helpers",
+    "parent": "domain"
+  },
+	{
 		"name": "infrastructure"
 	},
+	{
+    "name": "infrastructure-helpers",
+    "parent": "infrastructure"
+  },
 	{
 		"name": "utils"
 	},
@@ -42,5 +54,8 @@
 	{
 		"name": "driving-adapters",
 		"parent": "infrastructure"
+	},
+	{
+		"name": "shared-helpers"
 	}
 ]

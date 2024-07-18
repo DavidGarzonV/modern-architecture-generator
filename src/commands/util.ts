@@ -17,10 +17,12 @@ type CommandArguments = {
 
 const questions: CommandQuestion[] = [
 	{
-		type: 'confirm',
+		type: 'toggle',
 		name: 'useClass',
 		message: 'Use class instead of function?',
 		initial: 0,
+		inactive: 'No',
+		active: 'Yes',
 	},
 ];
 
