@@ -150,7 +150,7 @@ export default class CreateProject {
 		Loader.create('Installing typescript', { doneMessage: 'Typescript installed' });
 
 		return new Promise((resolve, reject) => {
-			exec('npm install typescript -g ', { cwd: projectPath}, (error) => {
+			exec('npm install typescript --save-dev', { cwd: projectPath}, (error) => {
 				if (error) {
 					Loader.interrupt();
 					reject(error);
