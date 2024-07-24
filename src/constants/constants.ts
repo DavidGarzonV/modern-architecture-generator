@@ -26,6 +26,12 @@ export const arquitectureChoices = [
 	{ title: 'Hexagonal Architecture', value: EnabledArchitectures.Hexagonal },
 ];
 
+export const unitTestingFrameworkChoices = [
+	{ title: 'Jest', value: 'jest' },
+	{ title: 'Mocha', value: 'mocha' },
+	{ title: 'Jasmine', value: 'jasmine' },
+];
+
 const stringIcons = {
 	main: {
 		tick: '✔',

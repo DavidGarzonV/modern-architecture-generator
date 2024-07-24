@@ -18,6 +18,7 @@ import { fetchUrl } from 'utils/fetch';
 type CreateProjectOptions = {
 	name: string;
 	type: EnabledArchitectures;
+	testingFramework?: string;
 };
 
 export default class CreateProject {
@@ -128,7 +129,6 @@ export default class CreateProject {
 				packageJson.keywords = ARCHITECTURE_KEYWORDS[options.type];
 
 				const executionPath = 'dist/index.js';
-				packageJson.keywords.push('typescript');
 				packageJson.scripts.build = 'tsc';
 				packageJson.scripts.start = `npm run build && node ${executionPath}`;
 
@@ -150,7 +150,7 @@ export default class CreateProject {
 		Loader.create('Installing typescript', { doneMessage: 'Typescript installed' });
 
 		return new Promise((resolve, reject) => {
-			exec('npm install typescript --save-dev', { cwd: projectPath}, (error) => {
+			exec('npm install --save-dev typescript @types/node', { cwd: projectPath}, (error) => {
 				if (error) {
 					Loader.interrupt();
 					reject(error);
@@ -188,6 +188,10 @@ export default class CreateProject {
 
 		await this.createPackageJson(options, newFolderPath);
 		await this.configureTypescript(newFolderPath);
+
+		if (options.testingFramework) {
+			await Configuration.configureTestingFramework(options.testingFramework, executionPath);
+		}
 
 		await Configuration.installMagDependencies(newFolderPath);
 		Loader.stopAll();

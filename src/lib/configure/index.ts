@@ -8,6 +8,7 @@ import { Configuration } from 'utils/singleton/configuration';
 type ConfigureProjectOptions = {
 	type: EnabledArchitectures;
 	createFolderStructure: boolean;
+	testingFramework?: string;
 };
 
 export class ConfigureProject{
@@ -44,7 +45,10 @@ export class ConfigureProject{
 		if(options.createFolderStructure){
 			Loader.create('Creating folder structure', { doneMessage: 'Folder structure created' });
 			this._ps.createFolderStructure(executionPath);
-			Loader.stopAll();
+		}
+
+		if (options.testingFramework) {
+			await Configuration.configureTestingFramework(options.testingFramework, executionPath);
 		}
 
 		await Configuration.installMagDependencies(executionPath);

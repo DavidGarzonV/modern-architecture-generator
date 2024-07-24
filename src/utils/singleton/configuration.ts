@@ -5,7 +5,8 @@ import Loader from 'node-cli-loader';
 import { EnabledArchitectures, enabledConfigurationKeys } from 'constants/constants';
 import { ConfigurationOptions, MagConfiguration } from 'constants/types';
 import { CustomCommand } from 'utils/singleton/command';
-import { writeFile } from 'utils/file';
+import { readFile, writeFile } from 'utils/file';
+import prompts from 'prompts';
 
 export class Configuration {
 	public static configurationFile = 'mag.config.json';
@@ -111,5 +112,129 @@ export class Configuration {
 	public static get (key: ConfigurationOptions): MagConfiguration[typeof key]{
 		const configuration = Configuration.getProjectConfiguration();
 		return configuration[key];
+	}
+
+	public static async configureRimRaf(projectPath: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			exec('npm install --save-dev rimraf', { cwd: projectPath}, (error) => {
+				if (error) {
+					Loader.interrupt();
+					reject(error);
+					return;
+				}
+
+				const packageJsonPath = `${projectPath}/package.json`;
+				const packageJson = JSON.parse(readFile(packageJsonPath, 'utf-8'));
+				packageJson.scripts.prebuild = 'rimraf dist';
+				writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+				resolve();
+			});
+		});
+	}
+
+	private static async configureJest(executionPath: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			exec('npm install --save-dev jest @types/jest', { cwd: executionPath }, (error) => {
+				if (error) {
+					Loader.interrupt();
+					reject(error);
+					return;
+				}
+
+				const packageJsonPath = `${executionPath}/package.json`;
+				const packageJson = JSON.parse(readFile(packageJsonPath, 'utf-8'));
+				packageJson.scripts.test = 'jest --coverage --detectOpenHandles';
+				writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+				resolve();
+			});
+		});
+	}
+
+	private static async configureMocha(executionPath: string): Promise<void>{
+		return new Promise((resolve, reject) => {
+			exec('npm install --save-dev mocha @types/mocha', { cwd: executionPath }, (error) => {
+				if (error) {
+					Loader.interrupt();
+					reject(error);
+					return;
+				}
+
+				const packageJsonPath = `${executionPath}/package.json`;
+				const packageJson = JSON.parse(readFile(packageJsonPath, 'utf-8'));
+				packageJson.scripts.test = 'npm run build && mocha --check-leaks **/*.spec.js';
+				writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+				resolve();
+			});
+		});
+	}
+
+	private static async configureJasmine(executionPath: string): Promise<void>{
+		return new Promise((resolve, reject) => {
+			exec('npm install --save-dev jasmine @types/jasmine', { cwd: executionPath }, (error) => {
+				if (error) {
+					Loader.interrupt();
+					reject(error);
+					return;
+				}
+
+				const packageJsonPath = `${executionPath}/package.json`;
+				const packageJson = JSON.parse(readFile(packageJsonPath, 'utf-8'));
+				packageJson.scripts.test = 'jasmine --config=./jasmine.json';
+				writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+				const jasmineConfig = {
+					spec_dir: '',
+					spec_files: [
+						'src/**/*.[sS]pec.js',
+						'src/**/*.[sS]pec.ts'
+					]
+				};
+				writeFile(`${executionPath}/jasmine.json`, JSON.stringify(jasmineConfig, null, 2));				
+
+				resolve();
+			});
+		});
+	}
+
+	public static async configureTestingFramework(testingFramework: string, executionPath: string): Promise<void> {
+		const packageJsonPath = `${executionPath}/package.json`;
+		const packageJson = readFile(packageJsonPath, 'utf-8');
+		let doneMessage = 'Testing framework configured';
+
+		if (packageJson.includes('jest') || packageJson.includes('mocha') || packageJson.includes('jasmine')) {
+			const overwriteResponse = await prompts([{
+				type: 'confirm',
+				name: 'value',
+				message: 'Do you want to overwrite the test configuration?',
+				hint: 'You will need to manually delete any unused dependencies and remove configuration files.',
+				initial: false,
+			}]);
+
+			if (overwriteResponse.value === false) {
+				return;
+			}
+
+			doneMessage += ', you will need to manually delete any unused dependencies and configuration files';
+		}
+
+		Loader.create(`Configuring ${testingFramework}`, { doneMessage });
+
+		if (testingFramework === 'mocha') {
+			await Configuration.configureRimRaf(executionPath);
+		}
+
+		const methodByFramework: Record<string, (executionPath: string) => Promise<void>> = {
+			jest: Configuration.configureJest,
+			mocha: Configuration.configureMocha,
+			jasmine: Configuration.configureJasmine,
+		};
+
+		const indexContent = readFile(`${Configuration.getMagPath()}/templates/tests/${testingFramework}.txt`, 'utf-8');
+		writeFile(`${executionPath}/src/index.spec.ts`, indexContent);
+
+		return methodByFramework[testingFramework](executionPath);
 	}
 }

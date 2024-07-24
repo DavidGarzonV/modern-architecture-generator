@@ -1,6 +1,6 @@
 import prompts from 'prompts';
 import { CommandQuestion, CustomCommand } from 'utils/singleton/command';
-import { EnabledArchitectures, arquitectureChoices } from 'constants/constants';
+import { EnabledArchitectures, arquitectureChoices, unitTestingFrameworkChoices } from 'constants/constants';
 import CreateProject from 'lib/create-project';
 import validateDTO from 'validators/validate';
 import { ValidatePathDTO } from 'validators/shared/path.dto';
@@ -17,6 +17,18 @@ const questions: CommandQuestion[] = [
 		choices: arquitectureChoices,
 		initial: 0,
 	},
+	{
+		type: 'confirm',
+		name: 'configureTestFramework',
+		message: 'Configure testing framework?',
+	},
+	{
+		type: prev => prev ? 'select' : null,
+		name: 'testingFramework',
+		message: 'Pick one framework',
+		choices: unitTestingFrameworkChoices,
+		initial: 0,
+	}
 ];
 
 const commandArguments: CommandArgument[] = [
@@ -33,6 +45,7 @@ type CommandOptions = {
 
 type CommandQuestions = {
 	type: EnabledArchitectures;
+	testingFramework?: string;
 };
 
 type CommandArguments = { name: string };
@@ -51,6 +64,7 @@ export default CustomCommand.createCustomCommand<CommandQuestions,CommandOptions
 			projectPath = await createProject.run({
 				name,
 				type: response.type,
+				testingFramework: response.testingFramework,
 			});
 
 			console.info(`Project created at ${projectPath}.`);

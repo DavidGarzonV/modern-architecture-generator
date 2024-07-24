@@ -1,5 +1,5 @@
 import { CommandQuestion, CustomCommand } from 'utils/singleton/command';
-import { EnabledArchitectures, arquitectureChoices } from 'constants/constants';
+import { EnabledArchitectures, arquitectureChoices, unitTestingFrameworkChoices } from 'constants/constants';
 import validateDTO from 'validators/validate';
 import { ValidatePathDTO } from 'validators/shared/path.dto';
 import { ConfigureProject } from 'lib/configure';
@@ -16,6 +16,18 @@ const questions: CommandQuestion[] = [
 		type: 'confirm',
 		name: 'createFolderStructure',
 		message: 'Create folder structure?',
+	},
+	{
+		type: 'confirm',
+		name: 'configureTestFramework',
+		message: 'Configure testing framework?',
+	},
+	{
+		type: prev => prev ? 'select' : null,
+		name: 'testingFramework',
+		message: 'Pick one framework',
+		choices: unitTestingFrameworkChoices,
+		initial: 0,
 	}
 ];
 
@@ -26,6 +38,7 @@ type CommandOptions = {
 type CommandQuestions = {
 	type: EnabledArchitectures;
 	createFolderStructure: boolean;
+	testingFramework?: string;
 };
 
 export default CustomCommand.createCustomCommand<CommandQuestions,CommandOptions>(
@@ -38,7 +51,8 @@ export default CustomCommand.createCustomCommand<CommandQuestions,CommandOptions
 		try {
 			await configureProject.run({
 				type: response.type,
-				createFolderStructure: response.createFolderStructure
+				createFolderStructure: response.createFolderStructure,
+				testingFramework: response.testingFramework,
 			});
 
 			console.info('MAG configured, enjoy!');
