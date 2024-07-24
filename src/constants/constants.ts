@@ -25,3 +25,16 @@ export const arquitectureChoices = [
 	{ title: 'Clean Architecture', value: EnabledArchitectures.Clean },
 	{ title: 'Hexagonal Architecture', value: EnabledArchitectures.Hexagonal },
 ];
+
+const stringIcons = {
+	main: {
+		tick: '✔',
+		cross: '✖',
+	},
+	win: {
+		tick: '√',
+		cross: '×',
+	}
+};
+
+export const icons = process.platform === 'win32' ? stringIcons.win : stringIcons.main;	

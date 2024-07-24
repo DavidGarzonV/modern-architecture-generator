@@ -5,6 +5,9 @@ import * as dotenv from 'dotenv';
 import { readdirSync } from 'fs';
 import { join } from 'path';
 import Loader from 'node-cli-loader';
+import rl from 'readline';
+import kleur from 'kleur';
+import { icons } from 'constants/constants';
 
 dotenv.config();
 
@@ -16,7 +19,7 @@ export default function main(){
 
 	program.hook('preAction', () => {
 		return new Promise((resolve) => {
-			exec('tsc -v', (error) => {
+			exec('npm run build -v', (error) => {
 				if (error) {
 					throw new Error('The project has incorrect typescript configuration. Please fix it before running the CLI tool.');
 				}
@@ -54,11 +57,11 @@ export default function main(){
 	function handleError(error: Error | unknown | undefined){
 		Loader.interrupt();
 		if (error && (error as Error).message) {
-			console.error('\nApplication error:', (error as Error).message);
+			console.error(kleur.red(icons.cross) + '  '+ '\nApplication error:', (error as Error).message);
 		}
 
 		if (process.env.NODE_ENV === 'local' && error) {
-			console.error('\nApplication error:', error);
+			console.error(kleur.red(icons.cross) + '  '+ '\nApplication error:', error);
 		}
 
 		process.exit(1);
@@ -66,4 +69,18 @@ export default function main(){
 
 	process.on('unhandledRejection', handleError);
 	process.on('uncaughtException', handleError);
+
+	if (process.platform === 'win32') {
+		rl.createInterface({
+			input: process.stdin,
+			output: process.stdout,
+		}).on('SIGINT', function () {
+			process.emit('SIGINT');
+		});
+	}
+
+	process.on('SIGINT', function () {
+		console.info('\n' + kleur.red(icons.cross) + '  '+ 'MAG CLI tool has been stopped.');
+		process.exit();
+	});
 }
