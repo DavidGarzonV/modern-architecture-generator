@@ -22,6 +22,15 @@ type CreateProjectOptions = {
 	testingFramework?: string;
 };
 
+type PackageJsonConfiguration = {
+	name?: string;
+	main?: string;
+	author?: string;
+	description?: string;
+	keywords?: string[];
+	scripts?: Record<string, string>;
+}
+
 export default class CreateProject {
 	private _ps: ProjectStructure;
 	private _projectPath: string = '';
@@ -79,29 +88,29 @@ export default class CreateProject {
 		}
 	}
 
-	private createDocumentation(newFolderPath: string): void {
+	private createDocumentation(): void {
 		try {
-			const projectPath = Configuration.getMagPath();
+			const magPath = Configuration.getMagPath();
 			copyFile(
-				`${projectPath}/${README_PATH}/${this._type}.md`,
-				`${newFolderPath}/README.md`
+				`${magPath}/${README_PATH}/${this._type}.md`,
+				`${this._projectPath}/README.md`
 			);
 
 			copyFile(
-				`${projectPath}/${README_PATH}/${this._type}.md`,
-				`${newFolderPath}/README.md`
+				`${magPath}/${README_PATH}/${this._type}.md`,
+				`${this._projectPath}/README.md`
 			);
 
-			createDirectory(`${newFolderPath}/public`);
-			createDirectory(`${newFolderPath}/public/${this._type}`);
+			createDirectory(`${this._projectPath}/public`);
+			createDirectory(`${this._projectPath}/public/${this._type}`);
 
-			const resourcesPath = `${projectPath}/${README_PUBLIC_PATH}/${this._type}`;
+			const resourcesPath = `${magPath}/${README_PUBLIC_PATH}/${this._type}`;
 			const files = readDirectory(resourcesPath);
 
 			files.forEach((file) => {
 				copyFile(
 					`${resourcesPath}/${file}`,
-					`${newFolderPath}/public/${this._type}/${file}`
+					`${this._projectPath}/public/${this._type}/${file}`
 				);
 			});
 		} catch (error) {
@@ -109,39 +118,57 @@ export default class CreateProject {
 		}
 	}
 
-	private async createPackageJson(options: CreateProjectOptions, projectPath: string): Promise<void> {
+	private updatePackageJson(configurationToUpdate: PackageJsonConfiguration): void {
+		const packageJsonPath = `${this._projectPath}/package.json`;
+		const packageJson = JSON.parse(readFile(packageJsonPath, 'utf-8'));
+
+		const newConfiguration = {...configurationToUpdate};
+		if (newConfiguration.scripts) {
+			newConfiguration.scripts = {
+				...packageJson.scripts,
+				...newConfiguration.scripts,
+			};
+		}
+
+		writeFile(packageJsonPath, JSON.stringify({
+			...packageJson,
+			...newConfiguration,
+		}, null, 2));
+	}
+
+	private async createPackageJson(options: CreateProjectOptions): Promise<void> {
 		const { name: projectName } = options;
 
 		Loader.create('Creating npm project', { doneMessage: 'Npm project created' });
 
 		return new Promise((resolve, reject) => {
-			exec('npm init -y', { cwd: projectPath }, async (error) => {
+			exec('npm init -y', { cwd: this._projectPath }, async (error) => {
 				if (error) {
 					Loader.interrupt();
 					reject(error);
 					return;
 				}
 
-				const packageJsonPath = `${projectPath}/package.json`;
-				const packageJson = JSON.parse(readFile(packageJsonPath, 'utf-8'));
-				packageJson.name = projectName;
-				packageJson.main = 'src/index.js';
-				packageJson.author = 'MAG CLI Tool';
-				packageJson.description = 'Project created with the MAG CLI tool';
-				packageJson.keywords = ARCHITECTURE_KEYWORDS[options.type];
-
 				const executionPath = 'dist/index.js';
-				packageJson.scripts.build = 'tsc';
-				packageJson.scripts.start = `npm run build && node ${executionPath}`;
 
-				writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
+				this.updatePackageJson({
+					name: projectName,
+					main: 'dist/index.js',
+					author: 'MAG CLI Tool',
+					description: 'Project created with the MAG CLI tool',
+					keywords: ARCHITECTURE_KEYWORDS[options.type],
+					scripts: {
+						build: 'tsc',
+						start: `npm run build && node ${executionPath}`,
+					}
+				});
 
 				const indexContent = 'console.log("Hello World!");';
-				createDirectory(`${projectPath}/src`);
-				writeFile(`${projectPath}/src/index.ts`, indexContent);
+				createDirectory(`${this._projectPath}/src`);
+				writeFile(`${this._projectPath}/src/index.ts`, indexContent);
 
 				const gitignoreContent = await fetchUrl('https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore');
-				writeFile(`${projectPath}/.gitignore`, gitignoreContent);
+				writeFile(`${this._projectPath}/.gitignore`, gitignoreContent);
 
 				resolve();
 			});
@@ -151,23 +178,28 @@ export default class CreateProject {
 	private setPathAlias(): void {
 		const currentConfig = readTypescriptConfigFile();
 		if (currentConfig) {
-			const projectPaths = this._ps.getProjectPaths();
-			const paths = {
-				'@/*': ['src/*'],
-				...projectPaths,
-			};
-			currentConfig.compilerOptions.paths = paths;
+			currentConfig.compilerOptions.paths = this._ps.getProjectPaths();
 			updateTypescriptConfig(currentConfig);
 		}else{
 			throw new Error('Could not read typescript config');
 		}
 	}
 
-	private async configureTypescript(projectPath: string): Promise<void> {
+	private setIncludePaths(): void {
+		const currentConfig = readTypescriptConfigFile();
+		if (currentConfig) {
+			currentConfig.include = ['src/**/*', 'tests/**/*'];
+			updateTypescriptConfig(currentConfig);
+		}else{
+			throw new Error('Could not read typescript config');
+		}
+	}
+
+	private async configureTypescript(): Promise<void> {
 		Loader.create('Installing typescript', { doneMessage: 'Typescript installed' });
 
 		return new Promise((resolve, reject) => {
-			exec('npm install --save-dev typescript @types/node', { cwd: projectPath}, (error) => {
+			exec('npm install --save-dev typescript @types/node', { cwd: this._projectPath}, (error) => {
 				if (error) {
 					Loader.interrupt();
 					reject(error);
@@ -176,17 +208,42 @@ export default class CreateProject {
 
 				Loader.create('Configuring typescript', { doneMessage: 'Typescript configured' });
 
-				const tscCommand = 'tsc --init --baseUrl "./src" --rootDir "./src" --outDir "./dist" --moduleResolution "nodenext" -target "esnext" --esModuleInterop';
-				exec(tscCommand, { cwd: projectPath }, (error) => {
+				const filesEol = Configuration.get('filesEOL');
+				const tscCommand = `npm run build -- --init --baseUrl "./src" --rootDir "./src" --outDir "./dist" --target esnext --module nodenext  --esModuleInterop --newLine ${filesEol}`;
+				exec(tscCommand, { cwd: this._projectPath }, (error) => {
 					if (error) {
 						reject(error);
 						return;
 					}
 
 					this.setPathAlias();
+					this.setIncludePaths();
 
 					resolve();
 				});
+			});
+		});
+	}
+
+	private addRequiredDependencies(): Promise<void> {
+		Loader.create('Installing required dependencies', { doneMessage: 'Dependencies installed' });
+		const dependenciesToInstall = ['tsc-alias'];
+
+		return new Promise((resolve, reject) => {
+			exec(`npm install --save-dev ${dependenciesToInstall.join(' ')}`, { cwd: this._projectPath}, (error) => {
+				if (error) {
+					Loader.interrupt();
+					reject(error);
+					return;
+				}
+
+				this.updatePackageJson({
+					scripts: {
+						build: 'tsc & tsc-alias'
+					}
+				});
+
+				resolve();
 			});
 		});
 	}
@@ -205,21 +262,23 @@ export default class CreateProject {
 		CustomCommand.setExecutionPath(this._projectPath);
 
 		Loader.create('Creating project structure', { doneMessage: 'Project structure created' });
-		this.createDocumentation(newFolderPath);
-		this._ps.createFolderStructure(newFolderPath);
-		Configuration.createDefaultConfigFile(options.type, newFolderPath);
+		this.createDocumentation();
+		this._ps.createFolderStructure(this._projectPath);
+		Configuration.createDefaultConfigFile(options.type, this._projectPath);
 
-		await this.createPackageJson(options, newFolderPath);
-		await this.configureTypescript(newFolderPath);
+		await this.createPackageJson(options);
+		await this.configureTypescript();
+		await this.addRequiredDependencies();
+
 
 		if (options.testingFramework) {
 			await Configuration.configureTestingFramework(options.testingFramework, executionPath);
 		}
 
-		await Configuration.installMagDependencies(newFolderPath);
+		await Configuration.installMagDependencies(this._projectPath);
 		Loader.stopAll();
 
-		return newFolderPath;
+		return this._projectPath;
 	}
 
 	deleteProject(){

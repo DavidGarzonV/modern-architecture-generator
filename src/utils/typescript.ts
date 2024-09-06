@@ -38,7 +38,7 @@ export const readTypescriptConfigFile = (): TypescriptConfig | null => {
 
 	try {
 		if (pathExists(srcPath)) {
-			const fileText = ts.readJsonConfigFile(configFilePath, ts.sys.readFile).getFullText();
+			const fileText = ts.readJsonConfigFile(srcPath, ts.sys.readFile).getFullText();
 			// eslint-disable-next-line prefer-const
 			let tsConfig: TypescriptConfig | null = null;
 			eval(`tsConfig = ${fileText};`);

@@ -244,9 +244,9 @@ export class ProjectStructure {
 		return basePaths.map((item) => {
 			const path  = this.findFolderPathByName(item, true);
 			const pathWithoutSrc = path.replace('src/', '');
-			const alias = `@${item}`;
+			const alias = `@${item}/*`;
 
-			return { path: `${pathWithoutSrc}/*`, alias };
+			return { path: `./${pathWithoutSrc}/*`, alias };
 		}).reduce((acc, item) => {
 			acc[item.alias] = [item.path];
 			return acc;

@@ -1,8 +1,8 @@
 <h1 align="center">Modern Architecture Generator - Mag</h1>
 
-Plugin to create and structure projects with a architecture pattern.
+Plugin to create and structure projects with a architecture pattern with Typescript and Node JS.
 
-In this plugin we can found the next architectures:
+In this plugin you can found the next architectures:
 
 - Clean Architecture
 - Hexagonal Architecture
@@ -312,6 +312,14 @@ To see all the commands avaliable:
 mag --help
 mag [command] --help
 ```
+
+### Notes
+
+When you generate a project, you will also install the following dependencies:
+
+- [https://www.npmjs.com/package/typescript](typescript)
+- [https://www.npmjs.com/package/@types/node](@types/node)
+- [https://www.npmjs.com/package/tsc-alias](tsc-alias)
 
 ---
 
