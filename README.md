@@ -27,6 +27,10 @@ You can install the application globally or integrate it into an existing projec
 
 - After installation, run ``mag`` on terminal for help and details of the avaliable commands.
 
+## Help
+
+To get help about the commands run `mag help` or `mag [command] -h`
+
 ### Global Options commands
 
 |ARGUMENT|SHORT ARGUMENT|DESCRIPTION|VALUE TYPE|

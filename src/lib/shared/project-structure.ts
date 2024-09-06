@@ -59,16 +59,17 @@ export class ProjectStructure {
 	/**
 	 * @description Find the folder path in a local project by name
 	 * @param {string} name
+	 * @param {boolean} [relativePath=false]
 	 * @return {*}  {string}
 	 * @memberof ProjectStructure
 	 */
-	findFolderPathByName(name: string): string {
+	findFolderPathByName(name: string, relativePath?: boolean): string {
 		const itemFolder = this.projectStructure.find((item) => item.name === name);
 		if (!itemFolder) {
 			throw new Error(`Could not find ${name} folder`);
 		}
 
-		const srcPath = CustomCommand.getExecutionPath() + '/src';
+		const srcPath = relativePath ? 'src' : CustomCommand.getExecutionPath() + '/src';
 		return this.organizeParentFolder(itemFolder, srcPath);
 	}
 
@@ -232,5 +233,23 @@ export class ProjectStructure {
 		for (const item of this.projectStructure) {
 			this.createParentFolder(item, srcPath);
 		}
+	}
+
+	/**
+	 * @description Get the project paths to be used in the tsconfig.json
+	 * @return {*} {Record<string, string>} Path aliases with their respective paths
+	 */
+	getProjectPaths(): Record<string, string[]> {
+		const basePaths = this._projectStructure.filter((item) => !item.parent).map((item) => item.name);
+		return basePaths.map((item) => {
+			const path  = this.findFolderPathByName(item, true);
+			const pathWithoutSrc = path.replace('src/', '');
+			const alias = `@${item}`;
+
+			return { path: `${pathWithoutSrc}/*`, alias };
+		}).reduce((acc, item) => {
+			acc[item.alias] = [item.path];
+			return acc;
+		}, {} as Record<string, string[]>);
 	}
 }

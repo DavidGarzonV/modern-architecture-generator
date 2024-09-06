@@ -33,6 +33,7 @@ export class ConfigureProject{
 		}
 	}
 
+	// TODO - VALIDATE IF HAS TYPESCRIPT, IF NOT CONFIGURE
 	async run(options: ConfigureProjectOptions) {
 		console.info('Configuring project...');
 

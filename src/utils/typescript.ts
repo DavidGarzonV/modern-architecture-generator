@@ -1,4 +1,4 @@
-import { pathExists } from 'utils/file';
+import { pathExists, writeFile } from 'utils/file';
 import ts, { Identifier } from 'typescript';
 import {
 	TypescriptDeclarationType,
@@ -7,7 +7,13 @@ import {
 } from 'constants/types';
 import { CustomCommand } from 'utils/singleton/command';
 
-export const readTypescriptConfig = (): ts.CompilerOptions | null => {
+export interface TypescriptConfig {
+	compilerOptions: ts.CompilerOptions;
+	include: string[];
+	exclude: string[];
+}
+
+const readTypescriptConfig = (): ts.CompilerOptions | null => {
 	const configFilePath = 'tsconfig.json';
 	const executionPath = CustomCommand.getExecutionPath();
 	const srcPath = `${executionPath}/${configFilePath}`;
@@ -23,6 +29,33 @@ export const readTypescriptConfig = (): ts.CompilerOptions | null => {
 	}
 
 	return null;
+};
+
+export const readTypescriptConfigFile = (): TypescriptConfig | null => {
+	const configFilePath = 'tsconfig.json';
+	const executionPath = CustomCommand.getExecutionPath();
+	const srcPath = `${executionPath}/${configFilePath}`;
+
+	try {
+		if (pathExists(srcPath)) {
+			const fileText = ts.readJsonConfigFile(configFilePath, ts.sys.readFile).getFullText();
+			// eslint-disable-next-line prefer-const
+			let tsConfig: TypescriptConfig | null = null;
+			eval(`tsConfig = ${fileText};`);
+			return tsConfig;
+		}
+	} catch (error) {
+		console.error(`Error reading tsconfig.json file: ${error}`);
+	}
+
+	return null;
+};
+
+export const updateTypescriptConfig = (configuration: object): void => {
+	const configFilePath = 'tsconfig.json';
+	const executionPath = CustomCommand.getExecutionPath();
+	const srcPath = `${executionPath}/${configFilePath}`;
+	writeFile(srcPath, JSON.stringify(configuration, null, 2));
 };
 
 const getNodeType = (node: ts.TypeElement & { type?: ts.TypeNode }) => {

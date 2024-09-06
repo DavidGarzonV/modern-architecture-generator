@@ -57,11 +57,11 @@ export default function main(){
 	function handleError(error: Error | unknown | undefined){
 		Loader.interrupt();
 		if (error && (error as Error).message) {
-			console.error(kleur.red(icons.cross) + '  '+ '\nApplication error:', (error as Error).message);
+			console.error(kleur.red(icons.cross) + ' ' +(error as Error).message);
 		}
 
 		if (process.env.NODE_ENV === 'local' && error) {
-			console.error(kleur.red(icons.cross) + '  '+ '\nApplication error:', error);
+			console.error(kleur.red(icons.cross) + ' '+ 'Application error:', error);
 		}
 
 		process.exit(1);

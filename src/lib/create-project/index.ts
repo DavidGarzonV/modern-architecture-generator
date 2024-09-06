@@ -14,6 +14,7 @@ import { Configuration } from 'utils/singleton/configuration';
 import Loader from 'node-cli-loader';
 import { formatPath } from 'utils/string';
 import { fetchUrl } from 'utils/fetch';
+import { readTypescriptConfigFile, updateTypescriptConfig } from 'utils/typescript';
 
 type CreateProjectOptions = {
 	name: string;
@@ -24,6 +25,7 @@ type CreateProjectOptions = {
 export default class CreateProject {
 	private _ps: ProjectStructure;
 	private _projectPath: string = '';
+	private _type: EnabledArchitectures = EnabledArchitectures.Clean;
 
 	constructor(){
 		this._ps = new ProjectStructure();
@@ -77,29 +79,29 @@ export default class CreateProject {
 		}
 	}
 
-	private createDocumentation(type: EnabledArchitectures, newFolderPath: string): void {
+	private createDocumentation(newFolderPath: string): void {
 		try {
 			const projectPath = Configuration.getMagPath();
 			copyFile(
-				`${projectPath}/${README_PATH}/${type}.md`,
+				`${projectPath}/${README_PATH}/${this._type}.md`,
 				`${newFolderPath}/README.md`
 			);
 
 			copyFile(
-				`${projectPath}/${README_PATH}/${type}.md`,
+				`${projectPath}/${README_PATH}/${this._type}.md`,
 				`${newFolderPath}/README.md`
 			);
 
 			createDirectory(`${newFolderPath}/public`);
-			createDirectory(`${newFolderPath}/public/${type}`);
+			createDirectory(`${newFolderPath}/public/${this._type}`);
 
-			const resourcesPath = `${projectPath}/${README_PUBLIC_PATH}/${type}`;
+			const resourcesPath = `${projectPath}/${README_PUBLIC_PATH}/${this._type}`;
 			const files = readDirectory(resourcesPath);
 
 			files.forEach((file) => {
 				copyFile(
 					`${resourcesPath}/${file}`,
-					`${newFolderPath}/public/${type}/${file}`
+					`${newFolderPath}/public/${this._type}/${file}`
 				);
 			});
 		} catch (error) {
@@ -146,6 +148,21 @@ export default class CreateProject {
 		});
 	}
 
+	private setPathAlias(): void {
+		const currentConfig = readTypescriptConfigFile();
+		if (currentConfig) {
+			const projectPaths = this._ps.getProjectPaths();
+			const paths = {
+				'@/*': ['src/*'],
+				...projectPaths,
+			};
+			currentConfig.compilerOptions.paths = paths;
+			updateTypescriptConfig(currentConfig);
+		}else{
+			throw new Error('Could not read typescript config');
+		}
+	}
+
 	private async configureTypescript(projectPath: string): Promise<void> {
 		Loader.create('Installing typescript', { doneMessage: 'Typescript installed' });
 
@@ -158,11 +175,15 @@ export default class CreateProject {
 				}
 
 				Loader.create('Configuring typescript', { doneMessage: 'Typescript configured' });
-				exec('tsc --init --baseUrl "./src" --rootDir "./src" --outDir "./dist"', { cwd: projectPath }, (error) => {
+
+				const tscCommand = 'tsc --init --baseUrl "./src" --rootDir "./src" --outDir "./dist" --moduleResolution "nodenext" -target "esnext" --esModuleInterop';
+				exec(tscCommand, { cwd: projectPath }, (error) => {
 					if (error) {
 						reject(error);
 						return;
 					}
+
+					this.setPathAlias();
 
 					resolve();
 				});
@@ -172,6 +193,7 @@ export default class CreateProject {
 
 	async run(options: CreateProjectOptions): Promise<string> {
 		console.info('Creating project...');
+		this._type = options.type;
 		this._ps.setProjectStructure(options.type);
 		const executionPath = CustomCommand.getExecutionPath();
 
@@ -180,9 +202,10 @@ export default class CreateProject {
 		const newFolderPath = `${executionPath}/${options.name}`;
 		await this.createProjectDirectory(newFolderPath);
 		this._projectPath = newFolderPath;
+		CustomCommand.setExecutionPath(this._projectPath);
 
 		Loader.create('Creating project structure', { doneMessage: 'Project structure created' });
-		this.createDocumentation(options.type, newFolderPath);
+		this.createDocumentation(newFolderPath);
 		this._ps.createFolderStructure(newFolderPath);
 		Configuration.createDefaultConfigFile(options.type, newFolderPath);
 
