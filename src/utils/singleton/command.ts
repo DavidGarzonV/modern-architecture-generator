@@ -138,18 +138,16 @@ export class CustomCommand {
 					command.argument(`<${argument.type}>`, argument.description);
 				});
 			}
-	
-			if (hooks?.preAction) {
-				command.hook('preAction', hooks.preAction);
-			}
-	
-			if (architecture) {
-				command.hook('preAction', async (_: Command, actionCommand: Command) => {
-					const options = actionCommand.opts();
-					if (options.path) {
-						CustomCommand.setExecutionPath(options.path);
-					}
 
+			command.hook('preAction', async (_: Command, actionCommand: Command) => {
+				const options = actionCommand.opts();
+				if (options.path) {
+					CustomCommand.setExecutionPath(options.path);
+				}
+			});
+
+			if (architecture) {
+				command.hook('preAction', async () => {
 					const result = ArchitectureManager.validateProjectArchitecture(
 						architecture
 					);
@@ -160,7 +158,11 @@ export class CustomCommand {
 					}
 				});
 			}
-	
+
+			if (hooks?.preAction) {
+				command.hook('preAction', hooks.preAction);
+			}
+
 			return command.action(async (...response) => {
 				const responseArguments: Partial<Arguments> = {};
 				let responseIndex = 0;
