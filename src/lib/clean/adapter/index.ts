@@ -22,7 +22,17 @@ export default class CreateAdapter {
 
 	// TODO - Implement interface methods
 	private async getContent(name: string, iadapter: string): Promise<string> {
-		const interfaceAdapterName = formatName(iadapter);
+		const iadapterName = iadapter.split('/');
+		let nameWithoutPath = '';
+		let icontext: string | undefined = undefined;
+		if (iadapterName.length > 1) {
+			nameWithoutPath = iadapterName[iadapterName.length - 1];
+			icontext = iadapterName[0];
+		}else{
+			nameWithoutPath = iadapterName[0];
+		}
+
+		const interfaceAdapterName = formatName(nameWithoutPath);
 
 		const projectPath = Configuration.getMagPath();
 		let adapterMethodsTemplate = readFile(`${projectPath}/templates/adapters/adapter.txt`);
@@ -42,7 +52,10 @@ export default class CreateAdapter {
 
 		if (repositoryFile && repositoryFile.interfaces.length > 0) {
 			const [interfaceName] = repositoryFile.interfaces;
-			const repositoryImportPath = this._ps.getImportPath(this._adaptersFolder, repositoryPath);
+			let repositoryImportPath = `@interface-adapters/${interfaceAdapterName}.repository`;
+			if (icontext) {
+				repositoryImportPath = `@interface-adapters/${icontext}/${interfaceAdapterName}.repository`;
+			}
 
 			adapterMethodsTemplate = adapterMethodsTemplate.replace(/IAdapterRoute/g, repositoryImportPath.replace('.ts', ''));
 			adapterMethodsTemplate = adapterMethodsTemplate.replace(/IAdapter/g, interfaceName.name);
@@ -50,7 +63,7 @@ export default class CreateAdapter {
 			throw new Error('Invalid interface adapter');
 		}
 
-		return adapterMethodsTemplate.replace(/Adapter/g, name);
+		return adapterMethodsTemplate.replace(/Adapter/g, `${name}Adapter`);
 	}
 
 	private async createAdapter(options: CreateAdapterOptions): Promise<void> {

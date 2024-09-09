@@ -4,6 +4,8 @@ import { askOptionFromDirectory } from 'utils/questions';
 import { CommandArgument, CustomCommand } from 'utils/singleton/command';
 import { ProjectStructure } from 'lib/shared/project-structure';
 import { ContextsManager } from 'utils/singleton/contexts-manager';
+import prompts from 'prompts';
+import { createInterfaceAdapter } from 'commands/clean/iadapter';
 
 const commandArguments: CommandArgument[] = [
 	{
@@ -24,19 +26,31 @@ export default CustomCommand.createCustomCommand<unknown, unknown, CommandArgume
 		const projectStructure = new ProjectStructure();
 		const folder = projectStructure.findFolderPathByName('interface-adapters');
 
-		const iadapter = await askOptionFromDirectory(
+		let iadapter = await askOptionFromDirectory(
 			'Name of the interface adapter to implements:',
 			folder,
 			'.repository.ts'
 		);
 
 		if (!iadapter) {
-			throw new Error('No interface adapters found');
+			const { createNewInterfaceAdapter } = await prompts([
+				{
+					type: 'confirm',
+					name: 'createNewInterfaceAdapter',
+					message: 'Do you want to create a new interface adapter?',
+				},
+			]);
+
+			if (createNewInterfaceAdapter) {
+				iadapter = await createInterfaceAdapter(name, undefined, undefined);
+			}else{
+				throw new Error('No interface adapters found');
+			}
 		}
 
-		const context = await ContextsManager.getContextName('adapters');
-
 		try {
+			const context = await ContextsManager.getContextName('adapters');
+
 			const adapter = new CreateAdapter();
 			await adapter.run({
 				name,

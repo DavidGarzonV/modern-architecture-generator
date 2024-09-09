@@ -43,7 +43,7 @@ export class ProjectStructure {
 	 * @return {*}  {string}
 	 * @memberof ProjectStructure
 	 */
-	organizeParentFolder(item: FolderItem, basePath: string = ''): string {
+	private organizeParentFolder(item: FolderItem, basePath: string = ''): string {
 		if (item.parent) {
 			const findParent = this.projectStructure.find((folder) => folder.name === item.parent);
 			const parentPath = this.organizeParentFolder(findParent!, basePath);

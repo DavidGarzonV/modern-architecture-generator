@@ -25,20 +25,23 @@ type CommandOptions = {
 	entity?: string;
 }
 
+export async  function createInterfaceAdapter(name: string, entity?: string, context?: string): Promise<string> {
+	try {
+		const adapter = new CreateIAdapter();
+		return adapter.run({ name, entity, contextName: context });
+	} catch (error) {
+		throw new Error(
+			`Error creating interface adapter, ${(error as Error).message}`
+		);
+	}
+}
+
 export default CustomCommand.createCustomCommand<unknown, CommandOptions, CommandArguments>(
 	'iadapter',
 	'Creates a new interface adapter',
 	async ({ name, entity }) => {
 		const context = await ContextsManager.getContextName('interface-adapters');
-
-		try {
-			const adapter = new CreateIAdapter();
-			await adapter.run({ name, entity, contextName: context });
-		} catch (error) {
-			throw new Error(
-				`Error creating interface adapter, ${(error as Error).message}`
-			);
-		}
+		await createInterfaceAdapter(name, entity, context);
 	},
 	{
 		arguments: commandArguments,

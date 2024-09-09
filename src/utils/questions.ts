@@ -63,7 +63,7 @@ export const askOptionFromDirectory = async (
 
 	const choices = items.map((item) => {
 		const itemValue = item.split('/').pop()!;
-		return { title: itemValue, value: itemValue };
+		return { title: itemValue, value: item };
 	});
 
 	const { selectedValue } = await prompts([

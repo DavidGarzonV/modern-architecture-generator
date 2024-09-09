@@ -34,18 +34,20 @@ export default class CreateIAdapter{
 		}else{
 			adapterTemplate = adapterTemplate.replace(/IEntity/g, 'object');
 		}
-	
-		return adapterTemplate.replace(/IAdapter/g, name);
+
+		return adapterTemplate.replace(/IAdapter/g, `${name}Repository`);
 	}
 
-	private async createAdapter(options: CreateIAdapterOptions): Promise<void> {
+	private async createAdapter(options: CreateIAdapterOptions): Promise<string> {
 		const adapterName = await this._ps.askForCreateProjectFile(options.name, this._interfaceAdaptersFolder, 'repository');
 		const content = this.getContent(adapterName, options.entity);
 		createDirectory(this._interfaceAdaptersFolder);
 		writeFile(`${this._interfaceAdaptersFolder}/${adapterName}.repository.ts`, content);
+
+		return adapterName;
 	}
 
-	async run(options: CreateIAdapterOptions): Promise<void>{
+	async run(options: CreateIAdapterOptions): Promise<string>{
 		Loader.create(`Creating interface adapter ${options.name}`, { doneMessage: 'Interface adapter created!' });
 
 		this._interfaceAdaptersFolder = this._ps.findFolderPathByName('interface-adapters');
@@ -59,7 +61,9 @@ export default class CreateIAdapter{
 			createDirectory(this._interfaceAdaptersFolder);
 		}
 
-		await this.createAdapter(options);
+		const adapterName = await this.createAdapter(options);
 		Loader.stopAll();
+
+		return adapterName;
 	}
 }
