@@ -2,12 +2,14 @@ import { ConfigurationOptions } from 'constants/types';
 
 export enum EnabledArchitectures{
 	Clean = 'clean',
-	Hexagonal = 'hexagonal'
+	Hexagonal = 'hexagonal',
+	Onion = 'onion'
 }
 
 export const ARCHITECTURE_KEYWORDS = {
 	[EnabledArchitectures.Clean]: ['clean-architecture', 'nodejs', 'typescript'],
 	[EnabledArchitectures.Hexagonal]: ['hexagonal-architecture', 'nodejs', 'typescript'],
+	[EnabledArchitectures.Onion]: ['onion-architecture', 'nodejs', 'typescript'],
 };
 
 export const README_PATH = 'templates/readme';
@@ -24,6 +26,7 @@ export const enabledConfigurationKeys: ConfigurationOptions[] = [
 export const arquitectureChoices = [
 	{ title: 'Clean Architecture', value: EnabledArchitectures.Clean },
 	{ title: 'Hexagonal Architecture', value: EnabledArchitectures.Hexagonal },
+	{ title: 'Onion Architecture', value: EnabledArchitectures.Onion },
 ];
 
 export const unitTestingFrameworkChoices = [

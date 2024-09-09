@@ -1,0 +1,57 @@
+[
+  {
+		"name": "domain"
+	},
+	{
+		"name": "entities",
+		"parent": "domain"
+	},
+	{
+		"name": "repositories",
+		"parent": "domain"
+	},
+	{
+    "name": "domain-helpers",
+    "parent": "domain"
+  },
+	{
+		"name": "services",
+		"parent": "domain"
+	},
+	{
+		"name": "application"
+	},
+	{
+		"name": "use-cases",
+		"parent": "application"
+	},
+	{
+    "name": "application-helpers",
+    "parent": "application"
+  },
+	{
+		"name": "infrastructure"
+	},
+	{
+		"name": "services",
+		"parent": "infrastructure"
+	},
+	{
+		"name": "persistence",
+		"parent": "infrastructure"
+	},
+	{
+		"name": "external",
+		"parent": "infrastructure"
+	},
+	{
+    "name": "infrastructure-helpers",
+    "parent": "infrastructure"
+  },
+	{
+		"name": "shared-helpers"
+	},
+  {
+    "name": "utils"
+  }
+]

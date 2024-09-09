@@ -154,12 +154,12 @@ src
 │   └── helpers
 ├── interface-adapters
 ├── utils
-│   └── helpers
+├── helpers
 └── infrastructure
     ├── adapters
     ├── controllers
     ├── helpers
-    └── presenters
+    └── persistence
 ```
 
 ### Avaliable commands:
@@ -219,7 +219,37 @@ src
 │   ├── driven-adapters
 │   ├── driving-adapters
 │   └── helpers
+├── utils
 └── helpers
+```
+
+---
+
+## Onion Architecture
+
+![onion architectures](./src/templates/readme/public/onion/onion.png)
+
+It is another variant of Clean Architecture that focuses on organising code into concentric layers, with the core of the system at the centre and the outer layers representing different levels of abstraction and implementation detail.
+
+### Folder Structure
+
+```md
+src
+├── application
+│   ├── helpers
+│   └── use-cases
+├── domain
+│   ├── helpers
+│   ├── entities
+│   ├── repositories
+│   └── services
+├── infrastructure
+│   ├── external
+│   ├── helpers
+│   ├── persistence
+│   └── services
+├── helpers
+└── utils
 ```
 
 ### Avaliable commands:

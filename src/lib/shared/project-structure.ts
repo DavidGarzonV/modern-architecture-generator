@@ -205,13 +205,17 @@ export class ProjectStructure {
 	 * @return {*} {string} Path of the parent folder
 	 */
 	private createParentFolder(item: FolderItem, srcPath: string): string {
+		let elementName = item.name;
+		if (elementName.includes('helpers')) {
+			elementName = 'helpers';
+		}
 		let finalPath = '';
 		if (item.parent) {
 			const findParent = this.projectStructure.find((folder) => folder.name === item.parent);
 			const parentPath = this.createParentFolder(findParent!, srcPath);
-			finalPath = createDirectory(`${parentPath}/${item.name}`);
+			finalPath = createDirectory(`${parentPath}/${elementName}`);
 		}else{
-			finalPath =  createDirectory(`${srcPath}/${item.name}`);
+			finalPath =  createDirectory(`${srcPath}/${elementName}`);
 		}
 
 		const ignoredFolders = ['infrastructure', 'domain', 'application'];
