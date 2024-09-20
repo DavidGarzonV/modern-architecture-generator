@@ -1,0 +1,6 @@
+export default class ServiceNameService{
+	constructor(){
+	}
+
+	// Add your business logic methods here
+}

@@ -11,6 +11,10 @@
 		"parent": "domain"
 	},
 	{
+    "name": "services",
+    "parent": "domain"
+  },
+	{
     "name": "domain-helpers",
     "parent": "domain"
   },

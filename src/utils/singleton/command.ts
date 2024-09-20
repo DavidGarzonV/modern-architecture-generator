@@ -200,6 +200,7 @@ export class CustomCommand {
 				}else{
 					await action({ ...responseArguments, ...commandOptions } as ResponseType);
 				}
+				process.exit(0);
 			});
 		}
 	
@@ -207,6 +208,7 @@ export class CustomCommand {
 			const commandOptions = CustomCommand.handleCommandOptions<Options>(options, response);
 			CustomCommand.validateConfiguration(commandName);
 			await action(commandOptions as ResponseType);
+			process.exit(0);
 		});
 	}
 }

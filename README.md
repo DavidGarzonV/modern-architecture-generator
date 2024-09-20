@@ -88,6 +88,19 @@ Creates a personalized entity in your architecture folder.
 mag entity <entity-name>
 ```
 
+### Services
+
+Services are classes that encapsulate business logic that does not fit directly within an entity.
+
+Domain services defines processes that are independent of the lifecycle of a particular Entity.
+
+#### Create a new service:
+
+Creates a personalized domain service in your architecture folder using:
+
+```md
+mag service <service-name>
+```
 
 ### Helpers and Utilities (helpers vs utils)
 

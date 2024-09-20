@@ -105,7 +105,7 @@ export class ProjectStructure {
 	async askForCreateProjectFile(
 		baseFileName: string,
 		baseFolder: string,
-		fileType: 'adapter' | 'repository' | 'port' | 'usecase' | 'entity' | 'util' | 'helper'
+		fileType: 'adapter' | 'repository' | 'port' | 'usecase' | 'entity' | 'util' | 'helper' | 'service'
 	): Promise<string> {
 		const typesThatIgnoreFormat = ['util', 'helper'];
 
@@ -129,6 +129,7 @@ export class ProjectStructure {
 				entity: 'entity',
 				util: 'utility',
 				helper: 'helper',
+				service: 'service',
 			};
 
 			const itemType = itemTypes[fileType];

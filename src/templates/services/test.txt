@@ -1,0 +1,17 @@
+import ServiceName from './ServiceName.service.ts'
+
+describe('ServiceName', () => {
+	let service: ServiceName
+
+	beforeEach(() => {
+		// Add mocks here
+		service = new ServiceName()
+	});
+
+	test('', () => {
+		// Add your logic here
+		service.run()
+		// Add your assertions here
+		expect(true).toBeTruthy()
+	})
+})
