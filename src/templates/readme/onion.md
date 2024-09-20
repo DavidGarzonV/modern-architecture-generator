@@ -50,8 +50,10 @@ src
 ├── domain
 │   ├── entities
 │   ├── services
+│   ├── helpers
 │   └── repositories
 ├── application
+│   ├── helpers
 │   └── use-cases
 ├── infrastructure
 │   ├── persistence
