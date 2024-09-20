@@ -2,14 +2,6 @@
 
 ![clean architecture diagram](./public/clean/clean.jpg)
 
-Over the last several years we’ve seen a whole range of ideas regarding the architecture of systems. These include:
-
-- Hexagonal Architecture (a.k.a. Ports and Adapters) by Alistair Cockburn and adopted by Steve Freeman, and Nat Pryce in their wonderful book Growing Object Oriented Software
-- Onion Architecture by Jeffrey Palermo
-- Screaming Architecture from a blog of mine last year
-- DCI from James Coplien, and Trygve Reenskaug.
-- BCE by Ivar Jacobson from his book Object Oriented Software Engineering: A Use-Case Driven Approach
-
 Though these architectures all vary somewhat in their details, they are very similar. They all have the same objective, which is the separation of concerns. They all achieve this separation by dividing the software into layers. Each has at least one layer for business rules, and another for interfaces.
 
 Each of these architectures produce systems that are:
@@ -27,19 +19,29 @@ The concentric circles represent different areas of software. In general, the fu
 
 The overriding rule that makes this architecture work is The Dependency Rule. This rule says that source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle. In particular, the name of something declared in an outer circle must not be mentioned by the code in the an inner circle. That includes, functions, classes. variables, or any other named software entity.
 
-By the same token, data formats used in an outer circle should not be used by an inner circle, especially if those formats are generate by a framework in an outer circle. We don’t want anything in an outer circle to impact the inner circles.
-
 ## Entities
 
 Entities encapsulate Enterprise wide business rules. An entity can be an object with methods, or it can be a set of data structures and functions. It doesn’t matter so long as the entities could be used by many different applications in the enterprise.
 
 If you don’t have an enterprise, and are just writing a single application, then these entities are the business objects of the application. They encapsulate the most general and high-level rules. They are the least likely to change when something external changes. For example, you would not expect these objects to be affected by a change to page navigation, or security. No operational change to any particular application should affect the entity layer.
 
+### Pure entities and Domain Services
+
+Entities are domain objects that encapsulate fundamental attributes and behavior. These objects should not contain complex business rules or processes that involve more than one entity; thus it could be considered as a pure entity.
+
+However, there are business rules that may involve several entities or processes that do not directly belong to a single object. In the clean architecture, these complex processes or more general business rules can be encapsulated in domain services.
+
+- Domain services: These are classes that encapsulate specific business logic, but do not depend on the infrastructure. These services do not modify the infrastructure, they only interact with entities and other objects of value to apply business rules.
+
+> It is not mandatory to use services to implement entity-related business logic. In the clean architecture (and other similar architectures), business logic can be implemented directly in use cases if you prefer. However, the decision to use services or to include the logic directly in the use cases depends on the level of complexity and the separation of responsibilities needs of your system.
+
 ## Use Cases
 
 The software in this layer contains application specific business rules. It encapsulates and implements all of the use cases of the system. These use cases orchestrate the flow of data to and from the entities, and direct those entities to use their enterprise wide business rules to achieve the goals of the use case.
 
 We do not expect changes in this layer to affect the entities. We also do not expect this layer to be affected by changes to externalities such as the database, the UI, or any of the common frameworks. This layer is isolated from such concerns.
+
+> In the clean architecture, use cases have the role of orchestrating the interaction between entities, repositories and other necessary components. In this approach, it is completely acceptable for use cases to include specific business logic directly, especially when that logic only affects a particular flow of your application. In this case, there is no need to use domain services, as the use cases will take care of managing the business logic.
 
 We do, however, expect that changes to the operation of the application will affect the use-cases and therefore the software in this layer. If the details of a use-case change, then some code in this layer will certainly be affected.
 
@@ -78,6 +80,41 @@ Typically the data that crosses the boundaries is simple data structures. You ca
 For example, many database frameworks return a convenient data format in response to a query. We might call this a RowStructure. We don’t want to pass that row structure inwards across a boundary. That would violate The Dependency Rule because it would force an inner circle to know something about an outer circle.
 
 So when we pass data across a boundary, it is always in the form that is most convenient for the inner circle.
+
+---
+
+## Folder structure
+
+```md
+src
+├── entities
+│   ├── services (Optional)
+│   └── helpers
+├── use-cases
+│   └── helpers
+├── interface-adapters
+├── utils
+├── helpers
+└── infrastructure
+    ├── adapters
+    ├── controllers
+    ├── helpers
+    └── persistence
+```
+
+**Definitions**
+
+- ``entities``: An entity can be an object with methods, or a group of functions and data structures; they know nothing about external layers and have no dependencies. Encapsulate the general and high-level rules that the application will use.
+  - ``services``: Also called domain services, they are classes that encapsulate specific business logic, but without depending on the infrastructure, interacting only with entities and other objects needed to implement the business logic.
+- ``use-cases``: Use cases have the role of orchestrating the interaction between components. Also, it is possible for use cases to include specific business logic directly, especially when that logic only affects a particular flow of your application.
+- ``interface-adapters``: Provide a bridge between the external world, use cases and entities. Include the controllers, APIs, gateways and routes. Control the flow of communication between external components and the application backend.
+- ``utils``: Contain static methods that implement generic and independent operations that are not associated with instances or specific contexts. Often used as a function repository for common use throughout the application.
+- ``helpers``: Helping to carry out tasks or specific operations within a larger context. Contain methods that provide additional functionality to classes and components. Often can be used within a class or in a specific module.
+- ``infrastructure``: Is the external layer that provides all the necessary details about the frameworks, controllers and tools such as databases, including all the implementations that we use to build the application.
+  - ``adapters``: Customise the interfaces of domain entities to specific external technologies, such as databases, APIs, messaging systems, etc.
+  - ``controllers``: Handle user interactions and external requests such as HTTP requests, UI events, etc.
+  - ``presenters``: They are responsible for the interaction between the user interface (UI) and the business rules, acting as an intermediary between the two.
+  - ``persistence``: It is responsible for the administration of all the tools that allow data to be retained, such as databases, file systems, memory management, etc.
 
 ## Conclusion
 

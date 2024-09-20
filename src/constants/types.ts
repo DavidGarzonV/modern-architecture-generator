@@ -12,6 +12,7 @@ export type ConfigurationOptions = keyof MagConfiguration;
 
 export type FolderItem = {
 	name: string
+	optional?: boolean | undefined
 	parent?: string | undefined
 }
 

@@ -32,11 +32,11 @@
 		"parent": "domain"
 	},
 	{
-		"name": "services",
+		"name": "ports",
 		"parent": "domain"
 	},
 	{
-		"name": "ports",
+		"name": "services",
 		"parent": "domain"
 	},
 	{
@@ -48,12 +48,16 @@
 		"parent": "ports"
 	},
 	{
-		"name": "driven-adapters",
+		"name": "adapters",
 		"parent": "infrastructure"
 	},
 	{
+		"name": "driven-adapters",
+		"parent": "adapters"
+	},
+	{
 		"name": "driving-adapters",
-		"parent": "infrastructure"
+		"parent": "adapters"
 	},
 	{
 		"name": "shared-helpers"

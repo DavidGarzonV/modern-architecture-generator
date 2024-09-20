@@ -15,10 +15,6 @@
     "parent": "domain"
   },
 	{
-		"name": "services",
-		"parent": "domain"
-	},
-	{
 		"name": "application"
 	},
 	{
@@ -31,10 +27,6 @@
   },
 	{
 		"name": "infrastructure"
-	},
-	{
-		"name": "services",
-		"parent": "infrastructure"
 	},
 	{
 		"name": "persistence",

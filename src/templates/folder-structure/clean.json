@@ -3,6 +3,11 @@
     "name": "entities"
   },
   {
+    "name": "services",
+    "parent": "entities",
+    "optional": true
+  },
+  {
     "name": "domain-helpers",
     "parent": "entities"
   },

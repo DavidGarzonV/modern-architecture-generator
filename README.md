@@ -1,4 +1,4 @@
-<h1 align="center">Modern Architecture Generator - Mag</h1>
+<h1 align="center">Modern Architecture Generator - MAG</h1>
 
 Plugin to create and structure projects with a architecture pattern with Typescript and Node JS.
 
@@ -149,6 +149,7 @@ By the same token, data formats used in an outer circle should not be used by an
 ```md
 src
 ├── entities
+│   ├── services (Optional)
 │   └── helpers
 ├── use-cases
 │   └── helpers
@@ -216,43 +217,15 @@ src
 │       ├── driven-ports
 │       └── driving-ports
 ├── infrastructure
-│   ├── driven-adapters
-│   ├── driving-adapters
+│   ├── adapters
+│   |   ├── driven-adapters
+│   |   └── driving-adapters
 │   └── helpers
 ├── utils
 └── helpers
 ```
 
----
-
-## Onion Architecture
-
-![onion architectures](./src/templates/readme/public/onion/onion.png)
-
-It is another variant of Clean Architecture that focuses on organising code into concentric layers, with the core of the system at the centre and the outer layers representing different levels of abstraction and implementation detail.
-
-### Folder Structure
-
-```md
-src
-├── application
-│   ├── helpers
-│   └── use-cases
-├── domain
-│   ├── helpers
-│   ├── entities
-│   ├── repositories
-│   └── services
-├── infrastructure
-│   ├── external
-│   ├── helpers
-│   ├── persistence
-│   └── services
-├── helpers
-└── utils
-```
-
-### Avaliable commands:
+### Available commands:
 
 ### Driving ports
 
@@ -285,6 +258,32 @@ mag drivenp <driven-port-name>
 
 ---
 
+## Onion Architecture
+
+![onion architectures](./src/templates/readme/public/onion/onion.png)
+
+It is another variant of Clean Architecture that focuses on organising code into concentric layers, with the core of the system at the centre and the outer layers representing different levels of abstraction and implementation detail.
+
+### Folder Structure
+
+```md
+src
+├── application
+│   ├── helpers
+│   └── use-cases
+├── domain
+│   ├── helpers
+│   ├── entities
+│   └── repositories
+├── infrastructure
+│   ├── persistence
+│   ├── external
+│   └── helpers
+├── helpers
+└── utils
+```
+
+---
 
 ## Custom MAG Configuration
 

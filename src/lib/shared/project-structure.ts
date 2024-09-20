@@ -234,7 +234,8 @@ export class ProjectStructure {
 		const srcPath = `${newFolderPath}/src`;
 		createDirectory(srcPath);
 
-		for (const item of this.projectStructure) {
+		const filteredStructure = this.projectStructure.filter((item) => !item.optional);
+		for (const item of filteredStructure) {
 			this.createParentFolder(item, srcPath);
 		}
 	}
