@@ -31,14 +31,24 @@ public class Folder {
         }
     }
 
+    public static Boolean createFolder(String directoryPath){
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            return directory.mkdirs();
+        }
+
+        return false;
+    }
+
     public static void deleteFolder(String filePath) {
         File directory = new File(filePath);
 
         if (directory.isDirectory()) {
             File[] items = directory.listFiles();
-            assert items != null;
-            for (File item : items) {
-                deleteFolder(String.valueOf(item));
+            if(items != null){
+                for (File item : items) {
+                    deleteFolder(String.valueOf(item));
+                }
             }
         }
 

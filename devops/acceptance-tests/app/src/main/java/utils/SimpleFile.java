@@ -6,7 +6,6 @@ import java.io.IOException;
 
 public class SimpleFile {
     public static String getFileContent(String filePath) {
-        System.out.println("Getting content of file: " + filePath);
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             StringBuilder content = new StringBuilder();
             String line;

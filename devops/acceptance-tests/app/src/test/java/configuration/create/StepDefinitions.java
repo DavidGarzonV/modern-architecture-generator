@@ -45,6 +45,8 @@ public class StepDefinitions {
 
     @BeforeAll
     public static void beforeAll() {
+        Folder.createFolder(Constants.MAG_BASE_FOLDER);
+
         System.out.println("...Installing MAG...");
 
         List<String> arguments = new ArrayList<>();
@@ -68,5 +70,7 @@ public class StepDefinitions {
 
         Command command = new Command(arguments);
         command.execute();
+
+        Folder.deleteFolder(Constants.MAG_BASE_FOLDER);
     }
 }
