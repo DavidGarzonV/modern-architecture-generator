@@ -28,8 +28,9 @@ jobs:
         with:
           gradle-version: "8.10"
       - name: Build with Gradle
-        run: ./devops/acceptance-tests/gradlew build
+        run: ./gradlew build
   publish:
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       id-token: write
