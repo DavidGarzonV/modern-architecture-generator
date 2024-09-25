@@ -9,6 +9,11 @@ public class Command {
     private final Map<String, String> _options;
     private String _executionDir;
     private Boolean _isSimpleCommand;
+    private List<String> _commandLogs;
+
+    public List<String> getCommandLogs() {
+        return _commandLogs;
+    }
 
     public Command(List<String> arguments, Map<String, String> options) {
         this._arguments = arguments;
@@ -49,6 +54,10 @@ public class Command {
             while ((line = bufferedReader.readLine()) != null) {
                 System.out.println(line);
 
+                if (isInputStream){
+                    this._commandLogs.add(line);
+                }
+
                 if (handleOutputStream) {
                     for (String key : this._options.keySet()) {
                         if (line.contains(key)) {
@@ -74,6 +83,7 @@ public class Command {
 
     public void execute() {
         List<String> commandsToExecute = this.getBaseCommands();
+        this._commandLogs = new ArrayList<>();
 
         if (!this._arguments.isEmpty()) {
             commandsToExecute.addAll(this._arguments);

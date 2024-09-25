@@ -8,7 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 public class CreateCommand {
-    public static void create(String architecture, String name){
+    public String overWrite = "yes";
+    public String testing = "no";
+    public String openTheProject = "no";
+
+    public Command create(String architecture, String name){
         List<String> commandArguments = new ArrayList<>();
         commandArguments.add("mag");
         commandArguments.add("create");
@@ -16,11 +20,13 @@ public class CreateCommand {
 
         Map<String, String> commandOptions = new HashMap<>();
         commandOptions.put(architecture, "newLine");
-        commandOptions.put("testing", "no");
-        commandOptions.put("overwrite", "yes");
-        commandOptions.put("open the project folder", "no");
+        commandOptions.put("testing", this.testing);
+        commandOptions.put("overwrite", this.overWrite);
+        commandOptions.put("open the project folder", this.openTheProject);
 
         Command command = new Command(commandArguments, commandOptions);
         command.execute();
+
+        return command;
     }
 }

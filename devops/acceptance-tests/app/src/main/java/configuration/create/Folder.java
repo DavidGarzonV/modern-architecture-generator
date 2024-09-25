@@ -53,12 +53,7 @@ public class Folder {
         }
 
         if (directory.exists()) {
-            boolean deleted = directory.delete();
-            if (deleted) {
-                System.out.println("The directory " + filePath + "was deleted");
-            } else {
-                System.out.println("Can't delete directory " + filePath);
-            }
+            directory.delete();
         }
     }
 }

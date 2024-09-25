@@ -17,16 +17,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StepDefinitions {
     private static final String MAG_TEST_FOLDER = new File(Constants.MAG_BASE_FOLDER, "mag-test").getAbsolutePath();
+    private Command _commandExecuted;
 
-    @Given("The folder {word} does not exists")
-    public void the_folder_does_not_exists(String folder) {
-        Folder folderClass = new Folder(Constants.MAG_BASE_FOLDER + File.separator + folder);
-        assertFalse(folderClass.exists());
+    @Given("The project can be created")
+    public void the_folder_does_not_exists() {
+        Folder folderClass = new Folder(Constants.MAG_BASE_FOLDER);
+        assertTrue(folderClass.exists());
     }
 
     @When("I execute create command with {word} for project {word}")
     public void i_execute_create_command(String architecture, String name) {
-        CreateCommand.create(architecture, name);
+        CreateCommand command = new CreateCommand();
+        command.create(architecture, name);
     }
 
     @Then("a folder {word} has been created with {word}")
@@ -37,6 +39,19 @@ public class StepDefinitions {
 
         assertTrue(folderClass.exists());
         assertEquals(folderArchitecture, architecture.toLowerCase());
+    }
+
+    @When("I execute create command with existent {word} project")
+    public void i_execute_create_command_without_overwrite(String name){
+        CreateCommand command = new CreateCommand();
+        command.overWrite = "no";
+        this._commandExecuted = command.create("Clean", name);
+    }
+
+    @Then("the project folder is not modified")
+    public void the_folder_is_not_modified(){
+        List<String> commandLogs = this._commandExecuted.getCommandLogs();
+        assertFalse(commandLogs.contains("Creating folder"));
     }
 
     @After
