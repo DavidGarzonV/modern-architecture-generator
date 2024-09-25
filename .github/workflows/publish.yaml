@@ -3,16 +3,17 @@ on:
   release:
     types: [published]
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
+    defaults:
+      run:
+        working-directory: ./devops/acceptance-tests
     steps:
-      - name: Checkout tests
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          path: 'devops/acceptance-tests'
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -30,13 +31,13 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
   publish:
-    needs: build
+    needs: tests
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
     steps:
-      - name: Checkout root
+      - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Node
         uses: actions/setup-node@v4
