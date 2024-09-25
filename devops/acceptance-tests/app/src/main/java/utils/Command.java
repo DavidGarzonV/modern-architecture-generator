@@ -31,11 +31,8 @@ public class Command {
 
         List<String> commandsToExecute = new ArrayList<>();
         if (isWindows) {
-            commandsToExecute.add("cmd.exe");
+            commandsToExecute.add("cmd");
             commandsToExecute.add("/c");
-        } else {
-            commandsToExecute.add("bash");
-            commandsToExecute.add("-c");
         }
 
         return commandsToExecute;
