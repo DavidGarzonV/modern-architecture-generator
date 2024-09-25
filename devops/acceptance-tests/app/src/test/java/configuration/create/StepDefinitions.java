@@ -9,17 +9,18 @@ import io.cucumber.java.en.When;
 import utils.Command;
 import utils.Constants;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StepDefinitions {
-    private static final String MAG_TEST_FOLDER = Constants.MAG_BASE_FOLDER + "/mag-test";
+    private static final String MAG_TEST_FOLDER = new File(Constants.MAG_BASE_FOLDER, "mag-test").getAbsolutePath();
 
     @Given("The folder {word} does not exists")
     public void the_folder_does_not_exists(String folder) {
-        Folder folderClass = new Folder(Constants.MAG_BASE_FOLDER + "/" + folder);
+        Folder folderClass = new Folder(Constants.MAG_BASE_FOLDER + File.separator + folder);
         assertFalse(folderClass.exists());
     }
 
@@ -30,8 +31,8 @@ public class StepDefinitions {
 
     @Then("a folder {word} has been created with {word}")
     public void a_new_folder_has_been_created(String folder, String architecture) {
-        Folder folderClass = new Folder(Constants.MAG_BASE_FOLDER + "/" + folder);
-        String configurationFilePath = Constants.MAG_BASE_FOLDER + "/" + folder + "/" + Constants.CONFIGURATION_FILE;
+        Folder folderClass = new Folder(Constants.MAG_BASE_FOLDER + File.separator + folder);
+        String configurationFilePath = Constants.MAG_BASE_FOLDER + File.separator + folder + File.separator + Constants.CONFIGURATION_FILE;
         String folderArchitecture = folderClass.getArchitecture(configurationFilePath);
 
         assertTrue(folderClass.exists());

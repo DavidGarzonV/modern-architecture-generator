@@ -31,7 +31,7 @@ public class Folder {
         }
     }
 
-    public static Boolean createFolder(String directoryPath){
+    public static Boolean createFolder(String directoryPath) {
         File directory = new File(directoryPath);
         if (!directory.exists()) {
             return directory.mkdirs();
@@ -45,7 +45,7 @@ public class Folder {
 
         if (directory.isDirectory()) {
             File[] items = directory.listFiles();
-            if(items != null){
+            if (items != null) {
                 for (File item : items) {
                     deleteFolder(String.valueOf(item));
                 }
@@ -53,7 +53,12 @@ public class Folder {
         }
 
         if (directory.exists()) {
-            directory.delete();
+            boolean deleted = directory.delete();
+            if (deleted) {
+                System.out.println("The directory " + filePath + "was deleted");
+            } else {
+                System.out.println("Can't delete directory " + filePath);
+            }
         }
     }
 }
