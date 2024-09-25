@@ -9,8 +9,10 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - name: Checkout sources
+      - name: Checkout tests
         uses: actions/checkout@v4
+        with:
+          path: 'devops/acceptance-tests'
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -23,17 +25,17 @@ jobs:
           java-version: 22
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10"
       - name: Build with Gradle
         run: ./devops/acceptance-tests/gradlew build
-      - name: Test with Gradle
-        run: ./devops/acceptance-tests/gradlew clean test
   publish:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
     steps:
-      - name: Checkout
+      - name: Checkout root
         uses: actions/checkout@v4
       - name: Setup Node
         uses: actions/setup-node@v4
