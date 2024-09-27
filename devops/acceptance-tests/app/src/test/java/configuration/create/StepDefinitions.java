@@ -16,12 +16,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StepDefinitions {
-    private static final String MAG_TEST_FOLDER = new File(Constants.MAG_BASE_FOLDER, "mag-test").getAbsolutePath();
     private Command _commandExecuted;
 
     @Given("The project can be created")
     public void the_folder_does_not_exists() {
-        Folder folderClass = new Folder(Constants.MAG_BASE_FOLDER);
+        Folder folderClass = new Folder(Folder.getMagBaseFolder());
         assertTrue(folderClass.exists());
     }
 
@@ -33,8 +32,8 @@ public class StepDefinitions {
 
     @Then("a folder {word} has been created with {word}")
     public void a_new_folder_has_been_created(String folder, String architecture) {
-        Folder folderClass = new Folder(Constants.MAG_BASE_FOLDER + File.separator + folder);
-        String configurationFilePath = Constants.MAG_BASE_FOLDER + File.separator + folder + File.separator + Constants.CONFIGURATION_FILE;
+        Folder folderClass = new Folder(Folder.getMagBaseFolder() + File.separator + folder);
+        String configurationFilePath = Folder.getMagBaseFolder() + File.separator + folder + File.separator + Constants.CONFIGURATION_FILE;
         String folderArchitecture = folderClass.getArchitecture(configurationFilePath);
 
         assertTrue(folderClass.exists());
@@ -56,12 +55,13 @@ public class StepDefinitions {
 
     @After
     public void afterEach(){
-        Folder.deleteFolder(StepDefinitions.MAG_TEST_FOLDER);
+        String magTestFolder = new File(Folder.getMagBaseFolder(), "mag-test").getAbsolutePath();
+        Folder.deleteFolder(magTestFolder);
     }
 
     @BeforeAll
     public static void beforeAll() {
-        Folder.createFolder(Constants.MAG_BASE_FOLDER);
+        Folder.createFolder(Folder.getMagBaseFolder());
 
         System.out.println("...Installing MAG...");
 
@@ -87,6 +87,6 @@ public class StepDefinitions {
         Command command = new Command(arguments);
         command.execute();
 
-        Folder.deleteFolder(Constants.MAG_BASE_FOLDER);
+        Folder.deleteFolder(Folder.getMagBaseFolder());
     }
 }

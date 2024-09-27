@@ -1,5 +1,7 @@
 package utils;
 
+import configuration.create.Folder;
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +20,7 @@ public class Command {
     public Command(List<String> arguments, Map<String, String> options) {
         this._arguments = arguments;
         this._options = options;
-        this._executionDir = Constants.MAG_BASE_FOLDER;
+        this._executionDir = Folder.getMagBaseFolder();
         this._isSimpleCommand = false;
     }
 
