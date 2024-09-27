@@ -44,7 +44,7 @@ public class Command {
     }
 
     private void handleMagStream(InputStream inputStream, OutputStream outputStream, Boolean isInputStream) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
         boolean handleOutputStream = isInputStream && this._options != null && !this._options.isEmpty();
 
         Set<String> architectureKeys = Set.of("Clean", "Onion", "Hexagonal");
