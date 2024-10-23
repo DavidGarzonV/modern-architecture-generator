@@ -3,12 +3,13 @@ package utils;
 import configuration.create.Folder;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Command {
     private final List<String> _arguments;
-    private final Map<String, String> _options;
+    private final Map<String, Integer> _options;
     private String _executionDir;
     private Boolean _isSimpleCommand;
     private List<String> _commandLogs;
@@ -17,7 +18,7 @@ public class Command {
         return _commandLogs;
     }
 
-    public Command(List<String> arguments, Map<String, String> options) {
+    public Command(List<String> arguments, Map<String, Integer> options) {
         this._arguments = arguments;
         this._options = options;
         this._executionDir = Folder.getMagBaseFolder();
@@ -46,7 +47,7 @@ public class Command {
     }
 
     private void handleMagStream(InputStream inputStream, OutputStream outputStream, Boolean isInputStream) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
         boolean handleOutputStream = isInputStream && this._options != null && !this._options.isEmpty();
 
         Set<String> architectureKeys = Set.of("Clean", "Onion", "Hexagonal");
@@ -63,6 +64,7 @@ public class Command {
                 if (handleOutputStream) {
                     for (String key : this._options.keySet()) {
                         if (line.contains(key)) {
+
                             if (architectureKeys.contains(key)) {
                                 if (key.equals("Hexagonal")){
                                     writer.write("\u001b[B");
@@ -71,7 +73,9 @@ public class Command {
                                     writer.write("\u001b[B");
                                 }
                             } else {
-                                writer.write(this._options.get(key));
+                                int character = this._options.get(key);
+                                // System.out.println("Writing option "+ key + " with value " + character );
+                                writer.write(character);
                             }
                             writer.newLine();
                             writer.flush();

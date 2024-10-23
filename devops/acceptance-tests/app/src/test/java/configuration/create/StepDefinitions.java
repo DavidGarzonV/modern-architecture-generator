@@ -43,7 +43,7 @@ public class StepDefinitions {
     @When("I execute create command with existent {word} project")
     public void i_execute_create_command_without_overwrite(String name){
         CreateCommand command = new CreateCommand();
-        command.overWrite = "no";
+        command.overWrite = Constants.ASCII_NO;
         this._commandExecuted = command.create("Clean", name);
     }
 
@@ -56,7 +56,8 @@ public class StepDefinitions {
     @After
     public void afterEach(){
         String magTestFolder = new File(Folder.getMagBaseFolder(), "mag-test").getAbsolutePath();
-        Folder.deleteFolder(magTestFolder);
+        // TODO -REVISAR QUE FUNCIONE EL OVERWRITE
+        // Folder.deleteFolder(magTestFolder);
     }
 
     @BeforeAll
