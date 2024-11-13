@@ -95,6 +95,7 @@ src
 ├── interface-adapters
 ├── utils
 ├── helpers
+├── presentation
 └── infrastructure
     ├── adapters
     ├── controllers
@@ -110,6 +111,7 @@ src
 - ``interface-adapters``: Provide a bridge between the external world, use cases and entities. Include the controllers, APIs, gateways and routes. Control the flow of communication between external components and the application backend.
 - ``utils``: Contain static methods that implement generic and independent operations that are not associated with instances or specific contexts. Often used as a function repository for common use throughout the application.
 - ``helpers``: Helping to carry out tasks or specific operations within a larger context. Contain methods that provide additional functionality to classes and components. Often can be used within a class or in a specific module.
+- ``presentation``: Provides a way to separate the form in which the application is delivered to the user, such as a library or a special framework for web servers.
 - ``infrastructure``: Is the external layer that provides all the necessary details about the frameworks, controllers and tools such as databases, including all the implementations that we use to build the application.
   - ``adapters``: Customise the interfaces of domain entities to specific external technologies, such as databases, APIs, messaging systems, etc.
   - ``controllers``: Handle user interactions and external requests such as HTTP requests, UI events, etc.
