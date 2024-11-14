@@ -59,12 +59,12 @@ src
   - ``entities``: An entity can be an object with methods, or a group of functions and data structures; they know nothing about external layers and have no dependencies. Encapsulate the general and high-level rules that the application will use.
   - ``services``: Services are classes that encapsulate business logic that does not fit directly within an entity. A service typically operates across multiple Entities and defines processes that are independent of the lifecycle of a particular Entity.
   - ``ports``: Ports are defined using programming language constructs. They are defined at the domain layer and implemented by external adapters.
-    - ``driven-ports``: Define interfaces that adapters must implement. They are those that allow data to be output from the application, which are responsible for transforming the data into a format suitable for storage or transmission to the outside world.
-    - ``driving-ports``: Define use case interfaces that adapters must use, these are the ones that allow data to be input into the application, which are responsible for transforming incoming data into a format suitable for processing by the application.
+    - ``driven-ports``: Are interfaces that define the methods to be implemented by the domain use cases. A driven port is a contract that specifies how the application layer (or any other layer that interacts with the domain) may interact with the domain services.
+    - ``driving-ports``: Are interfaces that defines the methods that infrastructure adapters should implement. A driving port is a contract that specifies how the domain layer expects to interact with the external infrastructure, such as databases, external services, etc.
 - ``infrastructure``: Is the external layer that provides all the necessary details about the frameworks, controllers and tools such as databases, including all the implementations that we use to build the application.
   - ``adapters``: Adapters are concrete implementations of technologies that interface with application ports.
-    - ``driven-adapters``: These are the ones that implement the driven ports so that the application can use the technological solutions that have been decided. An example could be a database that stores the domain objects processed by the application.
-    - ``driving-adapters``: Used by the **driving ports** to control the application. An example might be a REST API that receives HTTP requests and converts them into domain objects that the application can process.
+    - ``driven-adapters``: They are the ones that initiate the interaction with the business logic of the application domain.
+    - ``driving-adapters``: Implements the driven ports to use the technological solutions that have been decided. It implements the logic necessary to interact with the external infrastructure, such as databases, external services, etc.
 - ``utils``: Contain static methods that implement generic and independent operations that are not associated with instances or specific contexts. Often used as a function repository for common use throughout the application.
 - ``helpers``: Helping to carry out tasks or specific operations within a larger context. Contain methods that provide additional functionality to classes and components. Often can be used within a class or in a specific module.
 
